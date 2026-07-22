@@ -1,0 +1,11 @@
+date,region,product,sales,orders,marketing_spend
+2026-01-01,North,Alpha,1250,42,180
+2026-01-01,South,Beta,980,31,125
+2026-01-02,North,Beta,1420,47,190
+2026-01-02,West,Alpha,760,25,95
+2026-01-03,South,Alpha,1670,53,220
+2026-01-03,West,Beta,1110,36,145
+2026-01-04,North,Alpha,1890,61,245
+2026-01-04,South,Beta,1330,44,175
+2026-01-05,West,Alpha,920,30,110
+2026-01-05,North,Beta,1540,50,205
