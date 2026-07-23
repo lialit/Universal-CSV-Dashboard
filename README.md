@@ -1,22 +1,29 @@
-<div align="center">
-  <img src="./assets/brand/logo-horizontal.svg" alt="Universal CSV Dashboard" width="560">
-</div>
+<p align="center">
+  <img
+    src="./assets/brand/logo-horizontal.svg"
+    alt="Universal CSV Dashboard"
+    width="520"
+  >
+</p>
 
-<br>
+<h1 align="center">
+  Understand your business in under 60 seconds.
+</h1>
 
-<div align="center">
+<p align="center">
+  <strong>
+    Upload a CSV and turn it into clear metrics, trends, data-quality checks
+    and interactive business views — without building a dashboard from scratch.
+  </strong>
+</p>
 
-# Understand your business in under 60 seconds.
-
-**Upload a CSV and turn it into clear metrics, trends, data-quality checks and
-interactive business views — without building a dashboard from scratch.**
-
-[Quick start](#quick-start) · [Features](#what-you-get) ·
-[How it works](#how-it-works) · [Documentation](#documentation) ·
-[Roadmap](#roadmap)
-
-</div>
-
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#what-you-get">Features</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="#roadmap">Roadmap</a>
+</p>
 ![Universal CSV Dashboard hero](./assets/brand/github-hero-light.png)
 
 ## Business data is easy to export. Understanding it is not.
