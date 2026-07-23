@@ -192,6 +192,7 @@ reading the source code.
 | [`PRODUCT.md`](PRODUCT.md) | Product scope, audience and value |
 | [`MANIFESTO.md`](MANIFESTO.md) | Principles that guide product decisions |
 | [`ROADMAP.md`](ROADMAP.md) | Planned product stages |
+| [`releases/README.md`](releases/README.md) | Release plans, readiness criteria and version status |
 | [`docs/`](docs/) | Architecture, UX, brand and product documentation |
 | [`docs/branding/BRAND_BOOK.md`](docs/branding/BRAND_BOOK.md) | Visual identity and usage rules |
 

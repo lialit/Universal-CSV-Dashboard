@@ -49,6 +49,10 @@ opaque chart generator or autonomous decision-maker.
 | `1.0` | Launch | Stable, documented and dependable public product | Planned |
 | Post-`1.0` | Ecosystem | Specialized analytical modules on a shared core | Directional |
 
+Detailed scope, validation plans and release criteria are maintained in the
+[`Release Hub`](releases/README.md). Shipped changes remain recorded in
+[`CHANGELOG.md`](CHANGELOG.md).
+
 ---
 
 ## Guiding rules
@@ -466,8 +470,7 @@ That means:
 - complete the Foundation Pack;
 - remove conflicting documentation;
 - verify clean installation and tests;
-- replace placeholder release materials;
+- maintain release plans and replace placeholder media with verified assets;
 - confirm that the current product promise matches actual behavior.
 
 > **Build trust in the foundation before adding intelligence to the surface.**
-
