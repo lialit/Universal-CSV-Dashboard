@@ -24,6 +24,7 @@
   <a href="#documentation">Documentation</a> ·
   <a href="#roadmap">Roadmap</a>
 </p>
+
 ![Universal CSV Dashboard hero](./assets/brand/github-hero-light.png)
 
 ## Business data is easy to export. Understanding it is not.
