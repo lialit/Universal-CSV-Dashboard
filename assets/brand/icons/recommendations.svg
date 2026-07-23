@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 152" role="img"
+     aria-label="Actions">
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#EFF6FF"
+        stroke="#D7DEE8"/>
+  <g fill="none" stroke="#2563EB" stroke-width="8"
+     stroke-linecap="round" stroke-linejoin="round"><path d="M64 21a34 34 0 0 0-20 61v17h40V82a34 34 0 0 0-20-61Z"/><path d="M48 110h32"/></g>
+  <text x="64" y="146" text-anchor="middle" fill="#10213D"
+        font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13"
+        font-weight="650">Actions</text>
+</svg>
