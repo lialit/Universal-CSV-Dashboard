@@ -103,10 +103,16 @@ with st.expander("How the score was calculated", expanded=True):
     )
 
 st.subheader("Missing values")
-st.plotly_chart(
-    missing_values_chart(dataframe),
-    width="stretch",
-)
+
+if report.missing_cells:
+    st.plotly_chart(
+        missing_values_chart(dataframe),
+        width="stretch",
+    )
+else:
+    st.success(
+        "No missing values were detected in the current dataset."
+    )
 
 st.subheader("Column-level quality")
 column_summary = quality_summary(dataframe)
