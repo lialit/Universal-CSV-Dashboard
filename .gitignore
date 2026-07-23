@@ -1,6 +1,19 @@
+# Virtual environment
 .venv/
+
+# PyCharm
+.idea/
+
+# Python
 __pycache__/
 *.pyc
-.pytest_cache/
-.idea/
+
+# Streamlit cache
 .streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/

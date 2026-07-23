@@ -1,6 +1,6 @@
 ## Summary
 
-## Changes
+## What changed?
 
 ## Checklist
 - [ ] Tests

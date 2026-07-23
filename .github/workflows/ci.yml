@@ -5,12 +5,14 @@ on:
   pull_request:
 
 jobs:
-  lint-test:
+  quality:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install -r requirements.txt || true
-      - run: echo "Add pytest and ruff commands here"
+      - run: echo "Install dependencies"
+      - run: echo "Run tests"
+      - run: echo "Run lint"

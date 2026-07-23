@@ -1,9 +1,10 @@
 ---
 name: Feature request
+about: Suggest an improvement
 ---
 
-## Problem
+## User problem
 
 ## Proposed solution
 
-## Benefits
+## Benefit
