@@ -11,6 +11,7 @@ from app_core.calculation_explainer import (
     calculation_options,
     explain_calculation,
 )
+from app_core.claim_guard import review_summary_draft
 from app_core.state import require_dataset
 from app_core.summary_drafts import (
     AUDIENCES,
@@ -241,6 +242,7 @@ with st.expander("Draft an evidence-based summary", expanded=False):
         length=draft_length,
     )
     validation_issues = validate_summary_draft(draft)
+    claim_review = review_summary_draft(draft)
     markdown_draft = summary_draft_to_markdown(draft)
     text_draft = summary_draft_to_text(draft)
 
@@ -264,8 +266,9 @@ with st.expander("Draft an evidence-based summary", expanded=False):
         width="stretch",
     )
     draft_metrics[3].metric(
-        "Validation",
-        "Ready" if not validation_issues else "Review",
+        "Claim safety",
+        claim_review.status,
+        help=f"Safety score: {claim_review.score}/100",
         border=True,
         width="stretch",
     )
@@ -283,6 +286,65 @@ with st.expander("Draft an evidence-based summary", expanded=False):
 
     st.markdown(markdown_draft)
 
+    st.markdown("#### Pre-share Claim Guard")
+    guard_columns = st.columns(4)
+    guard_columns[0].metric(
+        "Safety score",
+        f"{claim_review.score}/100",
+        border=True,
+        width="stretch",
+    )
+    guard_columns[1].metric(
+        "Status",
+        claim_review.status,
+        border=True,
+        width="stretch",
+    )
+    guard_columns[2].metric(
+        "Issues",
+        len(claim_review.issues),
+        border=True,
+        width="stretch",
+    )
+    guard_columns[3].metric(
+        "High-risk",
+        claim_review.high_risk_count,
+        border=True,
+        width="stretch",
+    )
+
+    if claim_review.status == "Ready":
+        st.success(
+            "Ready to share. No unsupported claim pattern was detected."
+        )
+    elif claim_review.status == "Review":
+        st.warning(
+            "Review the flagged wording before sharing this summary."
+        )
+    else:
+        st.error(
+            "Sharing is blocked until the high-risk claims are resolved."
+        )
+
+    if claim_review.issues:
+        for issue in claim_review.issues:
+            with st.container(border=True):
+                st.markdown(
+                    f"**{issue.severity}: {issue.title}**"
+                )
+                st.write(issue.matched_text)
+                st.caption(issue.explanation)
+                st.info(f"Safer wording: {issue.safe_rewrite}")
+    else:
+        st.caption(
+            "Checked causal language, predictions, certainty, directive "
+            "recommendations, invented context and safety structure."
+        )
+
+    downloads_disabled = (
+        bool(validation_issues)
+        or not claim_review.ready_for_export
+    )
     markdown_column, text_column = st.columns(2)
     with markdown_column:
         st.download_button(
@@ -290,6 +352,7 @@ with st.expander("Draft an evidence-based summary", expanded=False):
             data=markdown_draft.encode("utf-8"),
             file_name="evidence_based_summary.md",
             mime="text/markdown",
+            disabled=downloads_disabled,
             width="stretch",
         )
     with text_column:
@@ -298,6 +361,7 @@ with st.expander("Draft an evidence-based summary", expanded=False):
             data=text_draft.encode("utf-8"),
             file_name="evidence_based_summary.txt",
             mime="text/plain",
+            disabled=downloads_disabled,
             width="stretch",
         )
 
