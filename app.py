@@ -30,6 +30,11 @@ pages = {
             icon=":material/insights:",
         ),
         st.Page(
+            "views/assistant.py",
+            title="Analysis Assistant",
+            icon=":material/assistant:",
+        ),
+        st.Page(
             "views/quality.py",
             title="Data Quality",
             icon=":material/fact_check:",
