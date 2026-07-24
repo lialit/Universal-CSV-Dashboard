@@ -26,15 +26,11 @@ from reportlab.platypus import (
 from app_core.insights import build_business_insights
 from app_core.metrics import summarize_metric
 from app_core.quality import calculate_quality_score
+from app_core.report_themes import ReportTheme, get_report_theme
 
 
-BRAND_NAVY = colors.HexColor("#102348")
-BRAND_BLUE = colors.HexColor("#3867E8")
-BRAND_TEAL = colors.HexColor("#43B5B1")
-LIGHT_BLUE = colors.HexColor("#EAF0FF")
-LIGHT_GRAY = colors.HexColor("#F4F7FB")
-TEXT = colors.HexColor("#334155")
-MUTED = colors.HexColor("#64748B")
+def _color(value: str):
+    return colors.HexColor(f"#{value}")
 
 
 def _register_fonts() -> tuple[str, str]:
@@ -75,7 +71,7 @@ def _safe(value: object) -> str:
     return escape(str(value))
 
 
-def _styles():
+def _styles(theme: ReportTheme):
     body_font, bold_font = _register_fonts()
     styles = getSampleStyleSheet()
     return {
@@ -87,9 +83,27 @@ def _styles():
             fontName=bold_font,
             fontSize=25,
             leading=30,
-            textColor=BRAND_NAVY,
+            textColor=_color(theme.text),
             alignment=TA_LEFT,
             spaceAfter=5 * mm,
+        ),
+        "hero_title": ParagraphStyle(
+            "DashboardHeroTitle",
+            parent=styles["Title"],
+            fontName=bold_font,
+            fontSize=24,
+            leading=29,
+            textColor=_color(theme.title_text),
+            alignment=TA_LEFT,
+            spaceAfter=3 * mm,
+        ),
+        "hero_subtitle": ParagraphStyle(
+            "DashboardHeroSubtitle",
+            parent=styles["BodyText"],
+            fontName=body_font,
+            fontSize=10.5,
+            leading=15,
+            textColor=_color(theme.title_text),
         ),
         "subtitle": ParagraphStyle(
             "DashboardSubtitle",
@@ -97,7 +111,7 @@ def _styles():
             fontName=body_font,
             fontSize=11,
             leading=16,
-            textColor=MUTED,
+            textColor=_color(theme.muted),
             spaceAfter=7 * mm,
         ),
         "heading": ParagraphStyle(
@@ -106,7 +120,7 @@ def _styles():
             fontName=bold_font,
             fontSize=16,
             leading=20,
-            textColor=BRAND_NAVY,
+            textColor=_color(theme.text),
             spaceBefore=4 * mm,
             spaceAfter=3 * mm,
         ),
@@ -116,7 +130,7 @@ def _styles():
             fontName=bold_font,
             fontSize=11,
             leading=14,
-            textColor=BRAND_NAVY,
+            textColor=_color(theme.text),
             spaceAfter=2 * mm,
         ),
         "body": ParagraphStyle(
@@ -125,7 +139,7 @@ def _styles():
             fontName=body_font,
             fontSize=9,
             leading=13,
-            textColor=TEXT,
+            textColor=_color(theme.text),
             spaceAfter=2 * mm,
         ),
         "small": ParagraphStyle(
@@ -134,7 +148,7 @@ def _styles():
             fontName=body_font,
             fontSize=7.5,
             leading=10,
-            textColor=MUTED,
+            textColor=_color(theme.muted),
         ),
         "center": ParagraphStyle(
             "DashboardCenter",
@@ -142,17 +156,67 @@ def _styles():
             fontName=bold_font,
             fontSize=10,
             leading=13,
-            textColor=BRAND_NAVY,
+            textColor=_color(theme.text),
             alignment=TA_CENTER,
         ),
     }
 
 
+def _hero(styles, theme: ReportTheme) -> Table:
+    table = Table(
+        [
+            [
+                Paragraph(
+                    "Universal CSV Dashboard",
+                    styles["hero_title"],
+                )
+            ],
+            [
+                Paragraph(
+                    "Executive analysis report with traceable calculations, "
+                    "quality context and responsible interpretation.",
+                    styles["hero_subtitle"],
+                )
+            ],
+        ],
+        colWidths=[174 * mm],
+    )
+    table.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, -1),
+                    _color(theme.title_background),
+                ),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, 0), 9),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 0),
+                ("TOPPADDING", (0, 1), (-1, 1), 0),
+                ("BOTTOMPADDING", (0, 1), (-1, 1), 9),
+                (
+                    "BOX",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    _color(theme.border),
+                ),
+            ]
+        )
+    )
+    return table
+
+
 def _page_footer(canvas, document) -> None:
     canvas.saveState()
-    width, _ = A4
+    width, height = A4
+    theme = document.report_theme
     body_font, _ = _register_fonts()
-    canvas.setStrokeColor(colors.HexColor("#D9E2F1"))
+    canvas.setFillColor(_color(theme.page_background))
+    canvas.rect(0, 0, width, height, fill=1, stroke=0)
+    canvas.setStrokeColor(_color(theme.border))
     canvas.line(
         document.leftMargin,
         14 * mm,
@@ -160,7 +224,7 @@ def _page_footer(canvas, document) -> None:
         14 * mm,
     )
     canvas.setFont(body_font, 7)
-    canvas.setFillColor(MUTED)
+    canvas.setFillColor(_color(theme.muted))
     canvas.drawString(
         document.leftMargin,
         9 * mm,
@@ -179,6 +243,7 @@ def _metadata_table(
     config: Mapping[str, object],
     source_name: str,
     styles,
+    theme: ReportTheme,
 ) -> Table:
     date_column = config.get("date_column")
     if isinstance(date_column, str) and date_column in dataframe.columns:
@@ -219,6 +284,12 @@ def _metadata_table(
                 styles["body"],
             ),
         ],
+        [
+            Paragraph("<b>Report theme</b>", styles["body"]),
+            Paragraph(_safe(theme.name), styles["body"]),
+            Paragraph("<b>Export type</b>", styles["body"]),
+            Paragraph("Executive PDF", styles["body"]),
+        ],
     ]
     table = Table(
         data,
@@ -228,9 +299,9 @@ def _metadata_table(
     table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, -1), LIGHT_GRAY),
-                ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#D9E2F1")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#D9E2F1")),
+                ("BACKGROUND", (0, 0), (-1, -1), _color(theme.surface_alt)),
+                ("BOX", (0, 0), (-1, -1), 0.5, _color(theme.border)),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, _color(theme.border)),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 7),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 7),
@@ -246,6 +317,7 @@ def _kpi_table(
     dataframe: pd.DataFrame,
     metric: str,
     styles,
+    theme: ReportTheme,
 ) -> Table:
     summary = summarize_metric(dataframe, metric)
     data = [
@@ -270,10 +342,10 @@ def _kpi_table(
     table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), LIGHT_BLUE),
-                ("BACKGROUND", (0, 1), (-1, 1), colors.white),
-                ("BOX", (0, 0), (-1, -1), 0.6, BRAND_BLUE),
-                ("INNERGRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#C7D5F5")),
+                ("BACKGROUND", (0, 0), (-1, 0), _color(theme.accent_soft)),
+                ("BACKGROUND", (0, 1), (-1, 1), _color(theme.surface)),
+                ("BOX", (0, 0), (-1, -1), 0.6, _color(theme.accent)),
+                ("INNERGRID", (0, 0), (-1, -1), 0.35, _color(theme.border)),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 7),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
@@ -283,7 +355,11 @@ def _kpi_table(
     return table
 
 
-def _quality_summary_table(quality, styles) -> Table:
+def _quality_summary_table(
+    quality,
+    styles,
+    theme: ReportTheme,
+) -> Table:
     data = [
         [
             Paragraph("Data Quality Score", styles["center"]),
@@ -308,10 +384,10 @@ def _quality_summary_table(quality, styles) -> Table:
     table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E3F5F3")),
-                ("BACKGROUND", (0, 1), (-1, 1), LIGHT_GRAY),
-                ("BOX", (0, 0), (-1, -1), 0.6, BRAND_TEAL),
-                ("INNERGRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#B9DEDB")),
+                ("BACKGROUND", (0, 0), (-1, 0), _color(theme.success_soft)),
+                ("BACKGROUND", (0, 1), (-1, 1), _color(theme.surface_alt)),
+                ("BOX", (0, 0), (-1, -1), 0.6, _color(theme.accent)),
+                ("INNERGRID", (0, 0), (-1, -1), 0.35, _color(theme.border)),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, 0), 6),
                 ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
@@ -323,12 +399,16 @@ def _quality_summary_table(quality, styles) -> Table:
     return table
 
 
-def _insight_card(insight, styles) -> KeepTogether:
+def _insight_card(
+    insight,
+    styles,
+    theme: ReportTheme,
+) -> KeepTogether:
     confidence_color = {
-        "High": colors.HexColor("#DFF4E5"),
-        "Moderate": colors.HexColor("#E8F0FF"),
-        "Low": colors.HexColor("#FFF1D6"),
-    }.get(insight.confidence, LIGHT_GRAY)
+        "High": _color(theme.success_soft),
+        "Moderate": _color(theme.accent_soft),
+        "Low": _color(theme.warning_soft),
+    }.get(insight.confidence, _color(theme.surface_alt))
     header = Table(
         [
             [
@@ -348,9 +428,9 @@ def _insight_card(insight, styles) -> KeepTogether:
     header.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (0, 0), LIGHT_BLUE),
+                ("BACKGROUND", (0, 0), (0, 0), _color(theme.accent_soft)),
                 ("BACKGROUND", (1, 0), (1, 0), confidence_color),
-                ("BOX", (0, 0), (-1, -1), 0.5, BRAND_BLUE),
+                ("BOX", (0, 0), (-1, -1), 0.5, _color(theme.accent)),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 7),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 7),
@@ -393,8 +473,8 @@ def _insight_card(insight, styles) -> KeepTogether:
     body.setStyle(
         TableStyle(
             [
-                ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#D9E2F1")),
-                ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+                ("BOX", (0, 0), (-1, -1), 0.5, _color(theme.border)),
+                ("BACKGROUND", (0, 0), (-1, -1), _color(theme.surface)),
                 ("LEFTPADDING", (0, 0), (-1, -1), 8),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 8),
                 ("TOPPADDING", (0, 0), (-1, -1), 5),
@@ -409,6 +489,7 @@ def build_pdf_report(
     dataframe: pd.DataFrame,
     config: Mapping[str, object],
     source_name: str = "uploaded.csv",
+    theme_name: str = "Corporate",
 ) -> bytes:
     """Build a concise executive PDF without exporting raw row-level data."""
 
@@ -418,7 +499,8 @@ def build_pdf_report(
             "A valid primary metric is required for PDF export."
         )
 
-    styles = _styles()
+    theme = get_report_theme(theme_name)
+    styles = _styles(theme)
     quality = calculate_quality_score(dataframe)
     insights = build_business_insights(dataframe, config)
     buffer = BytesIO()
@@ -432,23 +514,21 @@ def build_pdf_report(
         title="Universal CSV Dashboard - Executive Report",
         author="Universal CSV Dashboard",
     )
+    document.report_theme = theme
     story = [
-        Paragraph("Universal CSV Dashboard", styles["title"]),
-        Paragraph(
-            "Executive analysis report with traceable calculations, "
-            "quality context and responsible interpretation.",
-            styles["subtitle"],
-        ),
+        _hero(styles, theme),
+        Spacer(1, 6 * mm),
         _metadata_table(
             dataframe,
             config,
             source_name,
             styles,
+            theme,
         ),
         Paragraph("Executive snapshot", styles["heading"]),
-        _kpi_table(dataframe, metric, styles),
+        _kpi_table(dataframe, metric, styles, theme),
         Spacer(1, 5 * mm),
-        _quality_summary_table(quality, styles),
+        _quality_summary_table(quality, styles, theme),
         Spacer(1, 1 * mm),
         Paragraph(
             "Scope note",
@@ -472,7 +552,7 @@ def build_pdf_report(
 
     if insights.insights:
         story.extend(
-            _insight_card(insight, styles)
+            _insight_card(insight, styles, theme)
             for insight in insights.insights
         )
     else:
@@ -573,12 +653,17 @@ def build_pdf_report(
     methodology_table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), BRAND_BLUE),
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("BACKGROUND", (0, 0), (-1, 0), _color(theme.accent)),
+                ("TEXTCOLOR", (0, 0), (-1, 0), _color(theme.accent_text)),
                 ("FONTNAME", (0, 0), (-1, 0), styles["bold_font"]),
                 ("FONTSIZE", (0, 0), (-1, 0), 10),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, LIGHT_GRAY]),
-                ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#D9E2F1")),
+                (
+                    "ROWBACKGROUNDS",
+                    (0, 1),
+                    (-1, -1),
+                    [_color(theme.surface), _color(theme.surface_alt)],
+                ),
+                ("GRID", (0, 0), (-1, -1), 0.35, _color(theme.border)),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 7),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 7),
