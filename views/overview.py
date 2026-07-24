@@ -2,6 +2,8 @@ import streamlit as st
 
 from app_core.charts import (
     category_chart,
+    correlation_chart,
+    distribution_chart,
     time_series_chart,
 )
 from app_core.executive_summary import (
@@ -9,10 +11,8 @@ from app_core.executive_summary import (
     build_executive_summary,
 )
 from app_core.formatting import compact_number
-from app_core.metrics import (
-    recent_metric_series,
-    summarize_metric,
-)
+from app_core.metrics import recent_metric_series, summarize_metric
+from app_core.recommendations import recommend_analysis
 from app_core.state import require_dataset
 from app_core.theme import render_header
 
@@ -23,7 +23,6 @@ def render_statements(
     empty_message: str,
 ) -> None:
     st.markdown(f"#### {title}")
-
     if not statements:
         st.info(empty_message)
         return
@@ -35,18 +34,122 @@ def render_statements(
             st.caption(f"Evidence: {statement.evidence}")
 
 
+def render_kpis(dataframe, config, metric: str) -> None:
+    metric_summary = summarize_metric(dataframe, metric)
+    sparkline = recent_metric_series(
+        dataframe,
+        config.get("date_column"),
+        metric,
+    )
+    fallback = recommend_analysis(dataframe, config)
+    selected = (
+        config["kpi_cards"]
+        if "kpi_cards" in config
+        else list(fallback.kpis)
+    )
+
+    values = {
+        "Total": metric_summary.total,
+        "Average": metric_summary.average,
+        "Median": metric_summary.median,
+        "Minimum": metric_summary.minimum,
+        "Maximum": metric_summary.maximum,
+        "Non-null count": metric_summary.non_null_count,
+    }
+    selected = [item for item in selected if item in values][:3]
+    columns = st.columns(len(selected) + 2)
+
+    for index, item in enumerate(selected):
+        kwargs = {}
+        if item == "Total":
+            kwargs = {
+                "chart_data": sparkline,
+                "chart_type": "area",
+            }
+        columns[index].metric(
+            f"{item} {metric}",
+            compact_number(values[item]),
+            border=True,
+            width="stretch",
+            height="stretch",
+            **kwargs,
+        )
+
+    columns[-2].metric(
+        "Rows",
+        f"{len(dataframe):,}",
+        border=True,
+        width="stretch",
+        height="stretch",
+    )
+    columns[-1].metric(
+        "Columns",
+        f"{len(dataframe.columns):,}",
+        border=True,
+        width="stretch",
+        height="stretch",
+    )
+
+
+def build_charts(dataframe, config, metric: str):
+    aggregation = str(config.get("aggregation", "Sum"))
+    date_column = config.get("date_column")
+    category_column = config.get("category_column")
+    fallback = recommend_analysis(dataframe, config)
+    selected = (
+        config["chart_types"]
+        if "chart_types" in config
+        else list(fallback.charts)
+    )
+    charts = []
+
+    for chart_type in selected:
+        if chart_type == "Time series" and date_column:
+            charts.append(
+                time_series_chart(
+                    dataframe,
+                    date_column,
+                    metric,
+                    aggregation,
+                )
+            )
+        elif chart_type == "Category comparison" and category_column:
+            charts.append(
+                category_chart(
+                    dataframe,
+                    category_column,
+                    metric,
+                    aggregation,
+                )
+            )
+        elif chart_type == "Distribution":
+            charts.append(distribution_chart(dataframe, metric))
+        elif chart_type == "Correlation matrix":
+            numeric_columns = [
+                column
+                for column in config.get("numeric_columns", [])
+                if column in dataframe.columns
+            ]
+            numeric_columns = list(
+                dict.fromkeys([metric, *numeric_columns])
+            )
+            if len(numeric_columns) >= 2:
+                charts.append(
+                    correlation_chart(dataframe, numeric_columns)
+                )
+
+    return charts
+
+
 dataframe, config = require_dataset()
 metric = str(config["metric_column"])
 date_column = config.get("date_column")
 category_column = config.get("category_column")
-aggregation = str(config.get("aggregation", "Sum"))
 
 render_header(
     "Executive Overview",
-    (
-        "Headline metrics, verified facts and transparent rule-based "
-        "interpretations."
-    ),
+    "Headline metrics, verified facts and transparent rule-based "
+    "interpretations.",
 )
 
 filtered = dataframe.copy()
@@ -55,7 +158,6 @@ filter_box.markdown("### Dashboard filters")
 
 if date_column:
     valid_dates = filtered[date_column].dropna()
-
     if not valid_dates.empty:
         minimum_date = valid_dates.min().date()
         maximum_date = valid_dates.max().date()
@@ -65,7 +167,6 @@ if date_column:
             min_value=minimum_date,
             max_value=maximum_date,
         )
-
         if (
             isinstance(selected_dates, tuple)
             and len(selected_dates) == 2
@@ -99,56 +200,11 @@ if filtered.empty:
     st.warning("No rows match the selected filters.")
     st.stop()
 
-metric_summary = summarize_metric(filtered, metric)
-sparkline = recent_metric_series(
-    filtered,
-    date_column,
-    metric,
-)
-metric_columns = st.columns(5)
-
-metric_columns[0].metric(
-    f"Total {metric}",
-    compact_number(metric_summary.total),
-    chart_data=sparkline,
-    chart_type="area",
-    border=True,
-    width="stretch",
-    height="stretch",
-)
-metric_columns[1].metric(
-    f"Average {metric}",
-    compact_number(metric_summary.average),
-    border=True,
-    width="stretch",
-    height="stretch",
-)
-metric_columns[2].metric(
-    f"Median {metric}",
-    compact_number(metric_summary.median),
-    border=True,
-    width="stretch",
-    height="stretch",
-)
-metric_columns[3].metric(
-    "Rows",
-    f"{len(filtered):,}",
-    border=True,
-    width="stretch",
-    height="stretch",
-)
-metric_columns[4].metric(
-    "Columns",
-    f"{len(filtered.columns):,}",
-    border=True,
-    width="stretch",
-    height="stretch",
-)
+render_kpis(filtered, config, metric)
 
 st.subheader("Executive summary")
 summary = build_executive_summary(filtered, config)
 st.info(summary.headline)
-
 facts_column, interpretation_column = st.columns(2)
 
 with facts_column:
@@ -162,22 +218,18 @@ with interpretation_column:
     render_statements(
         "Rule-based interpretations",
         summary.interpretations,
-        (
-            "No material pattern crossed the current interpretation "
-            "thresholds."
-        ),
+        "No material pattern crossed the current interpretation "
+        "thresholds.",
     )
 
 with st.expander("Limitations and recommended next steps"):
     limitation_column, next_step_column = st.columns(2)
-
     with limitation_column:
         render_statements(
             "Limitations",
             summary.limitations,
             "No material limitations were detected by the current rules.",
         )
-
     with next_step_column:
         st.markdown("#### Recommended next steps")
         for number, next_step in enumerate(
@@ -187,59 +239,18 @@ with st.expander("Limitations and recommended next steps"):
             st.markdown(f"{number}. {next_step}")
 
 st.caption(
-    (
-        "Facts are calculated directly from the selected data. "
-        "Interpretations are deterministic rules, not causal claims or "
-        "AI-generated conclusions."
-    )
+    "Facts are calculated directly from the selected data. "
+    "Interpretations are deterministic rules, not causal claims or "
+    "AI-generated conclusions."
 )
-
 st.write("")
 
-if date_column and category_column:
-    left_chart, right_chart = st.columns(2)
-
-    with left_chart:
-        st.plotly_chart(
-            time_series_chart(
-                filtered,
-                date_column,
-                metric,
-                aggregation,
-            ),
-            width="stretch",
-        )
-
-    with right_chart:
-        st.plotly_chart(
-            category_chart(
-                filtered,
-                category_column,
-                metric,
-                aggregation,
-            ),
-            width="stretch",
-        )
-elif date_column:
-    st.plotly_chart(
-        time_series_chart(
-            filtered,
-            date_column,
-            metric,
-            aggregation,
-        ),
-        width="stretch",
-    )
-elif category_column:
-    st.plotly_chart(
-        category_chart(
-            filtered,
-            category_column,
-            metric,
-            aggregation,
-        ),
-        width="stretch",
-    )
+charts = build_charts(filtered, config, metric)
+for start in range(0, len(charts), 2):
+    row = st.columns(2)
+    for offset, figure in enumerate(charts[start : start + 2]):
+        with row[offset]:
+            st.plotly_chart(figure, width="stretch")
 
 with st.expander("Filtered data preview"):
     st.dataframe(
