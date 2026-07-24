@@ -6,6 +6,11 @@ from app_core.assistant import (
     available_questions,
     suggest_follow_up_questions,
 )
+from app_core.calculation_explainer import (
+    calculation_for_question,
+    calculation_options,
+    explain_calculation,
+)
 from app_core.state import require_dataset
 from app_core.theme import render_header
 
@@ -126,6 +131,84 @@ with guidance_column:
 with st.expander("Limitations and safe interpretation", expanded=True):
     for limitation in answer.limitations:
         st.markdown(f"- {limitation}")
+
+with st.expander("How was this calculated?", expanded=False):
+    options = calculation_options(dataframe, assistant_config)
+    option_by_key = {
+        option.key: option for option in options
+    }
+    option_keys = list(option_by_key)
+    recommended_calculation = calculation_for_question(selected_key)
+    selected_calculation = st.selectbox(
+        "Calculation to explain",
+        option_keys,
+        index=option_keys.index(recommended_calculation),
+        format_func=lambda key: option_by_key[key].label,
+        key=(
+            f"calculation_explainer_{selected_metric}_"
+            f"{selected_key}"
+        ),
+    )
+    calculation = explain_calculation(
+        dataframe,
+        assistant_config,
+        selected_calculation,
+    )
+
+    result_column, rows_column, excluded_column = st.columns(3)
+    result_column.metric(
+        "Result",
+        calculation.result,
+        border=True,
+        width="stretch",
+    )
+    rows_column.metric(
+        "Included rows",
+        f"{calculation.included_rows:,}",
+        border=True,
+        width="stretch",
+    )
+    excluded_column.metric(
+        "Excluded rows",
+        f"{calculation.excluded_rows:,}",
+        border=True,
+        width="stretch",
+    )
+
+    st.markdown("#### Formula")
+    st.code(calculation.formula, language=None)
+
+    detail_column, field_column = st.columns(2)
+    with detail_column:
+        st.markdown("#### Aggregation")
+        st.write(calculation.aggregation)
+    with field_column:
+        st.markdown("#### Fields used")
+        if calculation.fields:
+            st.write(", ".join(calculation.fields))
+        else:
+            st.write("No fields were used.")
+
+    st.markdown("#### Calculation steps")
+    for number, step in enumerate(
+        calculation.steps,
+        start=1,
+    ):
+        st.markdown(f"**{number}. {step.label}**")
+        st.write(step.detail)
+
+    assumption_column, calculation_limit_column = st.columns(2)
+    with assumption_column:
+        st.markdown("#### Assumptions")
+        if calculation.assumptions:
+            for assumption in calculation.assumptions:
+                st.markdown(f"- {assumption}")
+        else:
+            st.write("No additional assumptions.")
+    with calculation_limit_column:
+        st.markdown("#### Calculation limitations")
+        for limitation in calculation.limitations:
+            st.markdown(f"- {limitation}")
 
 follow_ups = suggest_follow_up_questions(
     dataframe,
