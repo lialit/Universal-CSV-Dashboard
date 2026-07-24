@@ -1,12 +1,124 @@
 import pandas as pd
 import streamlit as st
+
+from app_core.charts import correlation_chart, distribution_chart
+from app_core.insights import build_business_insights
 from app_core.state import require_dataset
 from app_core.theme import render_header
-from app_core.charts import distribution_chart,correlation_chart
-df,cfg=require_dataset(); nums=[c for c in cfg.get('numeric_columns',[]) if c in df.columns]; metric=str(cfg['metric_column'])
-render_header("Data Analysis","Explore distributions, descriptive statistics and correlations.")
-selected=st.selectbox("Metric to analyze",nums,index=nums.index(metric) if metric in nums else 0); l,r=st.columns([1.4,1])
-with l: st.plotly_chart(distribution_chart(df,selected),width="stretch")
-with r: st.dataframe(df[nums].apply(pd.to_numeric,errors='coerce').describe().T,width="stretch")
-if len(nums)>=2: st.plotly_chart(correlation_chart(df,nums),width="stretch")
-else: st.info("Map at least two numeric columns to display a correlation matrix.")
+
+
+def render_insight_card(insight) -> None:
+    with st.container(border=True):
+        st.caption(insight.insight_type.upper())
+        st.markdown(f"### {insight.title}")
+        st.markdown(f"**Observation:** {insight.observation}")
+        st.write(insight.interpretation)
+        st.caption(f"Evidence: {insight.evidence}")
+        st.warning(f"Limitation: {insight.limitation}")
+
+
+dataframe, config = require_dataset()
+metric = str(config["metric_column"])
+numeric_columns = [
+    column
+    for column in (config.get("numeric_columns") or [])
+    if column in dataframe.columns
+]
+numeric_columns = list(
+    dict.fromkeys([metric, *numeric_columns])
+)
+
+render_header(
+    "Business Insights",
+    "Evidence-linked trends, contributions, anomalies and relationships.",
+)
+
+selected_metric = st.selectbox(
+    "Metric to analyze",
+    numeric_columns,
+    index=(
+        numeric_columns.index(metric)
+        if metric in numeric_columns
+        else 0
+    ),
+)
+insight_config = {
+    **config,
+    "metric_column": selected_metric,
+}
+report = build_business_insights(dataframe, insight_config)
+
+summary_columns = st.columns(3)
+summary_columns[0].metric(
+    "Insights detected",
+    len(report.insights),
+    border=True,
+    width="stretch",
+)
+summary_columns[1].metric(
+    "Metric analyzed",
+    selected_metric,
+    border=True,
+    width="stretch",
+)
+summary_columns[2].metric(
+    "Method",
+    "Rule-based",
+    border=True,
+    width="stretch",
+)
+
+st.subheader("What deserves attention")
+if report.insights:
+    for start in range(0, len(report.insights), 2):
+        columns = st.columns(2)
+        for offset, insight in enumerate(
+            report.insights[start : start + 2]
+        ):
+            with columns[offset]:
+                render_insight_card(insight)
+else:
+    st.info(
+        "No material pattern crossed the current thresholds. "
+        "Try another metric or review the available exploratory charts."
+    )
+
+with st.expander("Suggested next analytical questions", expanded=True):
+    for number, question in enumerate(report.questions, start=1):
+        st.markdown(f"{number}. {question}")
+
+if report.limitations:
+    with st.expander("Analysis limitations"):
+        for limitation in report.limitations:
+            st.markdown(f"- {limitation}")
+
+st.caption(
+    "Insights are deterministic screening rules. They describe patterns in "
+    "the selected data and do not establish causes or business impact."
+)
+
+st.subheader("Explore the evidence")
+left_chart, right_table = st.columns([1.4, 1])
+with left_chart:
+    st.plotly_chart(
+        distribution_chart(dataframe, selected_metric),
+        width="stretch",
+    )
+with right_table:
+    st.dataframe(
+        dataframe[numeric_columns]
+        .apply(pd.to_numeric, errors="coerce")
+        .describe()
+        .T,
+        width="stretch",
+    )
+
+if len(numeric_columns) >= 2:
+    st.plotly_chart(
+        correlation_chart(dataframe, numeric_columns),
+        width="stretch",
+    )
+else:
+    st.info(
+        "Map at least two numeric columns to display a correlation matrix."
+    )
