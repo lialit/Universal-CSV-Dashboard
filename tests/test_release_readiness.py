@@ -1,9 +1,11 @@
 from pathlib import Path
+import subprocess
 
 from scripts.release_readiness import (
     FAIL,
     PASS,
     WARN,
+    _tracked_files,
     audit_repository,
     report_to_markdown,
 )
@@ -195,14 +197,38 @@ def test_tracked_artifacts_are_detected(tmp_path: Path) -> None:
     assert check.status == PASS
 
 
+def test_unrelated_git_context_uses_filesystem_scan(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    value = "abcd" * 4
+    write(tmp_path / "config.py", f'api_key = "{value}"\n')
+
+    def unrelated_repository(command, **kwargs):
+        return subprocess.CompletedProcess(
+            command,
+            returncode=0,
+            stdout=str(tmp_path.parent),
+            stderr="",
+        )
+
+    monkeypatch.setattr(
+        "scripts.release_readiness.subprocess.run",
+        unrelated_repository,
+    )
+
+    assert Path("config.py") in _tracked_files(tmp_path)
+
+
 def test_secret_like_file_is_detected(tmp_path: Path) -> None:
     complete_fixture(tmp_path)
-    write(tmp_path / ".env", 'API_KEY="abcdefghijklmnop"\n')
+    value = "abcd" * 4
+    write(tmp_path / ".env", f'API_KEY="{value}"\n')
 
     # Simulate a tracked file by using a normal filename in a non-Git fixture.
     write(
         tmp_path / "config.py",
-        'api_key = "abcdefghijklmnop"\n',
+        f'api_key = "{value}"\n',
     )
     report = audit_repository(tmp_path)
     check = next(
