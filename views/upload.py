@@ -36,6 +36,13 @@ render_header(
     "prepare a dashboard configuration automatically.",
 )
 
+st.info(
+    "**Local-first privacy:** the CSV is processed in this Streamlit "
+    "session and is not sent to an external AI or analytics service. "
+    "Downloaded PDF and Excel files become separate copies that you "
+    "control and should review before sharing."
+)
+
 uploaded_file = st.file_uploader(
     "Upload CSV",
     type=["csv"],

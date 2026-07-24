@@ -7,6 +7,11 @@ import re
 import subprocess
 from typing import Iterable
 
+try:
+    from scripts.security_review import SecurityReview, audit_security
+except ModuleNotFoundError:
+    from security_review import SecurityReview, audit_security
+
 
 PASS = "PASS"
 WARN = "WARN"
@@ -481,6 +486,66 @@ def _security_policy_check(root: Path) -> ReadinessCheck:
     )
 
 
+def _privacy_contract_check(
+    review: SecurityReview,
+) -> ReadinessCheck:
+    relevant = tuple(
+        check
+        for check in review.checks
+        if check.check_id.startswith("PRIV-")
+    )
+    failed = [
+        check.check_id
+        for check in relevant
+        if check.status == FAIL
+    ]
+    valid = bool(relevant) and not failed
+    return _check(
+        "SEC-003",
+        "Privacy and security",
+        "Local-first privacy controls",
+        PASS if valid else FAIL,
+        (
+            "Upload handling, runtime clients, error details and privacy "
+            "documentation match the local-first contract."
+            if valid
+            else "Failed privacy controls: " + ", ".join(failed)
+        ),
+        "Run python scripts/security_review.py --root . and resolve failures."
+        if not valid
+        else "",
+    )
+
+
+def _dependency_security_check(
+    review: SecurityReview,
+) -> ReadinessCheck:
+    dependency = next(
+        (
+            check
+            for check in review.checks
+            if check.check_id == "DEP-SEC-001"
+        ),
+        None,
+    )
+    valid = dependency is not None and dependency.status == PASS
+    return _check(
+        "DEP-003",
+        "Engineering",
+        "Dependency vulnerability gate",
+        PASS if valid else FAIL,
+        (
+            "A bounded pip-audit dependency and strict CI scan are configured."
+            if valid
+            else "The repository lacks a complete dependency vulnerability "
+            "gate."
+        ),
+        "Add requirements-security.txt and run pip-audit strictly in CI."
+        if not valid
+        else "",
+    )
+
+
 def _readme_scope_check(root: Path) -> ReadinessCheck:
     readme = _read(root / "README.md")
     required_terms = (
@@ -628,6 +693,7 @@ def audit_repository(
 
     root = root.resolve()
     tracked = _tracked_files(root)
+    security_review = audit_security(root)
     checks = [
         _required_documentation_check(root),
         _application_structure_check(root),
@@ -637,9 +703,11 @@ def audit_repository(
         *_ci_checks(root),
         _dependency_check(root),
         _python_support_check(root),
+        _dependency_security_check(security_review),
         _tracked_artifact_check(tracked),
         _secret_check(root, tracked),
         _security_policy_check(root),
+        _privacy_contract_check(security_review),
         _readme_scope_check(root),
         _changelog_check(root),
         _release_status_check(root),

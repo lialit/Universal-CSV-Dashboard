@@ -4,7 +4,7 @@
 
 **Baseline commit:** `68ec6cf`
 
-**Latest checkpoint:** L-02 — Engineering Trust & CI
+**Latest checkpoint:** L-03 — Security, Privacy & Dependency Review
 
 **Overall status:** **Not ready**
 
@@ -12,20 +12,20 @@
 
 | Status | Count |
 |---|---:|
-| PASS | 13 |
+| PASS | 16 |
 | WARN | 0 |
-| FAIL | 6 |
+| FAIL | 5 |
 
 The full automated test suite, including the readiness checker tests, passes:
 
 ```text
-138 passed
+145 passed
 ```
 
 This means the implemented product logic is stable under the current automated
 tests. It does **not** mean the repository is ready for a public `v1.0` release.
-The remaining failures are release engineering, repository hygiene,
-documentation, security-process and launch-asset blockers.
+The remaining failures concern public documentation, release process and final
+launch assets.
 
 ## Automated findings
 
@@ -35,15 +35,17 @@ documentation, security-process and launch-asset blockers.
 | APP-001 | Product | Core application structure | PASS | All launch-critical pages and analytical modules exist |
 | DATA-001 | Product | Safe representative sample | PASS | `sample_sales.csv` contains date, region and sales |
 | DATA-002 | Product | Varied examples | PASS | Five example CSV files are present |
-| TEST-001 | Engineering | Automated test structure | PASS | Seventeen test modules are present after L-02 |
+| TEST-001 | Engineering | Automated test structure | PASS | Eighteen test modules are present after L-03 |
 | CI-001 | Engineering | CI installs dependencies | PASS | GitHub Actions installs the bounded requirements |
 | CI-002 | Engineering | CI runs pytest | PASS | GitHub Actions executes the complete test suite |
 | CI-003 | Engineering | CI runs static checks | PASS | Ruff checks syntax-level and Pyflakes failures |
 | DEP-001 | Engineering | Dependencies bounded | PASS | Requirements have intentional lower and upper bounds |
 | DEP-002 | Engineering | Python support defined | PASS | README and CI reference Python 3.11 |
+| DEP-003 | Engineering | Dependency vulnerability gate | PASS | Strict `pip-audit` runs in CI with a bounded tool version |
 | REPO-001 | Repository | Generated artifacts untracked | PASS | Tracked `.pyc` files were removed and ignore rules hardened |
 | SEC-001 | Security | No obvious tracked secrets | PASS | No credential-like tracked values detected |
-| SEC-002 | Security | Actionable security policy | FAIL | No detailed private reporting path or handling process |
+| SEC-002 | Security | Actionable security policy | PASS | Private reporting, supported versions and response process are documented |
+| SEC-003 | Security | Local-first privacy controls | PASS | Upload flow, runtime clients, errors and privacy documentation pass review |
 | DOC-002 | Documentation | README matches shipped UI | FAIL | Analysis Assistant and Export & Share are absent |
 | REL-001 | Release | Changelog covers 0.3–0.6 | FAIL | Delivered milestones are missing from the changelog |
 | REL-002 | Release | v1.0 release-candidate status | FAIL | v1.0 is still marked as planned |
@@ -62,11 +64,19 @@ documentation, security-process and launch-asset blockers.
 4. Reused version `1.0.0-rc.1` in project, Excel and PDF metadata.
 5. Added focused Ruff rules (`E9`, `F`) without rewriting stable legacy code.
 
-### P0 — Security and release process
+### Completed in L-03 — Security and privacy
 
-1. Expand the security policy with a private reporting path.
-2. Replace the six-line release note with a repeatable release procedure.
-3. Keep v1.0 in `Planned` until all launch blockers are resolved.
+1. Added an actionable private vulnerability-reporting process.
+2. Documented uploaded-data flow, session state, temporary-file behavior,
+   exports, deployment boundaries and external-processing consent.
+3. Added a strict `pip-audit` vulnerability gate and weekly Dependabot updates.
+4. Added a deterministic local-first privacy review to CI.
+5. Added a visible privacy notice beside CSV upload.
+
+### P0 — Release process
+
+1. Replace the short release guidance with a repeatable release procedure.
+2. Keep v1.0 in `Planned` until all launch blockers are resolved.
 
 ### P1 — Public documentation
 
@@ -81,14 +91,14 @@ documentation, security-process and launch-asset blockers.
 3. Test a clean installation on the supported environment.
 4. Review keyboard navigation, focus, contrast and zoom.
 5. Measure behavior at the intended maximum CSV size.
-6. Review dependency vulnerabilities and export appearance.
+6. Review export appearance.
 
 ## Recommended launch sequence
 
 | Block | Outcome |
 |---|---|
 | L-02 | Complete — real CI, repository hygiene and version metadata |
-| L-03 | Security, privacy and dependency review |
+| L-03 | Complete — security, privacy and dependency review |
 | L-04 | README, changelog and release-document alignment |
 | L-05 | Manual UX, performance and clean-install validation |
 | L-06 | Final assets, release candidate, tag and GitHub Release |
