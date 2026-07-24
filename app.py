@@ -35,6 +35,13 @@ pages = {
             icon=":material/fact_check:",
         ),
     ],
+    "Share": [
+        st.Page(
+            "views/export.py",
+            title="Export & Share",
+            icon=":material/ios_share:",
+        ),
+    ],
     "Product": [
         st.Page(
             "views/about.py",
