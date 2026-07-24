@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import math
 from typing import Mapping
 
 import pandas as pd
+
+from app_core.quality import calculate_quality_score
 
 
 @dataclass(frozen=True)
@@ -18,6 +20,10 @@ class BusinessInsight:
     evidence: str
     limitation: str
     next_question: str
+    confidence: str = "Moderate"
+    confidence_reason: str = (
+        "Reliability context has not been calculated."
+    )
 
 
 @dataclass(frozen=True)
@@ -27,6 +33,8 @@ class BusinessInsightsReport:
     insights: tuple[BusinessInsight, ...]
     questions: tuple[str, ...]
     limitations: tuple[str, ...]
+    quality_score: float
+    quality_status: str
 
 
 def _configured_column(
@@ -52,6 +60,34 @@ def _format_number(value: float) -> str:
     if absolute >= 1_000:
         return f"{value / 1_000:.1f}K"
     return f"{value:,.2f}".rstrip("0").rstrip(".")
+
+
+def _confidence_context(
+    valid_count: int,
+    total_count: int,
+    quality_score: float,
+) -> tuple[str, str]:
+    completeness = (
+        valid_count / total_count
+        if total_count
+        else 0.0
+    )
+
+    if valid_count < 30 or completeness < 0.80 or quality_score < 60:
+        label = "Low"
+    else:
+        score = 0
+        score += 2 if valid_count >= 100 else 1
+        score += 2 if completeness >= 0.98 else 1
+        score += 2 if quality_score >= 90 else 1
+        label = "High" if score == 6 else "Moderate"
+
+    reason = (
+        f"Based on {valid_count:,} usable values "
+        f"({completeness:.1%} metric completeness) and a "
+        f"{quality_score:.1f}/100 Data Quality Score."
+    )
+    return label, reason
 
 
 def _time_insight(
@@ -314,6 +350,7 @@ def build_business_insights(
 ) -> BusinessInsightsReport:
     """Generate cautious, evidence-linked observations."""
 
+    quality = calculate_quality_score(dataframe)
     metric_column = _configured_column(
         dataframe,
         config,
@@ -329,6 +366,8 @@ def build_business_insights(
                 "A valid primary metric is required before insights can be "
                 "calculated.",
             ),
+            quality_score=quality.score,
+            quality_status=quality.status,
         )
 
     date_column = _configured_column(
@@ -402,6 +441,20 @@ def build_business_insights(
             "patterns may be unstable."
         )
 
+    confidence, confidence_reason = _confidence_context(
+        valid_count=int(metric.notna().sum()),
+        total_count=len(metric),
+        quality_score=quality.score,
+    )
+    insights = [
+        replace(
+            insight,
+            confidence=confidence,
+            confidence_reason=confidence_reason,
+        )
+        for insight in insights
+    ]
+
     questions = tuple(
         dict.fromkeys(
             insight.next_question for insight in insights
@@ -417,4 +470,6 @@ def build_business_insights(
         insights=tuple(insights),
         questions=questions,
         limitations=tuple(dict.fromkeys(limitations)),
+        quality_score=quality.score,
+        quality_status=quality.status,
     )
