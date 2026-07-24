@@ -3,7 +3,16 @@ import streamlit as st
 from app_core.exports import build_excel_report
 from app_core.pdf_exports import build_pdf_report
 from app_core.project_state import project_state_to_json
-from app_core.state import FILE_NAME_KEY, require_dataset
+from app_core.report_themes import (
+    DEFAULT_REPORT_THEME,
+    REPORT_THEMES,
+    REPORT_THEME_NAMES,
+)
+from app_core.state import (
+    FILE_NAME_KEY,
+    require_dataset,
+    save_config,
+)
 from app_core.theme import render_header
 
 
@@ -41,6 +50,31 @@ summary[3].metric(
     border=True,
     width="stretch",
 )
+
+saved_theme = config.get(
+    "report_theme",
+    DEFAULT_REPORT_THEME,
+)
+theme_name = st.selectbox(
+    "Report theme",
+    options=REPORT_THEME_NAMES,
+    index=(
+        REPORT_THEME_NAMES.index(saved_theme)
+        if saved_theme in REPORT_THEME_NAMES
+        else REPORT_THEME_NAMES.index(DEFAULT_REPORT_THEME)
+    ),
+    help=(
+        "The selected preset is applied consistently to Excel and PDF "
+        "exports and saved in the reusable project file."
+    ),
+)
+st.caption(REPORT_THEMES[theme_name].description)
+if config.get("report_theme") != theme_name:
+    config = {
+        **config,
+        "report_theme": theme_name,
+    }
+    save_config(config)
 
 project_tab, excel_tab, pdf_tab = st.tabs(
     ["Saved project", "Excel workbook", "Executive PDF"]
@@ -104,6 +138,7 @@ with excel_tab:
                 dataframe,
                 config,
                 source_name,
+                theme_name,
             )
     except ValueError as error:
         st.error(str(error))
@@ -149,6 +184,7 @@ with pdf_tab:
                 dataframe,
                 config,
                 source_name,
+                theme_name,
             )
     except ValueError as error:
         st.error(str(error))
