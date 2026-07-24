@@ -7,6 +7,15 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
 
 # Streamlit cache
 .streamlit/secrets.toml
@@ -17,3 +26,7 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Local reports and temporary exports
+*.tmp
+*.log

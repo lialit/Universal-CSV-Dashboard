@@ -18,6 +18,7 @@ from app_core.quality import (
     quality_checks_table,
 )
 from app_core.report_themes import ReportTheme, get_report_theme
+from app_core.version import PRODUCT_VERSION
 
 
 EXCEL_MAX_DATA_ROWS = 1_048_575
@@ -207,7 +208,9 @@ def _build_overview(
     worksheet["F4"] = "Yes"
     worksheet["E5"] = "Report theme"
     worksheet["F5"] = theme.name
-    for cell in ("E3", "E4", "E5"):
+    worksheet["E6"] = "Product version"
+    worksheet["F6"] = PRODUCT_VERSION
+    for cell in ("E3", "E4", "E5", "E6"):
         worksheet[cell].font = Font(
             bold=True,
             color=theme.text,

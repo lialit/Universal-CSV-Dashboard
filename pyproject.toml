@@ -1,0 +1,9 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+# L-02 introduces a stable baseline without rewriting legacy formatting.
+# E9 catches syntax-level failures; F catches undefined names, broken imports
+# and other Pyflakes errors. The rule set can expand incrementally.
+select = ["E9", "F"]
