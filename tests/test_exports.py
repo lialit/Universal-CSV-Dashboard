@@ -9,6 +9,7 @@ from app_core.exports import (
     build_excel_report,
     validate_export_dimensions,
 )
+from app_core.report_themes import REPORT_THEMES
 
 
 def sample_dataframe() -> pd.DataFrame:
@@ -34,11 +35,12 @@ def sample_config() -> dict:
     }
 
 
-def workbook():
+def workbook(theme_name="Corporate"):
     content = build_excel_report(
         sample_dataframe(),
         sample_config(),
         "sample.csv",
+        theme_name,
     )
     return load_workbook(BytesIO(content), data_only=False)
 
@@ -114,4 +116,22 @@ def test_excel_row_limit_fails_with_readable_error():
         validate_export_dimensions(
             EXCEL_MAX_DATA_ROWS + 1,
             4,
+        )
+
+
+def test_all_report_themes_are_applied_to_workbook():
+    for theme_name, theme in REPORT_THEMES.items():
+        result = workbook(theme_name)
+        overview = result["Overview"]
+        data = result["Data"]
+
+        assert overview["F5"].value == theme_name
+        assert overview["A1"].fill.fgColor.rgb.endswith(
+            theme.title_background
+        )
+        assert overview["A1"].font.color.rgb.endswith(
+            theme.title_text
+        )
+        assert data["A2"].fill.fgColor.rgb.endswith(
+            theme.surface
         )
