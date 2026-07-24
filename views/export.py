@@ -2,6 +2,7 @@ import streamlit as st
 
 from app_core.exports import build_excel_report
 from app_core.pdf_exports import build_pdf_report
+from app_core.project_state import project_state_to_json
 from app_core.state import FILE_NAME_KEY, require_dataset
 from app_core.theme import render_header
 
@@ -36,14 +37,50 @@ summary[2].metric(
 )
 summary[3].metric(
     "Formats",
-    "Excel + PDF",
+    "Project + Excel + PDF",
     border=True,
     width="stretch",
 )
 
-excel_tab, pdf_tab = st.tabs(
-    ["Excel workbook", "Executive PDF"]
+project_tab, excel_tab, pdf_tab = st.tabs(
+    ["Saved project", "Excel workbook", "Executive PDF"]
 )
+
+with project_tab:
+    st.subheader("Reusable project state")
+    st.markdown(
+        """
+- Saves the selected fields, aggregation, KPI and chart configuration.
+- Records the source filename, schema, data types and row count.
+- Includes product and project format versions for reproducibility.
+- Reopens safely against a newly uploaded CSV and reports schema changes.
+"""
+    )
+    st.success(
+        "The project file contains configuration and schema metadata only. "
+        "It does not contain the CSV rows."
+    )
+    project_json = project_state_to_json(
+        dataframe,
+        config,
+        source_name,
+    )
+    project_name = (
+        source_name.rsplit(".", 1)[0]
+        + "_dashboard_project.json"
+    )
+    st.download_button(
+        "Download saved project",
+        data=project_json,
+        file_name=project_name,
+        mime="application/json",
+        type="primary",
+        width="stretch",
+    )
+    st.caption(
+        "Keep this JSON together with the source CSV. "
+        "The source file is not modified."
+    )
 
 with excel_tab:
     st.subheader("Structured Excel analysis")
