@@ -1,13 +1,14 @@
+import json
+
 import streamlit as st
 
-from app_core.data import (
-    prepare_dataframe,
-    read_csv_file,
+from app_core.data import prepare_dataframe, read_csv_file
+from app_core.recommendations import (
+    KPI_OPTIONS,
+    recommend_analysis,
+    recommendations_table,
 )
-from app_core.smart_detection import (
-    detect_dataset,
-    detection_table,
-)
+from app_core.smart_detection import detect_dataset, detection_table
 from app_core.state import (
     get_config,
     get_dataset,
@@ -38,9 +39,7 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     try:
-        raw_dataframe = read_csv_file(
-            uploaded_file.getvalue()
-        )
+        raw_dataframe = read_csv_file(uploaded_file.getvalue())
     except ValueError as error:
         st.error(str(error))
         st.stop()
@@ -54,7 +53,6 @@ if uploaded_file is not None:
         detection = detect_dataset(raw_dataframe)
 
     st.subheader("Smart suggestions")
-
     summary_columns = st.columns(4)
     summary_columns[0].metric(
         "Date",
@@ -81,13 +79,9 @@ if uploaded_file is not None:
         width="stretch",
     )
 
-    with st.expander(
-        "Why these columns were suggested",
-        expanded=False,
-    ):
-        result_table = detection_table(detection)
+    with st.expander("Why these columns were suggested"):
         st.dataframe(
-            result_table.style.format(
+            detection_table(detection).style.format(
                 {"Confidence": "{:.0%}"}
             ),
             width="stretch",
@@ -102,7 +96,6 @@ if uploaded_file is not None:
         )
 
     columns = raw_dataframe.columns.tolist()
-
     date_column = st.selectbox(
         "Date or timestamp column",
         options=[None, *columns],
@@ -112,9 +105,7 @@ if uploaded_file is not None:
             else 0
         ),
         format_func=lambda value: (
-            "No date column"
-            if value is None
-            else value
+            "No date column" if value is None else value
         ),
     )
 
@@ -125,32 +116,24 @@ if uploaded_file is not None:
         ).columns.tolist()
         or columns
     )
-
     metric_column = st.selectbox(
         "Primary numeric metric",
         options=metric_options,
         index=(
-            metric_options.index(
-                detection.metric_column
-            )
-            if detection.metric_column
-            in metric_options
+            metric_options.index(detection.metric_column)
+            if detection.metric_column in metric_options
             else 0
         ),
     )
 
     additional_numeric_options = [
-        column
-        for column in columns
-        if column != metric_column
+        column for column in columns if column != metric_column
     ]
-
     suggested_additional = [
         column
         for column in detection.numeric_columns
         if column != metric_column
     ][:6]
-
     additional_numeric = st.multiselect(
         "Additional numeric columns",
         options=additional_numeric_options,
@@ -161,36 +144,68 @@ if uploaded_file is not None:
         "Primary category column",
         options=[None, *columns],
         index=(
-            columns.index(
-                detection.category_column
-            ) + 1
+            columns.index(detection.category_column) + 1
             if detection.category_column in columns
             else 0
         ),
         format_func=lambda value: (
-            "No category column"
-            if value is None
-            else value
+            "No category column" if value is None else value
         ),
     )
-
     aggregation = st.selectbox(
         "Default aggregation",
         options=["Sum", "Mean", "Median", "Count"],
     )
 
     numeric_columns = list(
-        dict.fromkeys(
-            [metric_column, *additional_numeric]
-        )
+        dict.fromkeys([metric_column, *additional_numeric])
     )
-
     prepared = prepare_dataframe(
         raw_dataframe,
         date_column=date_column,
         numeric_columns=numeric_columns,
     )
 
+    draft_config = {
+        "date_column": date_column,
+        "metric_column": metric_column,
+        "numeric_columns": numeric_columns,
+        "category_column": category_column,
+        "aggregation": aggregation,
+    }
+    recommendations = recommend_analysis(prepared, draft_config)
+
+    st.subheader("Dashboard composition")
+    st.caption(
+        "Recommended from the selected fields. You remain in control "
+        "and can change the final dashboard."
+    )
+
+    kpi_cards = st.multiselect(
+        "KPI cards",
+        options=KPI_OPTIONS,
+        default=recommendations.kpis,
+        max_selections=3,
+    )
+    chart_types = st.multiselect(
+        "Dashboard charts",
+        options=recommendations.available_charts,
+        default=recommendations.charts,
+        max_selections=4,
+    )
+
+    with st.expander("Why this composition was recommended"):
+        st.dataframe(
+            recommendations_table(recommendations),
+            width="stretch",
+            hide_index=True,
+        )
+
+    config_json = {
+        **draft_config,
+        "kpi_cards": kpi_cards,
+        "chart_types": chart_types,
+    }
     left, right = st.columns(2)
 
     with left:
@@ -201,30 +216,16 @@ if uploaded_file is not None:
         )
 
     with right:
-        config_json = {
-            "date_column": date_column,
-            "metric_column": metric_column,
-            "numeric_columns": numeric_columns,
-            "category_column": category_column,
-            "aggregation": aggregation,
-        }
-
         st.download_button(
             "Download configuration JSON",
-            data=__import__("json").dumps(
-                config_json,
-                indent=2,
-            ),
+            data=json.dumps(config_json, indent=2),
             file_name="dashboard_config.json",
             mime="application/json",
             width="stretch",
         )
 
     if accept_clicked:
-        save_dataset(
-            prepared,
-            uploaded_file.name,
-        )
+        save_dataset(prepared, uploaded_file.name)
         save_config(config_json)
         st.success(
             "Configuration saved. Open "
