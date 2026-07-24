@@ -89,7 +89,7 @@ Optional capabilities are included only if validated:
 
 ### Documentation and open source
 
-- [ ] README matches shipped behavior
+- [x] README matches shipped behavior
 - [ ] `START_HERE.md` installation verified
 - [ ] Product documents remain aligned
 - [ ] Architecture and contribution docs are current

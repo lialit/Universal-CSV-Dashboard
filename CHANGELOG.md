@@ -57,6 +57,171 @@ have a stable `1.0` release.
 - Added product decision guardrails and success measures.
 - Added explicit boundaries describing what the product is not.
 
+### Security
+
+- Documented the local upload, session, export and hosted-deployment data flow.
+- Added a private vulnerability-reporting policy.
+- Added automated local-first privacy-contract checks.
+- Added strict dependency vulnerability auditing with `pip-audit`.
+- Added weekly dependency and monthly GitHub Actions update checks through
+  Dependabot.
+- Upgraded `pytest` to `9.0.3` or later to resolve `PYSEC-2026-1845`.
+
+---
+
+## [0.6.0] — Assist
+
+> Delivered to `main` on 2026-07-24 and included in `1.0.0-rc.1`. This
+> milestone was not published as a separate Git tag.
+
+### Added
+
+- Local deterministic Analysis Assistant with supported questions for:
+  - the first facts to review;
+  - primary-metric performance;
+  - change over time;
+  - leading segment contribution;
+  - unusual values;
+  - numeric relationships;
+  - analysis reliability.
+- Availability explanations when the configured dataset cannot support a
+  question.
+- Evidence-linked answers with confidence, limitations, next steps and a
+  visible calculation method.
+- Adaptive follow-up questions derived from material insights and quality
+  context.
+- Transparent Calculation Explainer with aggregation, fields, steps,
+  assumptions and limitations.
+- Evidence-based summary drafts for different audiences and detail levels.
+- Markdown and plain-text summary export.
+- Pre-share Claim Guard for unsupported causality, predictions, certainty,
+  directive recommendations and invented business context.
+- Automated tests for assistant answers, follow-up questions, calculation
+  explanations, summary drafts and claim safety.
+
+### Privacy
+
+- Kept the complete assistant workflow local and deterministic.
+- Added explicit interface guidance that CSV values are not sent to an external
+  AI service.
+- Preserved a fully useful non-assistant workflow.
+
+### Product outcome
+
+The application gained guided analysis without making its numeric claims
+opaque or introducing external data transfer.
+
+---
+
+## [0.5.0] — Share
+
+> Delivered to `main` on 2026-07-24 and included in `1.0.0-rc.1`. This
+> milestone was not published as a separate Git tag.
+
+### Added
+
+- Reusable saved-project JSON containing configuration, schema and version
+  metadata without CSV rows.
+- Safe project-state loading with schema-change validation and recovery
+  guidance.
+- Structured Excel report containing:
+  - overview and KPI formulas;
+  - Data Quality Score details;
+  - evidence-linked business insights;
+  - selected configuration;
+  - the prepared dataset;
+  - methodology and responsible-use notes.
+- Three-page executive PDF with KPI context, quality evidence, insights,
+  suggested questions, methodology and limitations.
+- Light, Corporate and Dark report themes shared by Excel and PDF exports.
+- Report-theme persistence in saved project state.
+- Safe filenames and visible warnings about row-level data in Excel exports.
+- Automated project-state, Excel, PDF and report-theme tests.
+
+### Changed
+
+- Replaced the basic de-duplicated CSV-only sharing path with traceable project,
+  workbook and executive-report outputs.
+- Kept the source CSV unchanged during every export.
+
+### Product outcome
+
+Users can preserve or share an analysis while retaining its configuration,
+quality context, evidence and methodological limitations.
+
+---
+
+## [0.4.0] — Explain
+
+> Delivered to `main` on 2026-07-24 and included in `1.0.0-rc.1`. This
+> milestone was not published as a separate Git tag.
+
+### Added
+
+- Business Insights page with deterministic observations for:
+  - material period changes;
+  - leading category contribution;
+  - unusual values using the `1.5×IQR` screening rule;
+  - material Pearson correlations.
+- Separate observation, interpretation, evidence, limitation and next-question
+  fields for each insight.
+- Confidence labels derived from usable values, metric completeness and the
+  Data Quality Score.
+- Quality-aware limitations that travel with affected insights.
+- Automated calculation and confidence tests for representative analytical
+  cases.
+
+### Changed
+
+- Renamed the analytical navigation from generic Data Analysis to
+  Business Insights.
+- Made correlation language explicitly non-causal.
+- Used progressive disclosure so supporting evidence remains inspectable
+  without overwhelming the first view.
+
+### Product outcome
+
+The dashboard moved beyond isolated charts to reproducible observations whose
+evidence and limits can be inspected.
+
+---
+
+## [0.3.0] — Understand
+
+> Delivered to `main` on 2026-07-24 and included in `1.0.0-rc.1`. This
+> milestone was not published as a separate Git tag.
+
+### Added
+
+- Transparent Data Quality Score combining:
+  - completeness at a 50% weight;
+  - duplicate-free rows at a 30% weight;
+  - type validity at a 20% weight.
+- Score breakdown with issue counts, checked evidence and recommended actions.
+- Column-level missing-value and type-validity details.
+- Rule-based executive summary separating verified facts, interpretations,
+  limitations and recommended next steps.
+- Automatic KPI and chart recommendations based on configured field roles.
+- Editable dashboard composition with a visible explanation for each
+  recommendation.
+- Empty-state guidance when no missing values or supported patterns are found.
+- Automated tests for quality scoring, executive summaries and analysis
+  recommendations.
+
+### Changed
+
+- Updated Executive Overview to prioritize recommended KPIs and
+  business-readable evidence.
+- Replaced an empty zero-value missing-data chart with a clear success state.
+- Clarified that technical quality does not prove accuracy, lack of bias or
+  suitability for a business decision.
+
+### Product outcome
+
+A compatible CSV now produces a useful first view with transparent quality
+evidence and deterministic executive context while keeping every important
+selection editable.
+
 ---
 
 ## [0.2.0] — Smart Detection
@@ -172,4 +337,3 @@ Before a formal release:
 4. verify installation and tests;
 5. update release notes;
 6. preserve previous entries without rewriting history.
-
