@@ -1,9 +1,10 @@
 # v0.5 — Share
 
-> **Status: Planned — not released**
+> **Status: Delivered to `main` — not separately tagged**
 
-This document describes intended direction. Scope depends on the validated
-output of `v0.3 Understand` and `v0.4 Explain`.
+This is the historical scope record for the Share milestone. Checked items are
+included in `1.0.0-rc.1`; unchecked items were deferred. No standalone `v0.5`
+tag or GitHub Release was published.
 
 ## Release outcome
 
@@ -37,34 +38,34 @@ unsupported certainty.
 
 ### Saved work
 
-- [ ] Import saved dashboard configuration
-- [ ] Validate configuration against the current file
-- [ ] Detect renamed or missing columns
+- [x] Import saved dashboard configuration
+- [x] Validate configuration against the current file
+- [x] Detect renamed or missing columns
 - [ ] Save selected filters and display options
-- [ ] Define a minimal project-state format
+- [x] Define a minimal project-state format
 
 ### PDF reporting
 
-- [ ] Executive summary page
-- [ ] KPI and primary-chart pages
-- [ ] Data-quality summary
-- [ ] Methodology and assumptions
-- [ ] Generation timestamp and product version
+- [x] Executive summary page
+- [x] KPI snapshot
+- [x] Data-quality summary
+- [x] Methodology and assumptions
+- [x] Generation timestamp and product version
 - [ ] Accessible page structure
 
 ### Excel export
 
-- [ ] Summary worksheet
-- [ ] Filtered-data worksheet
-- [ ] Data-quality worksheet
-- [ ] Configuration worksheet
-- [ ] Safe and descriptive filenames
+- [x] Summary worksheet
+- [x] Prepared-data worksheet
+- [x] Data-quality worksheet
+- [x] Configuration worksheet
+- [x] Safe and descriptive filenames
 
 ### Branding
 
 - [ ] Optional report logo
-- [ ] Controlled accent colors
-- [ ] Light, dark and corporate presentation presets
+- [x] Controlled accent colors
+- [x] Light, dark and corporate presentation presets
 - [ ] Clear distinction between product and customer branding
 
 ## Non-goals
@@ -105,11 +106,12 @@ This release does not include:
 
 ### Privacy and engineering
 
-- [ ] Confirm saved state does not contain unintended raw data
-- [ ] Confirm temporary files are cleaned safely
-- [ ] Automated tests pass
-- [ ] Installation and export dependencies documented
-- [ ] Changelog and final screenshots updated
+- [x] Confirm saved state does not contain unintended raw data
+- [x] Confirm the application does not create row-level temporary export files
+- [x] Automated tests pass
+- [x] Installation and export dependencies documented
+- [x] Changelog updated
+- [ ] Final screenshots updated
 
 ## Known risks
 
@@ -133,4 +135,3 @@ can identify how the result was produced and which limitations apply.
 | Git tag | — |
 | GitHub Release | — |
 | Migration required | To be determined |
-

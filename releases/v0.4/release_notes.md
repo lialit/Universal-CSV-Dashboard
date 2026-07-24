@@ -1,9 +1,10 @@
 # v0.4 — Explain
 
-> **Status: Planned — not released**
+> **Status: Delivered to `main` — not separately tagged**
 
-This document describes intended direction. Scope may change after the
-`v0.3 Understand` release is validated.
+This is the historical scope record for the Explain milestone. Checked items
+are included in `1.0.0-rc.1`; unchecked items were deferred. No standalone
+`v0.4` tag or GitHub Release was published.
 
 ## Release outcome
 
@@ -37,34 +38,34 @@ business context.
 
 ### Evidence-based observations
 
-- [ ] Period-over-period comparisons
-- [ ] Trend-change detection
-- [ ] Category contribution analysis
+- [x] Period-over-period comparisons
+- [x] Trend-change detection
+- [x] Category contribution analysis
 - [ ] Distribution-shift observations
-- [ ] Outlier context
-- [ ] Quality-aware observation filtering
+- [x] Outlier context
+- [x] Quality-aware observation filtering
 
 ### Explanations
 
-- [ ] Plain-language chart descriptions
-- [ ] Calculation and field references
-- [ ] Visible comparison periods
-- [ ] Confidence and limitation labels
-- [ ] “Why am I seeing this?” details
+- [x] Plain-language analytical descriptions
+- [x] Calculation and field references
+- [x] Visible comparison periods
+- [x] Confidence and limitation labels
+- [x] “Why am I seeing this?” details
 
 ### Next-question guidance
 
-- [ ] Suggest relevant follow-up views
-- [ ] Identify questions supported by available fields
-- [ ] Identify questions the dataset cannot answer
-- [ ] Separate investigation prompts from recommendations
+- [x] Suggest relevant follow-up views
+- [x] Identify questions supported by available fields
+- [x] Identify questions the dataset cannot answer
+- [x] Separate investigation prompts from recommendations
 
 ### Insight presentation
 
-- [ ] Evidence-linked insight cards
-- [ ] Visual distinction between fact and interpretation
-- [ ] Consistent language across pages and exports
-- [ ] Prioritization without hiding lower-ranked observations
+- [x] Evidence-linked insight cards
+- [x] Visual distinction between fact and interpretation
+- [x] Consistent language across pages and exports
+- [x] Prioritization without hiding lower-ranked observations
 
 ## Non-goals
 
@@ -106,9 +107,9 @@ This release does not include:
 
 - [ ] Confirm insight cards do not overwhelm the overview
 - [ ] Confirm details are progressively disclosed
-- [ ] Automated tests pass
+- [x] Automated tests pass
 - [ ] Performance reviewed
-- [ ] Documentation and changelog updated
+- [x] Documentation and changelog updated
 
 ## Known risks
 
@@ -132,4 +133,3 @@ and interpreted with its relevant limitations.
 | Git tag | — |
 | GitHub Release | — |
 | Migration required | To be determined |
-

@@ -1,9 +1,11 @@
 # v0.6 — Assist
 
-> **Status: Exploratory — not committed for release**
+> **Status: Local deterministic scope delivered to `main` — not separately tagged**
 
-This stage will proceed only if guided analysis creates measurable value beyond
-deterministic summaries and can preserve privacy, evidence and user control.
+This is the historical scope and decision record for the Assist milestone.
+Checked local deterministic items are included in `1.0.0-rc.1`. External model
+providers remain deferred. No standalone `v0.6` tag or GitHub Release was
+published.
 
 ## Exploration outcome
 
@@ -28,36 +30,36 @@ committed release.
 
 ### Dataset questions
 
-- [ ] Explain the selected metric and aggregation
-- [ ] Answer questions from deterministic computed results
-- [ ] Identify unsupported questions
-- [ ] Link answers to source fields and filters
-- [ ] Show the calculation behind numeric claims
+- [x] Explain the selected metric and aggregation
+- [x] Answer questions from deterministic computed results
+- [x] Identify unsupported questions
+- [x] Link answers to source fields and filters
+- [x] Show the calculation behind numeric claims
 
 ### Guided investigation
 
-- [ ] Suggest next analytical questions
-- [ ] Explain data-quality limitations
-- [ ] Compare available segments or periods
-- [ ] Draft a summary for user review
-- [ ] Refuse causal or predictive claims without supporting methods
+- [x] Suggest next analytical questions
+- [x] Explain data-quality limitations
+- [x] Compare available segments or periods
+- [x] Draft a summary for user review
+- [x] Refuse or flag causal and predictive claims without supporting methods
 
 ### Provider and privacy model
 
-- [ ] Evaluate a fully local path
+- [x] Evaluate and implement a fully local deterministic path
 - [ ] Evaluate optional external providers
-- [ ] Show data-handling information before use
-- [ ] Minimize transmitted data
+- [x] Show data-handling information before use
+- [x] Keep the delivered path free of transmitted CSV data
 - [ ] Add explicit opt-in
 - [ ] Add usage and cost controls
 
 ### Evidence model
 
-- [ ] Require source-linked numeric claims
-- [ ] Separate calculation from generated wording
-- [ ] Display uncertainty
-- [ ] Preserve the non-AI result beside the answer
-- [ ] Log enough metadata for reproducibility without exposing sensitive data
+- [x] Require source-linked numeric claims
+- [x] Separate calculation from interpretation
+- [x] Display uncertainty
+- [x] Preserve deterministic evidence beside the answer
+- [x] Keep method and field metadata visible without persisting sensitive rows
 
 ## Non-goals
 
@@ -99,7 +101,9 @@ This stage will not create:
 
 ### Decision gate
 
-Proceed toward a release only if:
+The local deterministic scope passed the evidence, privacy and control gate.
+External-provider work did not enter this release. Any future provider path
+must still prove that:
 
 - the assistant improves a defined user task;
 - evidence remains inspectable;
@@ -127,5 +131,4 @@ This section remains empty unless the exploration passes the decision gate.
 | Release date | — |
 | Git tag | — |
 | GitHub Release | — |
-| Decision | Not yet made |
-
+| Decision | Local deterministic scope accepted for `1.0.0-rc.1`; external providers deferred |

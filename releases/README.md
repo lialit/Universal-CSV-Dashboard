@@ -10,14 +10,16 @@ Universal CSV Dashboard versions.
 
 | Version | Name | Outcome | Status |
 |---|---|---|---|
-| [`v0.3`](v0.3/release_notes.md) | **Understand** | Stronger automatic interpretation of structure and quality | Next |
-| [`v0.4`](v0.4/release_notes.md) | **Explain** | Evidence-based observations with visible limitations | Planned |
-| [`v0.5`](v0.5/release_notes.md) | **Share** | Saved work and responsible report exports | Planned |
-| [`v0.6`](v0.6/release_notes.md) | **Assist** | Optional guided analysis with privacy controls | Exploratory |
-| [`v1.0`](v1.0/release_notes.md) | **Launch** | Stable, documented and dependable public product | Planned |
+| [`v0.3`](v0.3/release_notes.md) | **Understand** | Transparent quality scoring and executive interpretation | Delivered to `main`; untagged |
+| [`v0.4`](v0.4/release_notes.md) | **Explain** | Evidence-based observations with visible limitations | Delivered to `main`; untagged |
+| [`v0.5`](v0.5/release_notes.md) | **Share** | Saved work and responsible report exports | Delivered to `main`; untagged |
+| [`v0.6`](v0.6/release_notes.md) | **Assist** | Local deterministic guidance with privacy controls | Delivered to `main`; untagged |
+| [`v1.0`](v1.0/release_notes.md) | **Launch** | Stable, documented and dependable public product | Release candidate |
 
-The currently available product foundation is represented by the `0.1` and
-`0.2` sections of [`CHANGELOG.md`](../CHANGELOG.md).
+The current `1.0.0-rc.1` codebase includes the delivered `0.1–0.6`
+capabilities recorded in [`CHANGELOG.md`](../CHANGELOG.md). Versions
+`0.3–0.6` were development milestones and were not published as standalone
+Git tags.
 
 ## Source-of-truth rules
 
@@ -37,6 +39,9 @@ When a capability ships:
 3. add the release date;
 4. verify that `ROADMAP.md` reflects the new current stage;
 5. create the Git tag and GitHub Release only after validation is complete.
+
+The executable validation, publication and rollback checklist is maintained in
+[`docs/10_RELEASE_PROCESS.md`](../docs/10_RELEASE_PROCESS.md).
 
 ## Status definitions
 
@@ -73,4 +78,3 @@ Version directories may contain:
 
 Do not add placeholder media to published release notes. Assets should represent
 the version being released.
-

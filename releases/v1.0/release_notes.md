@@ -1,9 +1,12 @@
 # v1.0 — Launch
 
-> **Status: Planned — not released**
+> **Status: Release candidate — validation in progress, not released**
 
-`v1.0` is a stability and trust milestone. It is not a promise that every
-exploratory feature will be included.
+The frozen candidate version is `1.0.0-rc.1`.
+
+`v1.0` is a stability and trust milestone. It includes the validated local
+workflow delivered through the `0.3–0.6` development milestones; it does not
+promise that every exploratory or external-provider capability is included.
 
 ## Release outcome
 
@@ -27,28 +30,37 @@ Version `1.0` means:
 
 It does not mean that the product has every planned feature.
 
-## Candidate product scope
+## Frozen candidate scope
 
-The final scope will be selected from validated pre-`1.0` work.
+Only launch-blocking fixes may enter `1.0.0-rc.1`. New product capabilities
+move to a later version.
 
 Required core capabilities:
 
-- [ ] Reliable CSV upload and parsing
-- [ ] Explainable, editable field detection
-- [ ] Consistent KPI calculations
-- [ ] Useful time, category and distribution views
-- [ ] Visible data-quality checks
-- [ ] Clear unsupported-input guidance
-- [ ] Responsible exports included in the final scope
-- [ ] Complete local-first workflow
+- [x] Reliable CSV upload and parsing
+- [x] Explainable, editable field detection
+- [x] Consistent KPI calculations
+- [x] Useful time, category, distribution and correlation views
+- [x] Transparent Data Quality Score and issue details
+- [x] Rule-based executive summary
+- [x] Evidence-linked Business Insights
+- [x] Local deterministic Analysis Assistant
+- [x] Calculation Explainer and evidence-based summary drafts
+- [x] Pre-share Claim Guard
+- [x] Saved project workflow with schema validation
+- [x] Structured Excel and executive PDF reporting
+- [x] Light, Corporate and Dark report themes
+- [x] Complete local-first workflow
 
-Optional capabilities are included only if validated:
+### Explicitly excluded
 
-- [ ] Rule-based executive summary
-- [ ] Evidence-linked explanations
-- [ ] Saved configuration workflow
-- [ ] PDF or Excel reporting
-- [ ] Guided analysis
+- external AI or analytics providers;
+- hidden upload or transfer of CSV values;
+- cloud project synchronization;
+- real-time collaboration;
+- scheduled or emailed reports;
+- predictive modeling or causal inference;
+- autonomous business decisions.
 
 ## Launch criteria
 
@@ -58,17 +70,17 @@ Optional capabilities are included only if validated:
 - [ ] Field-detection corrections reviewed
 - [ ] Time to first useful understanding measured
 - [ ] Empty, warning and error states validated
-- [ ] Known analytical limitations documented
+- [x] Known analytical limitations documented
 
 ### Engineering
 
-- [ ] Supported Python versions defined
-- [ ] Automated test suite passes
-- [ ] CI checks are stable
+- [x] Supported Python versions defined
+- [x] Automated test suite passes
+- [x] CI checks are stable
 - [ ] Clean installation succeeds
-- [ ] Dependencies are pinned or bounded intentionally
+- [x] Dependencies are pinned or bounded intentionally
 - [ ] Performance is reviewed for the supported file size
-- [ ] Upgrade and compatibility policy is documented
+- [x] Upgrade and compatibility policy is documented
 
 ### Privacy and security
 
@@ -91,17 +103,17 @@ Optional capabilities are included only if validated:
 
 - [x] README matches shipped behavior
 - [ ] `START_HERE.md` installation verified
-- [ ] Product documents remain aligned
+- [x] Product documents remain aligned
 - [ ] Architecture and contribution docs are current
 - [ ] License and attribution confirmed
 - [ ] Issue and pull-request templates reviewed
-- [ ] Release notes and changelog completed
+- [x] Release notes and changelog completed
 
 ### Release assets
 
 - [ ] Final screenshots
 - [ ] Verified demo GIF
-- [ ] Open Graph image
+- [x] Open Graph image
 - [ ] GitHub Release description
 - [ ] Version tag
 - [ ] Announcement copy
@@ -130,13 +142,9 @@ Optional capabilities are included only if validated:
 
 ## Release-candidate process
 
-1. Freeze the `v1.0` scope.
-2. Move remaining work out of the launch milestone.
-3. Complete product, engineering and documentation validation.
-4. Publish a release candidate.
-5. Resolve launch-blocking defects.
-6. Verify final assets and version metadata.
-7. Publish the tag, GitHub Release and changelog entry.
+The complete executable procedure, including clean-install validation, pytest,
+tagging, publication and rollback, is maintained in
+[`docs/10_RELEASE_PROCESS.md`](../../docs/10_RELEASE_PROCESS.md).
 
 ## Exit criteria
 
@@ -151,5 +159,5 @@ support.
 | Release date | — |
 | Git tag | — |
 | GitHub Release | — |
-| Supported Python | To be defined |
-| Migration required | To be determined |
+| Supported Python | Python 3.11 |
+| Migration required | No migration from a published version; saved project compatibility is validated when loaded |
