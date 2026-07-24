@@ -14,6 +14,16 @@ def render_insight_card(insight) -> None:
         st.markdown(f"**Observation:** {insight.observation}")
         st.write(insight.interpretation)
         st.caption(f"Evidence: {insight.evidence}")
+        confidence_message = (
+            f"{insight.confidence} confidence — "
+            f"{insight.confidence_reason}"
+        )
+        if insight.confidence == "High":
+            st.success(confidence_message)
+        elif insight.confidence == "Moderate":
+            st.info(confidence_message)
+        else:
+            st.warning(confidence_message)
         st.warning(f"Limitation: {insight.limitation}")
 
 
@@ -48,7 +58,7 @@ insight_config = {
 }
 report = build_business_insights(dataframe, insight_config)
 
-summary_columns = st.columns(3)
+summary_columns = st.columns(4)
 summary_columns[0].metric(
     "Insights detected",
     len(report.insights),
@@ -62,6 +72,13 @@ summary_columns[1].metric(
     width="stretch",
 )
 summary_columns[2].metric(
+    "Data quality",
+    f"{report.quality_score:.1f}/100",
+    help=report.quality_status,
+    border=True,
+    width="stretch",
+)
+summary_columns[3].metric(
     "Method",
     "Rule-based",
     border=True,
@@ -94,7 +111,9 @@ if report.limitations:
 
 st.caption(
     "Insights are deterministic screening rules. They describe patterns in "
-    "the selected data and do not establish causes or business impact."
+    "the selected data and do not establish causes or business impact. "
+    "Confidence labels describe evidence reliability, not statistical "
+    "certainty."
 )
 
 st.subheader("Explore the evidence")
