@@ -12,6 +12,14 @@ from app_core.calculation_explainer import (
     explain_calculation,
 )
 from app_core.state import require_dataset
+from app_core.summary_drafts import (
+    AUDIENCES,
+    LENGTHS,
+    build_summary_draft,
+    summary_draft_to_markdown,
+    summary_draft_to_text,
+    validate_summary_draft,
+)
 from app_core.theme import render_header
 
 
@@ -209,6 +217,89 @@ with st.expander("How was this calculated?", expanded=False):
         st.markdown("#### Calculation limitations")
         for limitation in calculation.limitations:
             st.markdown(f"- {limitation}")
+
+with st.expander("Draft an evidence-based summary", expanded=False):
+    draft_control_column, detail_control_column = st.columns(2)
+    with draft_control_column:
+        draft_audience = st.selectbox(
+            "Audience",
+            AUDIENCES,
+            key=f"summary_audience_{selected_metric}",
+        )
+    with detail_control_column:
+        draft_length = st.selectbox(
+            "Detail level",
+            LENGTHS,
+            index=LENGTHS.index("Standard"),
+            key=f"summary_length_{selected_metric}",
+        )
+
+    draft = build_summary_draft(
+        dataframe,
+        assistant_config,
+        audience=draft_audience,
+        length=draft_length,
+    )
+    validation_issues = validate_summary_draft(draft)
+    markdown_draft = summary_draft_to_markdown(draft)
+    text_draft = summary_draft_to_text(draft)
+
+    draft_metrics = st.columns(4)
+    draft_metrics[0].metric(
+        "Evidence-linked claims",
+        draft.evidence_count,
+        border=True,
+        width="stretch",
+    )
+    draft_metrics[1].metric(
+        "Interpretations",
+        len(draft.interpretations),
+        border=True,
+        width="stretch",
+    )
+    draft_metrics[2].metric(
+        "Limitations",
+        len(draft.limitations),
+        border=True,
+        width="stretch",
+    )
+    draft_metrics[3].metric(
+        "Validation",
+        "Ready" if not validation_issues else "Review",
+        border=True,
+        width="stretch",
+    )
+
+    if validation_issues:
+        st.warning(
+            "The draft needs review before sharing: "
+            + " ".join(validation_issues)
+        )
+    else:
+        st.success(
+            "Every included claim has evidence and all interpretations "
+            "retain confidence and limitation context."
+        )
+
+    st.markdown(markdown_draft)
+
+    markdown_column, text_column = st.columns(2)
+    with markdown_column:
+        st.download_button(
+            "Download Markdown",
+            data=markdown_draft.encode("utf-8"),
+            file_name="evidence_based_summary.md",
+            mime="text/markdown",
+            width="stretch",
+        )
+    with text_column:
+        st.download_button(
+            "Download plain text",
+            data=text_draft.encode("utf-8"),
+            file_name="evidence_based_summary.txt",
+            mime="text/plain",
+            width="stretch",
+        )
 
 follow_ups = suggest_follow_up_questions(
     dataframe,
