@@ -13,11 +13,11 @@ from app_core.configuration import (
     configuration_for_export,
     validate_configuration,
 )
+from app_core.version import PRODUCT_VERSION
 
 
 PROJECT_FORMAT = "universal_csv_dashboard_project"
 PROJECT_SCHEMA_VERSION = 1
-PRODUCT_VERSION = "0.5-dev"
 
 
 @dataclass(frozen=True)

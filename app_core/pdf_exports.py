@@ -27,6 +27,7 @@ from app_core.insights import build_business_insights
 from app_core.metrics import summarize_metric
 from app_core.quality import calculate_quality_score
 from app_core.report_themes import ReportTheme, get_report_theme
+from app_core.version import PRODUCT_VERSION
 
 
 def _color(value: str):
@@ -285,10 +286,16 @@ def _metadata_table(
             ),
         ],
         [
-            Paragraph("<b>Report theme</b>", styles["body"]),
-            Paragraph(_safe(theme.name), styles["body"]),
+            Paragraph("<b>Product version</b>", styles["body"]),
+            Paragraph(_safe(PRODUCT_VERSION), styles["body"]),
             Paragraph("<b>Export type</b>", styles["body"]),
             Paragraph("Executive PDF", styles["body"]),
+        ],
+        [
+            Paragraph("<b>Report theme</b>", styles["body"]),
+            Paragraph(_safe(theme.name), styles["body"]),
+            Paragraph("<b>Generated locally</b>", styles["body"]),
+            Paragraph("Yes", styles["body"]),
         ],
     ]
     table = Table(
