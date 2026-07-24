@@ -68,6 +68,7 @@ def complete_fixture(root: Path) -> None:
         (
             "python-version: '3.11'\n"
             "- run: python -m pip install -r requirements.txt\n"
+            "- run: python -m pip_audit -r requirements.txt --strict\n"
             "- run: python -m pytest -q\n"
             "- run: ruff check .\n"
         ),
@@ -75,6 +76,30 @@ def complete_fixture(root: Path) -> None:
     write(
         root / "requirements.txt",
         "streamlit>=1.59,<2\npandas>=2.2,<3\npytest>=8,<9\n",
+    )
+    write(
+        root / "requirements-security.txt",
+        "pip-audit>=2.9,<3\n",
+    )
+    write(
+        root / "views/upload.py",
+        "payload = uploaded_file.getvalue()\n",
+    )
+    write(
+        root / "app_core/data.py",
+        "from io import BytesIO\nbuffer = BytesIO(file_bytes)\n",
+    )
+    write(
+        root / ".streamlit/config.toml",
+        '[client]\nshowErrorDetails = "none"\n',
+    )
+    write(
+        root / "docs/12_SECURITY_PRIVACY.md",
+        (
+            "local-first temporary session state external processing "
+            "Excel security "
+        )
+        * 70,
     )
     write(
         root / "sample_data/sample_sales.csv",

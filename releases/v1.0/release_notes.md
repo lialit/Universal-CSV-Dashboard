@@ -72,12 +72,12 @@ Optional capabilities are included only if validated:
 
 ### Privacy and security
 
-- [ ] Local data flow documented
-- [ ] Temporary-file handling reviewed
-- [ ] Export behavior reviewed
-- [ ] Dependency vulnerabilities reviewed
-- [ ] Optional external processing requires explicit consent
-- [ ] Security-reporting path documented
+- [x] Local data flow documented
+- [x] Temporary-file handling reviewed
+- [x] Export behavior reviewed
+- [x] Dependency vulnerabilities reviewed
+- [x] Optional external processing requires explicit consent
+- [x] Security-reporting path documented
 
 ### Accessibility and UX
 
@@ -153,4 +153,3 @@ support.
 | GitHub Release | — |
 | Supported Python | To be defined |
 | Migration required | To be determined |
-
