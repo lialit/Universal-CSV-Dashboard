@@ -2,9 +2,9 @@
 
 **Audit date:** 2026-07-24
 
-**Baseline commit:** `68ec6cf`
+**Baseline commit:** `24825fa`
 
-**Latest checkpoint:** L-03 — Security, Privacy & Dependency Review
+**Latest checkpoint:** L-04A — README & Changelog Alignment
 
 **Overall status:** **Not ready**
 
@@ -12,9 +12,9 @@
 
 | Status | Count |
 |---|---:|
-| PASS | 16 |
+| PASS | 18 |
 | WARN | 0 |
-| FAIL | 5 |
+| FAIL | 3 |
 
 The full automated test suite, including the readiness checker tests, passes:
 
@@ -24,8 +24,8 @@ The full automated test suite, including the readiness checker tests, passes:
 
 This means the implemented product logic is stable under the current automated
 tests. It does **not** mean the repository is ready for a public `v1.0` release.
-The remaining failures concern public documentation, release process and final
-launch assets.
+The remaining failures concern release-candidate status, the repeatable release
+process and the final demo asset.
 
 ## Automated findings
 
@@ -46,8 +46,8 @@ launch assets.
 | SEC-001 | Security | No obvious tracked secrets | PASS | No credential-like tracked values detected |
 | SEC-002 | Security | Actionable security policy | PASS | Private reporting, supported versions and response process are documented |
 | SEC-003 | Security | Local-first privacy controls | PASS | Upload flow, runtime clients, errors and privacy documentation pass review |
-| DOC-002 | Documentation | README matches shipped UI | FAIL | Analysis Assistant and Export & Share are absent |
-| REL-001 | Release | Changelog covers 0.3–0.6 | FAIL | Delivered milestones are missing from the changelog |
+| DOC-002 | Documentation | README matches shipped UI | PASS | README includes every current navigation page and the delivered 0.3–0.6 capabilities |
+| REL-001 | Release | Changelog covers 0.3–0.6 | PASS | Understand, Explain, Share and Assist are documented as delivered, untagged milestones |
 | REL-002 | Release | v1.0 release-candidate status | FAIL | v1.0 is still marked as planned |
 | REL-003 | Release | Valid v1.0 demo GIF | FAIL | The current file is placeholder text |
 | REL-004 | Release | Canonical product version | PASS | `1.0.0-rc.1` is reused in project, Excel and PDF metadata |
@@ -73,16 +73,26 @@ launch assets.
 4. Added a deterministic local-first privacy review to CI.
 5. Added a visible privacy notice beside CSV upload.
 
+### Completed in L-04A — Public product history
+
+1. Updated README capabilities and onboarding to match the complete shipped
+   navigation.
+2. Documented Executive Overview, Business Insights, Analysis Assistant, Data
+   Quality and Export & Share without implying external AI processing.
+3. Added factual changelog sections for delivered milestones `0.3` through
+   `0.6`.
+4. Recorded that these milestones reached `main` on 2026-07-24 as part of
+   `1.0.0-rc.1` and were not published as separate Git tags.
+
 ### P0 — Release process
 
 1. Replace the short release guidance with a repeatable release procedure.
 2. Keep v1.0 in `Planned` until all launch blockers are resolved.
 
-### P1 — Public documentation
+### P1 — Release-document alignment
 
-1. Update README to match the shipped pages and 0.3–0.6 capabilities.
-2. Add accurate changelog entries for Understand, Explain, Share and Assist.
-3. Align release notes and roadmap only after scope is frozen.
+1. Freeze the v1.0 scope.
+2. Align release notes, roadmap and Release Hub with the frozen scope.
 
 ### P1 — Launch assets and manual validation
 
@@ -99,7 +109,7 @@ launch assets.
 |---|---|
 | L-02 | Complete — real CI, repository hygiene and version metadata |
 | L-03 | Complete — security, privacy and dependency review |
-| L-04 | README, changelog and release-document alignment |
+| L-04 | In progress — README and changelog aligned; scope and release documents remain |
 | L-05 | Manual UX, performance and clean-install validation |
 | L-06 | Final assets, release candidate, tag and GitHub Release |
 

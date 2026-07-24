@@ -37,8 +37,10 @@ Universal CSV Dashboard shortens that path:
 
 - upload a CSV;
 - confirm the detected fields;
-- explore executive metrics and trends;
-- inspect data quality;
+- review verified executive facts and rule-based interpretations;
+- inspect evidence-linked business insights and data quality;
+- ask supported questions in the local Analysis Assistant;
+- save the project or export a traceable Excel or PDF report;
 - filter the results;
 - decide what to investigate next.
 
@@ -49,10 +51,12 @@ need a useful first view of a dataset without setting up a BI project.
 
 | | Capability | Outcome |
 |---|---|---|
-| 📊 | **Executive overview** | Headline KPIs and an immediate picture of the dataset |
-| ✨ | **Automatic field detection** | Suggested dates, metrics and dimensions with less setup |
-| 📈 | **Data analysis** | Interactive trends, categories and distributions |
-| ✅ | **Data quality** | Missing values, duplicates and column-level checks |
+| 📊 | **Executive Overview** | Recommended KPIs, verified facts and transparent rule-based interpretations |
+| ✨ | **Automatic field detection** | Editable date, metric and category suggestions with visible reasoning |
+| 📈 | **Business Insights** | Traceable trend, contribution, anomaly and relationship observations |
+| 🧭 | **Analysis Assistant** | Local guided questions, calculation explanations and evidence-based summary drafts |
+| ✅ | **Data Quality** | A transparent score with missing, duplicate and type-validity components |
+| 📤 | **Export & Share** | Reusable project JSON plus branded, traceable Excel and executive PDF reports |
 | 🎛️ | **Useful filters** | Focus by date and detected categorical fields |
 | 🔒 | **Local-first workflow** | Run the app on your own machine and keep control of the file |
 
@@ -73,23 +77,25 @@ and what deserves attention?”**
 |---|---|
 | Rebuild the same pivots and charts | Reusable automatic analysis |
 | Decide every field manually | Field detection with user confirmation |
-| Check missing data separately | Data-quality view included |
-| Format a presentation before exploring | Explore a coherent dashboard immediately |
-| Easy to lose the analytical trail | Repeatable workflow for every file |
+| Check missing data separately | Transparent Data Quality Score and issue details |
+| Interpret every chart from scratch | Evidence, confidence and limitations shown together |
+| Lose context in screenshots | Saved project state and traceable Excel/PDF reports |
+| Send data to a general AI tool | Deterministic local guidance without an external AI service |
 
 ## How it works
 
 ```mermaid
-flowchart LR
-    A["Upload CSV"] --> B["Detect fields"]
-    B --> C["Validate data"]
-    C --> D["Build business views"]
-    D --> E["Explore and act"]
+flowchart TD
+    A["Upload CSV"] --> B["Detect and confirm fields"]
+    B --> C["Review overview and quality"]
+    C --> D["Explore insights and guided questions"]
+    D --> E["Save project or export report"]
 ```
 
 The application separates data understanding from presentation. Detection and
-analysis live in reusable modules; Streamlit views render the results into a
-consistent interface.
+analysis live in reusable modules; deterministic calculations produce the
+quality score, insights and assistant answers; Streamlit views render the
+results into a consistent interface.
 
 ## Quick start
 
@@ -129,10 +135,18 @@ configuration before exploring the dashboard.
 
 ## Try these pages first
 
-1. **Upload & Configure** — load a file and inspect the detected fields.
-2. **Executive Overview** — scan the main metrics and high-level trends.
-3. **Data Analysis** — explore time and category patterns.
-4. **Data Quality** — check missing cells, duplicate rows and column health.
+1. **Upload & Configure** — load a file, inspect detected fields and adjust the
+   recommended dashboard composition.
+2. **Executive Overview** — scan KPIs, verified facts, rule-based
+   interpretations and visible limitations.
+3. **Business Insights** — investigate evidence-linked trends, category
+   contributions, unusual values and numeric relationships.
+4. **Analysis Assistant** — ask a supported local question, inspect its
+   calculation, follow suggested questions and draft a reviewable summary.
+5. **Data Quality** — understand the score components, missing cells,
+   duplicate rows and column health.
+6. **Export & Share** — save project state or create a themed Excel workbook
+   and executive PDF with methodology and quality context.
 
 Sample files are available in `sample_data/`.
 
@@ -182,6 +196,9 @@ reading the source code.
 - [Streamlit](https://streamlit.io/) for the application experience
 - [Pandas](https://pandas.pydata.org/) for data processing
 - [Plotly](https://plotly.com/python/) for interactive visualisation
+- [OpenPyXL](https://openpyxl.readthedocs.io/) for structured Excel reports
+- [ReportLab](https://www.reportlab.com/) and
+  [pypdf](https://pypdf.readthedocs.io/) for verified PDF reporting
 - Python 3.11+ for the core application
 
 ## Documentation
@@ -195,19 +212,24 @@ reading the source code.
 | [`releases/README.md`](releases/README.md) | Release plans, readiness criteria and version status |
 | [`docs/`](docs/) | Architecture, UX, brand and product documentation |
 | [`docs/branding/BRAND_BOOK.md`](docs/branding/BRAND_BOOK.md) | Visual identity and usage rules |
+| [`docs/12_SECURITY_PRIVACY.md`](docs/12_SECURITY_PRIVACY.md) | Local data flow, export privacy and security boundaries |
+| [`docs/11_ENGINEERING_QUALITY.md`](docs/11_ENGINEERING_QUALITY.md) | Test, CI, dependency and readiness gates |
 
 ## Roadmap
 
-| Stage | Goal | Status |
-|---|---|---|
-| **Foundation** | Reliable upload, detection and core views | Active |
-| **Understand** | Stronger automated business interpretation | Planned |
-| **Explain** | Clearer insight context and recommendations | Planned |
-| **Share** | Reusable reports and saved analysis | Planned |
-| **Launch** | Stable public release | Planned |
+| Version | Stage | Goal | Status |
+|---|---|---|---|
+| `0.1–0.2` | **Foundation** | Reliable upload, detection and core views | Delivered |
+| `0.3` | **Understand** | Transparent quality scoring and executive interpretation | Delivered in the current codebase |
+| `0.4` | **Explain** | Evidence-linked insights with confidence and limitations | Delivered in the current codebase |
+| `0.5` | **Share** | Saved project state and responsible report exports | Delivered in the current codebase |
+| `0.6` | **Assist** | Deterministic local guidance with inspectable calculations | Delivered in the current codebase |
+| `1.0` | **Launch** | Stable, documented and dependable public product | Release-candidate validation |
 
 See [`ROADMAP.md`](ROADMAP.md) for the working plan. Roadmap items describe
-direction, not guaranteed release dates.
+direction, not guaranteed release dates. Delivered `0.3–0.6` work is currently
+included in `1.0.0-rc.1`; those milestones were not published as separate Git
+tags.
 
 ## Contributing
 
