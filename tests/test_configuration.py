@@ -19,6 +19,7 @@ def saved_configuration() -> dict:
         "numeric_columns": ["sales", "orders"],
         "category_column": "region",
         "aggregation": "Sum",
+        "report_theme": "Dark",
         "kpi_cards": ["Total", "Average"],
         "chart_types": ["Time series", "Distribution"],
     }
@@ -33,6 +34,7 @@ def test_valid_configuration_is_restored():
     assert result.is_valid
     assert result.config["metric_column"] == "sales"
     assert result.config["numeric_columns"] == ["sales", "orders"]
+    assert result.config["report_theme"] == "Dark"
     assert result.errors == ()
 
 
@@ -100,3 +102,14 @@ def test_export_includes_version_and_source_schema():
     assert exported["schema_version"] == CONFIG_SCHEMA_VERSION
     assert exported["source_columns"] == COLUMNS
     assert exported["metric_column"] == "sales"
+
+
+def test_unsupported_report_theme_uses_safe_default():
+    config = saved_configuration()
+    config["report_theme"] = "Invisible"
+
+    result = validate_configuration(config, COLUMNS)
+
+    assert result.is_valid
+    assert result.config["report_theme"] == "Corporate"
+    assert any("report theme" in warning for warning in result.warnings)
