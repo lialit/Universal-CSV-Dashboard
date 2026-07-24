@@ -28,11 +28,17 @@ def sample_config() -> dict:
     }
 
 
-def pdf_reader(dataframe=None, config=None, source_name="sample.csv"):
+def pdf_reader(
+    dataframe=None,
+    config=None,
+    source_name="sample.csv",
+    theme_name="Corporate",
+):
     content = build_pdf_report(
         dataframe if dataframe is not None else sample_dataframe(),
         config if config is not None else sample_config(),
         source_name,
+        theme_name,
     )
     return content, PdfReader(BytesIO(content))
 
@@ -102,3 +108,13 @@ def test_invalid_metric_fails_safely():
             sample_dataframe(),
             {"metric_column": "unknown"},
         )
+
+
+def test_all_report_themes_are_embedded_in_pdf_metadata():
+    for theme_name in ("Light", "Corporate", "Dark"):
+        content, reader = pdf_reader(theme_name=theme_name)
+        text = extracted_text(reader)
+
+        assert content.startswith(b"%PDF-")
+        assert "Report theme" in text
+        assert theme_name in text
