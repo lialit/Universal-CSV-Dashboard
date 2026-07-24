@@ -1,8 +1,10 @@
 import streamlit as st
 
 from app_core.assistant import (
+    OVERVIEW_QUESTION,
     answer_guided_question,
     available_questions,
+    suggest_follow_up_questions,
 )
 from app_core.state import require_dataset
 from app_core.theme import render_header
@@ -55,18 +57,30 @@ assistant_config = {
     "metric_column": selected_metric,
 }
 questions = available_questions(dataframe, assistant_config)
-labels = [question.label for question in questions]
+question_by_key = {
+    question.key: question for question in questions
+}
+question_keys = list(question_by_key)
+target_key = st.session_state.get(
+    "assistant_follow_up_target",
+    OVERVIEW_QUESTION,
+)
+if target_key not in question_by_key:
+    target_key = OVERVIEW_QUESTION
+selector_version = st.session_state.get(
+    "assistant_selector_version",
+    0,
+)
 
 with control_column:
-    selected_label = st.selectbox(
+    selected_key = st.selectbox(
         "What would you like to understand?",
-        labels,
+        question_keys,
+        index=question_keys.index(target_key),
+        format_func=lambda key: question_by_key[key].label,
+        key=f"assistant_question_selector_{selector_version}",
     )
-    selected_question = next(
-        question
-        for question in questions
-        if question.label == selected_label
-    )
+    selected_question = question_by_key[selected_key]
     st.caption(selected_question.description)
 
 with context_column:
@@ -85,7 +99,7 @@ with context_column:
 answer = answer_guided_question(
     dataframe,
     assistant_config,
-    selected_question.key,
+    selected_key,
 )
 
 st.subheader("Assistant answer")
@@ -112,6 +126,45 @@ with guidance_column:
 with st.expander("Limitations and safe interpretation", expanded=True):
     for limitation in answer.limitations:
         st.markdown(f"- {limitation}")
+
+follow_ups = suggest_follow_up_questions(
+    dataframe,
+    assistant_config,
+    current_question_key=selected_key,
+)
+st.subheader("Suggested follow-up questions")
+if follow_ups:
+    follow_up_columns = st.columns(len(follow_ups))
+    for column, follow_up in zip(
+        follow_up_columns,
+        follow_ups,
+        strict=True,
+    ):
+        with column:
+            with st.container(border=True):
+                st.caption(follow_up.source.upper())
+                st.markdown(f"**{follow_up.label}**")
+                st.write(follow_up.rationale)
+                if st.button(
+                    "Ask next",
+                    key=(
+                        f"follow_up_{selected_metric}_"
+                        f"{selected_key}_{follow_up.question_key}"
+                    ),
+                    width="stretch",
+                ):
+                    st.session_state[
+                        "assistant_follow_up_target"
+                    ] = follow_up.question_key
+                    st.session_state[
+                        "assistant_selector_version"
+                    ] = selector_version + 1
+                    st.rerun()
+else:
+    st.info(
+        "No additional supported question is available for the current "
+        "configuration."
+    )
 
 st.caption(
     "The assistant distinguishes calculation from interpretation. "

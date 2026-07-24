@@ -2,13 +2,16 @@ import pandas as pd
 import pytest
 
 from app_core.assistant import (
+    ANOMALY_QUESTION,
     METRIC_QUESTION,
     OVERVIEW_QUESTION,
     RELIABILITY_QUESTION,
+    RELATIONSHIP_QUESTION,
     SEGMENT_QUESTION,
     TREND_QUESTION,
     answer_guided_question,
     available_questions,
+    suggest_follow_up_questions,
 )
 
 
@@ -45,6 +48,8 @@ def test_questions_disclose_availability() -> None:
     assert availability[METRIC_QUESTION]
     assert not availability[TREND_QUESTION]
     assert not availability[SEGMENT_QUESTION]
+    assert availability[ANOMALY_QUESTION]
+    assert not availability[RELATIONSHIP_QUESTION]
     assert availability[RELIABILITY_QUESTION]
 
 
@@ -135,3 +140,86 @@ def test_unknown_question_is_rejected() -> None:
             sample_config(),
             "invented-question",
         )
+
+
+def test_suggestions_follow_detected_evidence() -> None:
+    suggestions = suggest_follow_up_questions(
+        sample_dataframe(),
+        sample_config(),
+        current_question_key=OVERVIEW_QUESTION,
+    )
+    keys = [suggestion.question_key for suggestion in suggestions]
+
+    assert keys[:2] == [TREND_QUESTION, SEGMENT_QUESTION]
+    assert OVERVIEW_QUESTION not in keys
+    assert len(keys) == len(set(keys))
+    assert len(keys) <= 3
+    assert all(suggestion.rationale for suggestion in suggestions)
+
+
+def test_low_quality_prioritizes_reliability() -> None:
+    dataframe = sample_dataframe()
+    dataframe["orders"] = None
+
+    suggestions = suggest_follow_up_questions(
+        dataframe,
+        sample_config(),
+        current_question_key=OVERVIEW_QUESTION,
+    )
+
+    assert suggestions[0].question_key == RELIABILITY_QUESTION
+    assert "Data Quality Score" in suggestions[0].rationale
+
+
+def test_non_positive_limit_returns_no_suggestions() -> None:
+    suggestions = suggest_follow_up_questions(
+        sample_dataframe(),
+        sample_config(),
+        limit=0,
+    )
+
+    assert suggestions == ()
+
+
+def test_anomaly_question_explains_flagged_values() -> None:
+    dataframe = sample_dataframe()
+    dataframe.loc[39, "sales"] = 10_000.0
+
+    answer = answer_guided_question(
+        dataframe,
+        sample_config(),
+        ANOMALY_QUESTION,
+    )
+
+    assert "outside the standard 1.5×IQR range" in answer.headline
+    assert "not automatically an error" in answer.limitations[0]
+
+
+def test_relationship_question_explains_correlation() -> None:
+    answer = answer_guided_question(
+        sample_dataframe(),
+        sample_config(),
+        RELATIONSHIP_QUESTION,
+    )
+
+    assert "correlation" in answer.headline
+    assert "does not prove causation" in answer.limitations[0]
+
+
+def test_suggestions_fall_back_to_supported_context() -> None:
+    dataframe = pd.DataFrame({"sales": [10.0] * 40})
+    config = {
+        "metric_column": "sales",
+        "numeric_columns": ["sales"],
+    }
+
+    suggestions = suggest_follow_up_questions(
+        dataframe,
+        config,
+        current_question_key=OVERVIEW_QUESTION,
+    )
+    keys = [suggestion.question_key for suggestion in suggestions]
+
+    assert METRIC_QUESTION in keys
+    assert TREND_QUESTION not in keys
+    assert SEGMENT_QUESTION not in keys

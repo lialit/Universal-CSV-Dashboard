@@ -15,6 +15,8 @@ OVERVIEW_QUESTION = "overview"
 METRIC_QUESTION = "metric"
 TREND_QUESTION = "trend"
 SEGMENT_QUESTION = "segment"
+ANOMALY_QUESTION = "anomaly"
+RELATIONSHIP_QUESTION = "relationship"
 RELIABILITY_QUESTION = "reliability"
 
 
@@ -42,6 +44,17 @@ class AssistantAnswer:
     limitations: tuple[str, ...]
     next_steps: tuple[str, ...]
     method: str = "Local deterministic analysis"
+
+
+@dataclass(frozen=True)
+class FollowUpQuestion:
+    """One evidence-driven suggestion for the next analysis step."""
+
+    question_key: str
+    label: str
+    rationale: str
+    source: str
+    priority: int
 
 
 def _configured_column(
@@ -78,6 +91,13 @@ def available_questions(
     metric = _configured_column(dataframe, config, "metric_column")
     date = _configured_column(dataframe, config, "date_column")
     category = _configured_column(dataframe, config, "category_column")
+    numeric_columns = [
+        column
+        for column in (config.get("numeric_columns") or [])
+        if isinstance(column, str) and column in dataframe.columns
+    ]
+    if metric:
+        numeric_columns = list(dict.fromkeys([metric, *numeric_columns]))
 
     return (
         GuidedQuestion(
@@ -134,6 +154,33 @@ def available_questions(
             ),
         ),
         GuidedQuestion(
+            key=ANOMALY_QUESTION,
+            label="Are there unusual values?",
+            description=(
+                "Screen the primary metric for values outside the standard "
+                "1.5×IQR range."
+            ),
+            available=metric is not None,
+            availability_reason=(
+                "Available for the configured primary metric."
+                if metric
+                else "Select a valid primary metric first."
+            ),
+        ),
+        GuidedQuestion(
+            key=RELATIONSHIP_QUESTION,
+            label="Which numeric field moves with the metric?",
+            description=(
+                "Identify the strongest material Pearson correlation."
+            ),
+            available=metric is not None and len(numeric_columns) >= 2,
+            availability_reason=(
+                "Available for the configured numeric fields."
+                if metric and len(numeric_columns) >= 2
+                else "Configure at least two numeric fields."
+            ),
+        ),
+        GuidedQuestion(
             key=RELIABILITY_QUESTION,
             label="Can I trust this analysis?",
             description=(
@@ -145,6 +192,138 @@ def available_questions(
             ),
         ),
     )
+
+
+def suggest_follow_up_questions(
+    dataframe: pd.DataFrame,
+    config: Mapping[str, object],
+    current_question_key: str | None = None,
+    limit: int = 3,
+) -> tuple[FollowUpQuestion, ...]:
+    """Suggest supported next questions from material evidence.
+
+    Suggestions are deterministic, deduplicated and limited to questions the
+    assistant can answer with the current configuration.
+    """
+
+    if limit < 1:
+        return ()
+
+    questions = {
+        question.key: question
+        for question in available_questions(dataframe, config)
+        if question.available
+    }
+    report = build_business_insights(dataframe, config)
+    quality = calculate_quality_score(dataframe)
+    insight_by_type = {
+        insight.insight_type: insight
+        for insight in report.insights
+    }
+    candidates: list[FollowUpQuestion] = []
+
+    def add(
+        question_key: str,
+        rationale: str,
+        source: str,
+        priority: int,
+    ) -> None:
+        question = questions.get(question_key)
+        if question is None or question_key == current_question_key:
+            return
+        candidates.append(
+            FollowUpQuestion(
+                question_key=question_key,
+                label=question.label,
+                rationale=rationale,
+                source=source,
+                priority=priority,
+            )
+        )
+
+    if quality.score < 90:
+        add(
+            RELIABILITY_QUESTION,
+            (
+                f"The Data Quality Score is {quality.score:.1f}/100, so "
+                "technical issues should be reviewed before interpretation."
+            ),
+            "Data quality",
+            100,
+        )
+
+    insight_suggestions = (
+        (
+            "Trend",
+            TREND_QUESTION,
+            "A material period change was detected in the selected metric.",
+            90,
+        ),
+        (
+            "Contribution",
+            SEGMENT_QUESTION,
+            "A leading category contribution is available for review.",
+            80,
+        ),
+        (
+            "Anomaly",
+            ANOMALY_QUESTION,
+            "Unusual metric values crossed the current screening threshold.",
+            75,
+        ),
+        (
+            "Relationship",
+            RELATIONSHIP_QUESTION,
+            "A material numeric association is available for investigation.",
+            70,
+        ),
+    )
+    for (
+        insight_type,
+        question_key,
+        rationale,
+        priority,
+    ) in insight_suggestions:
+        if insight_type in insight_by_type:
+            add(
+                question_key,
+                rationale,
+                insight_type,
+                priority,
+            )
+
+    if report.limitations:
+        add(
+            RELIABILITY_QUESTION,
+            (
+                f"The current analysis contains {len(report.limitations):,} "
+                "explicit limitation(s)."
+            ),
+            "Analysis limitations",
+            65,
+        )
+
+    add(
+        METRIC_QUESTION,
+        "Review the primary KPI context before interpreting deeper patterns.",
+        "Metric context",
+        40,
+    )
+    add(
+        OVERVIEW_QUESTION,
+        "Return to the verified facts and overall analytical context.",
+        "Overview",
+        30,
+    )
+
+    deduplicated: dict[str, FollowUpQuestion] = {}
+    for candidate in sorted(
+        candidates,
+        key=lambda item: (-item.priority, item.label),
+    ):
+        deduplicated.setdefault(candidate.question_key, candidate)
+
+    return tuple(list(deduplicated.values())[:limit])
 
 
 def _unavailable_answer(
@@ -461,19 +640,35 @@ def answer_guided_question(
             ),
         )
 
+    insight_types = {
+        SEGMENT_QUESTION: "Contribution",
+        ANOMALY_QUESTION: "Anomaly",
+        RELATIONSHIP_QUESTION: "Relationship",
+    }
+    insight_type = insight_types[question_key]
     insight = next(
         (
             item
             for item in report.insights
-            if item.insight_type == "Contribution"
+            if item.insight_type == insight_type
         ),
         None,
     )
-    return _insight_answer(
-        question,
-        insight,
-        (
+    empty_explanations = {
+        SEGMENT_QUESTION: (
             "No category contribution required a stronger warning under the "
             "current screening rules."
         ),
+        ANOMALY_QUESTION: (
+            "No values fell outside the standard 1.5×IQR screening range."
+        ),
+        RELATIONSHIP_QUESTION: (
+            "No numeric field reached the current absolute correlation "
+            "threshold of 0.50."
+        ),
+    }
+    return _insight_answer(
+        question,
+        insight,
+        empty_explanations[question_key],
     )
