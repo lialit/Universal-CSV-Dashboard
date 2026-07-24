@@ -77,8 +77,28 @@ def _check(
     )
 
 
+def _scanned_files(root: Path) -> tuple[Path, ...]:
+    excluded = {".git", ".venv", ".pytest_cache", "__pycache__"}
+    return tuple(
+        path.relative_to(root)
+        for path in root.rglob("*")
+        if path.is_file()
+        and not any(part in excluded for part in path.parts)
+    )
+
+
 def _tracked_files(root: Path) -> tuple[Path, ...]:
     try:
+        repository = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        repository_root = Path(repository.stdout.strip()).resolve()
+        if repository_root != root.resolve():
+            return _scanned_files(root)
+
         result = subprocess.run(
             ["git", "-C", str(root), "ls-files", "-z"],
             check=True,
@@ -86,13 +106,7 @@ def _tracked_files(root: Path) -> tuple[Path, ...]:
             text=True,
         )
     except (OSError, subprocess.CalledProcessError):
-        excluded = {".git", ".venv", ".pytest_cache", "__pycache__"}
-        return tuple(
-            path.relative_to(root)
-            for path in root.rglob("*")
-            if path.is_file()
-            and not any(part in excluded for part in path.parts)
-        )
+        return _scanned_files(root)
 
     return tuple(
         Path(value)
