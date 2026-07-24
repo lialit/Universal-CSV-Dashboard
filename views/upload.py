@@ -2,6 +2,11 @@ import json
 
 import streamlit as st
 
+from app_core.configuration import (
+    AGGREGATION_OPTIONS,
+    configuration_for_export,
+    validate_configuration,
+)
 from app_core.data import prepare_dataframe, read_csv_file
 from app_core.recommendations import (
     KPI_OPTIONS,
@@ -96,12 +101,48 @@ if uploaded_file is not None:
         )
 
     columns = raw_dataframe.columns.tolist()
+    saved_config_file = st.file_uploader(
+        "Reuse saved configuration (optional)",
+        type=["json"],
+        key="saved_configuration_upload",
+        help=(
+            "Upload a dashboard_config.json previously exported by "
+            "this application."
+        ),
+    )
+    imported_config: dict[str, object] = {}
+
+    if saved_config_file is not None:
+        validation = validate_configuration(
+            saved_config_file.getvalue(),
+            columns,
+        )
+        for message in validation.errors:
+            st.error(message)
+        for message in validation.warnings:
+            st.warning(message)
+        if validation.is_valid:
+            imported_config = validation.config
+            st.success(
+                "Saved configuration is compatible and has been applied "
+                "as the editable starting point."
+            )
+        else:
+            st.info(
+                "Smart suggestions remain active because the saved "
+                "configuration could not be applied safely."
+            )
+
+    suggested_date = imported_config.get(
+        "date_column",
+        detection.date_column,
+    )
     date_column = st.selectbox(
         "Date or timestamp column",
         options=[None, *columns],
         index=(
-            columns.index(detection.date_column) + 1
-            if detection.date_column in columns
+            columns.index(suggested_date) + 1
+            if suggested_date in columns
             else 0
         ),
         format_func=lambda value: (
@@ -109,52 +150,89 @@ if uploaded_file is not None:
         ),
     )
 
-    metric_options = (
+    detected_metrics = (
         list(detection.numeric_columns)
         or raw_dataframe.select_dtypes(
             include="number"
         ).columns.tolist()
         or columns
     )
+    imported_metric = imported_config.get("metric_column")
+    metric_options = list(
+        dict.fromkeys(
+            (
+                [imported_metric]
+                if imported_metric in columns
+                else []
+            )
+            + detected_metrics
+        )
+    )
     metric_column = st.selectbox(
         "Primary numeric metric",
         options=metric_options,
         index=(
-            metric_options.index(detection.metric_column)
-            if detection.metric_column in metric_options
-            else 0
+            metric_options.index(imported_metric)
+            if imported_metric in metric_options
+            else (
+                metric_options.index(detection.metric_column)
+                if detection.metric_column in metric_options
+                else 0
+            )
         ),
     )
 
     additional_numeric_options = [
         column for column in columns if column != metric_column
     ]
-    suggested_additional = [
-        column
-        for column in detection.numeric_columns
-        if column != metric_column
-    ][:6]
+    imported_numeric = imported_config.get("numeric_columns")
+    if isinstance(imported_numeric, list):
+        suggested_additional = [
+            column
+            for column in imported_numeric
+            if column in additional_numeric_options
+        ]
+    else:
+        suggested_additional = [
+            column
+            for column in detection.numeric_columns
+            if column != metric_column
+        ][:6]
     additional_numeric = st.multiselect(
         "Additional numeric columns",
         options=additional_numeric_options,
         default=suggested_additional,
     )
 
+    suggested_category = imported_config.get(
+        "category_column",
+        detection.category_column,
+    )
     category_column = st.selectbox(
         "Primary category column",
         options=[None, *columns],
         index=(
-            columns.index(detection.category_column) + 1
-            if detection.category_column in columns
+            columns.index(suggested_category) + 1
+            if suggested_category in columns
             else 0
         ),
         format_func=lambda value: (
             "No category column" if value is None else value
         ),
     )
+
+    imported_aggregation = imported_config.get(
+        "aggregation",
+        "Sum",
+    )
     aggregation = st.selectbox(
         "Default aggregation",
-        options=["Sum", "Mean", "Median", "Count"],
+        options=AGGREGATION_OPTIONS,
+        index=(
+            AGGREGATION_OPTIONS.index(imported_aggregation)
+            if imported_aggregation in AGGREGATION_OPTIONS
+            else 0
+        ),
     )
 
     numeric_columns = list(
@@ -181,16 +259,33 @@ if uploaded_file is not None:
         "and can change the final dashboard."
     )
 
+    if "kpi_cards" in imported_config:
+        default_kpis = [
+            item
+            for item in imported_config["kpi_cards"]
+            if item in KPI_OPTIONS
+        ]
+    else:
+        default_kpis = list(recommendations.kpis)
     kpi_cards = st.multiselect(
         "KPI cards",
         options=KPI_OPTIONS,
-        default=recommendations.kpis,
+        default=default_kpis,
         max_selections=3,
     )
+
+    if "chart_types" in imported_config:
+        default_charts = [
+            item
+            for item in imported_config["chart_types"]
+            if item in recommendations.available_charts
+        ]
+    else:
+        default_charts = list(recommendations.charts)
     chart_types = st.multiselect(
         "Dashboard charts",
         options=recommendations.available_charts,
-        default=recommendations.charts,
+        default=default_charts,
         max_selections=4,
     )
 
@@ -206,11 +301,15 @@ if uploaded_file is not None:
         "kpi_cards": kpi_cards,
         "chart_types": chart_types,
     }
+    export_config = configuration_for_export(
+        config_json,
+        columns,
+    )
     left, right = st.columns(2)
 
     with left:
         accept_clicked = st.button(
-            "Accept smart configuration",
+            "Accept configuration",
             type="primary",
             width="stretch",
         )
@@ -218,7 +317,7 @@ if uploaded_file is not None:
     with right:
         st.download_button(
             "Download configuration JSON",
-            data=json.dumps(config_json, indent=2),
+            data=json.dumps(export_config, indent=2),
             file_name="dashboard_config.json",
             mime="application/json",
             width="stretch",
