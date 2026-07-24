@@ -286,8 +286,8 @@ def _kpi_table(
 def _quality_summary_table(quality, styles) -> Table:
     data = [
         [
-            Paragraph("DATA QUALITY SCORE", styles["center"]),
-            Paragraph("DETECTED ISSUES", styles["center"]),
+            Paragraph("Data Quality Score", styles["center"]),
+            Paragraph("Detected issues", styles["center"]),
         ],
         [
             Paragraph(
