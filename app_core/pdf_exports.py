@@ -283,6 +283,46 @@ def _kpi_table(
     return table
 
 
+def _quality_summary_table(quality, styles) -> Table:
+    data = [
+        [
+            Paragraph("DATA QUALITY SCORE", styles["center"]),
+            Paragraph("DETECTED ISSUES", styles["center"]),
+        ],
+        [
+            Paragraph(
+                f"{quality.score:.1f}/100 ({_safe(quality.status)})",
+                styles["center"],
+            ),
+            Paragraph(
+                f"{quality.issue_count:,}",
+                styles["center"],
+            ),
+        ],
+    ]
+    table = Table(
+        data,
+        colWidths=[87 * mm, 87 * mm],
+        hAlign="LEFT",
+    )
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E3F5F3")),
+                ("BACKGROUND", (0, 1), (-1, 1), LIGHT_GRAY),
+                ("BOX", (0, 0), (-1, -1), 0.6, BRAND_TEAL),
+                ("INNERGRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#B9DEDB")),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("TOPPADDING", (0, 0), (-1, 0), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+                ("TOPPADDING", (0, 1), (-1, 1), 8),
+                ("BOTTOMPADDING", (0, 1), (-1, 1), 8),
+            ]
+        )
+    )
+    return table
+
+
 def _insight_card(insight, styles) -> KeepTogether:
     confidence_color = {
         "High": colors.HexColor("#DFF4E5"),
@@ -408,33 +448,8 @@ def build_pdf_report(
         Paragraph("Executive snapshot", styles["heading"]),
         _kpi_table(dataframe, metric, styles),
         Spacer(1, 5 * mm),
-        Table(
-            [
-                [
-                    Paragraph(
-                        f"<b>Data Quality Score:</b> "
-                        f"{quality.score:.1f}/100 ({_safe(quality.status)})",
-                        styles["body"],
-                    ),
-                    Paragraph(
-                        f"<b>Detected issues:</b> {quality.issue_count:,}",
-                        styles["body"],
-                    ),
-                ]
-            ],
-            colWidths=[116 * mm, 58 * mm],
-            style=TableStyle(
-                [
-                    ("BACKGROUND", (0, 0), (-1, -1), LIGHT_GRAY),
-                    ("BOX", (0, 0), (-1, -1), 0.6, BRAND_TEAL),
-                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                    ("TOPPADDING", (0, 0), (-1, -1), 8),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
-                ]
-            ),
-        ),
-        Spacer(1, 6 * mm),
+        _quality_summary_table(quality, styles),
+        Spacer(1, 1 * mm),
         Paragraph(
             "Scope note",
             styles["heading"],
