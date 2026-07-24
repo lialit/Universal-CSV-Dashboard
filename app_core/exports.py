@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import copy
 from io import BytesIO
 import json
 from typing import Mapping
@@ -16,14 +17,11 @@ from app_core.quality import (
     calculate_quality_score,
     quality_checks_table,
 )
+from app_core.report_themes import ReportTheme, get_report_theme
 
 
 EXCEL_MAX_DATA_ROWS = 1_048_575
 EXCEL_MAX_COLUMNS = 16_384
-BRAND_BLUE = "3867E8"
-BRAND_NAVY = "102348"
-WHITE = "FFFFFF"
-TEXT = "334155"
 
 
 def validate_export_dimensions(rows: int, columns: int) -> None:
@@ -56,7 +54,12 @@ def _write_rows(worksheet, rows) -> None:
         worksheet.append([_safe_value(value) for value in row])
 
 
-def _style_title(worksheet, title: str, last_column: int = 6) -> None:
+def _style_title(
+    worksheet,
+    title: str,
+    theme: ReportTheme,
+    last_column: int = 6,
+) -> None:
     worksheet.merge_cells(
         start_row=1,
         start_column=1,
@@ -64,24 +67,35 @@ def _style_title(worksheet, title: str, last_column: int = 6) -> None:
         end_column=last_column,
     )
     cell = worksheet.cell(1, 1, title)
-    cell.fill = PatternFill("solid", fgColor=BRAND_NAVY)
+    cell.fill = PatternFill(
+        "solid",
+        fgColor=theme.title_background,
+    )
     cell.font = Font(
         name="Aptos Display",
         size=20,
         bold=True,
-        color=WHITE,
+        color=theme.title_text,
     )
     cell.alignment = Alignment(vertical="center")
     worksheet.row_dimensions[1].height = 34
 
 
-def _style_header(worksheet, row: int, columns: int) -> None:
+def _style_header(
+    worksheet,
+    row: int,
+    columns: int,
+    theme: ReportTheme,
+) -> None:
     for cell in worksheet[row][:columns]:
-        cell.fill = PatternFill("solid", fgColor=BRAND_BLUE)
+        cell.fill = PatternFill(
+            "solid",
+            fgColor=theme.accent,
+        )
         cell.font = Font(
             name="Aptos",
             bold=True,
-            color=WHITE,
+            color=theme.accent_text,
         )
         cell.alignment = Alignment(
             vertical="center",
@@ -92,9 +106,11 @@ def _style_header(worksheet, row: int, columns: int) -> None:
 
 def _finish_sheet(
     worksheet,
+    theme: ReportTheme,
     widths: Mapping[str, float] | None = None,
 ) -> None:
     worksheet.sheet_view.showGridLines = False
+    worksheet.sheet_properties.tabColor = theme.accent
     worksheet.freeze_panes = "A3"
     worksheet.sheet_properties.pageSetUpPr.fitToPage = True
     worksheet.page_setup.fitToWidth = 1
@@ -104,15 +120,34 @@ def _finish_sheet(
         for column, width in widths.items():
             worksheet.column_dimensions[column].width = width
 
+    surface_fill = PatternFill(
+        "solid",
+        fgColor=theme.surface,
+    )
+    for row in worksheet.iter_rows(
+        min_row=1,
+        max_row=worksheet.max_row,
+        min_col=1,
+        max_col=worksheet.max_column,
+    ):
+        for cell in row:
+            if cell.fill.fill_type is None:
+                cell.fill = surface_fill
+            if cell.font.color is None or cell.font.color.type == "theme":
+                font = copy(cell.font)
+                font.color = theme.text
+                cell.font = font
+
 
 def _add_table(
     worksheet,
     reference: str,
     name: str,
+    theme: ReportTheme,
 ) -> None:
     table = Table(displayName=name, ref=reference)
     table.tableStyleInfo = TableStyleInfo(
-        name="TableStyleMedium2",
+        name=theme.excel_table_style,
         showFirstColumn=False,
         showLastColumn=False,
         showRowStripes=True,
@@ -126,10 +161,15 @@ def _build_overview(
     dataframe: pd.DataFrame,
     config: Mapping[str, object],
     source_name: str,
+    theme: ReportTheme,
 ) -> None:
     worksheet = workbook.active
     worksheet.title = "Overview"
-    _style_title(worksheet, "Universal CSV Dashboard — Analysis Export")
+    _style_title(
+        worksheet,
+        "Universal CSV Dashboard — Analysis Export",
+        theme,
+    )
 
     metric = str(config["metric_column"])
     metric_summary = summarize_metric(dataframe, metric)
@@ -149,7 +189,7 @@ def _build_overview(
 
     worksheet.append([])
     worksheet.append(["KPI", "Value", "Source / formula"])
-    _style_header(worksheet, 9, 3)
+    _style_header(worksheet, 9, 3, theme)
     kpi_rows = (
         ("Total", f"=SUM({metric_range})", metric_range),
         ("Average", f"=AVERAGE({metric_range})", metric_range),
@@ -165,8 +205,13 @@ def _build_overview(
     worksheet["F3"] = metric_summary.total
     worksheet["E4"] = "Generated locally"
     worksheet["F4"] = "Yes"
-    for cell in ("E3", "E4"):
-        worksheet[cell].font = Font(bold=True, color=BRAND_NAVY)
+    worksheet["E5"] = "Report theme"
+    worksheet["F5"] = theme.name
+    for cell in ("E3", "E4", "E5"):
+        worksheet[cell].font = Font(
+            bold=True,
+            color=theme.text,
+        )
     worksheet["F3"].number_format = "#,##0.00"
 
     thin = Side(style="thin", color="D9E2F1")
@@ -180,15 +225,16 @@ def _build_overview(
             cell.border = Border(bottom=thin)
             cell.font = Font(
                 name="Aptos",
-                color=TEXT,
+                color=theme.text,
                 bold=cell.font.bold,
             )
-    _style_header(worksheet, 9, 3)
+    _style_header(worksheet, 9, 3, theme)
     for row in range(10, 16):
         worksheet.cell(row, 2).number_format = "#,##0.00"
 
     _finish_sheet(
         worksheet,
+        theme,
         {
             "A": 24,
             "B": 20,
@@ -203,10 +249,11 @@ def _build_overview(
 def _build_quality(
     workbook: Workbook,
     dataframe: pd.DataFrame,
+    theme: ReportTheme,
 ) -> None:
     report = calculate_quality_score(dataframe)
     worksheet = workbook.create_sheet("Data Quality")
-    _style_title(worksheet, "Data Quality", 7)
+    _style_title(worksheet, "Data Quality", theme, 7)
     worksheet.append([])
     worksheet.append(["Score", report.score])
     worksheet.append(["Status", report.status])
@@ -215,21 +262,27 @@ def _build_quality(
 
     table = quality_checks_table(report)
     worksheet.append(list(table.columns))
-    _style_header(worksheet, 7, len(table.columns))
+    _style_header(worksheet, 7, len(table.columns), theme)
     _write_rows(worksheet, table.itertuples(index=False, name=None))
 
     _add_table(
         worksheet,
         f"A7:G{worksheet.max_row}",
         "DataQualityChecks",
+        theme,
     )
     worksheet["B3"].number_format = "0.0"
     worksheet["B4"].fill = PatternFill(
         "solid",
-        fgColor=("DFF4E5" if report.score >= 90 else "FFF1D6"),
+        fgColor=(
+            theme.success_soft
+            if report.score >= 90
+            else theme.warning_soft
+        ),
     )
     _finish_sheet(
         worksheet,
+        theme,
         {
             "A": 24,
             "B": 14,
@@ -246,10 +299,11 @@ def _build_insights(
     workbook: Workbook,
     dataframe: pd.DataFrame,
     config: Mapping[str, object],
+    theme: ReportTheme,
 ) -> None:
     report = build_business_insights(dataframe, config)
     worksheet = workbook.create_sheet("Business Insights")
-    _style_title(worksheet, "Business Insights", 8)
+    _style_title(worksheet, "Business Insights", theme, 8)
     worksheet.append([])
     worksheet.append(
         [
@@ -263,7 +317,7 @@ def _build_insights(
             "Limitation",
         ]
     )
-    _style_header(worksheet, 3, 8)
+    _style_header(worksheet, 3, 8, theme)
 
     if report.insights:
         _write_rows(
@@ -286,6 +340,7 @@ def _build_insights(
             worksheet,
             f"A3:H{worksheet.max_row}",
             "BusinessInsights",
+            theme,
         )
     else:
         worksheet.append(
@@ -314,6 +369,7 @@ def _build_insights(
 
     _finish_sheet(
         worksheet,
+        theme,
         {
             "A": 16,
             "B": 28,
@@ -330,12 +386,18 @@ def _build_insights(
 def _build_configuration(
     workbook: Workbook,
     config: Mapping[str, object],
+    theme: ReportTheme,
 ) -> None:
     worksheet = workbook.create_sheet("Configuration")
-    _style_title(worksheet, "Dashboard Configuration", 3)
+    _style_title(
+        worksheet,
+        "Dashboard Configuration",
+        theme,
+        3,
+    )
     worksheet.append([])
     worksheet.append(["Setting", "Value", "Machine-readable value"])
-    _style_header(worksheet, 3, 3)
+    _style_header(worksheet, 3, 3, theme)
 
     for key, value in config.items():
         display_value = (
@@ -358,9 +420,11 @@ def _build_configuration(
         worksheet,
         f"A3:C{worksheet.max_row}",
         "DashboardConfiguration",
+        theme,
     )
     _finish_sheet(
         worksheet,
+        theme,
         {"A": 24, "B": 42, "C": 58},
     )
 
@@ -368,6 +432,7 @@ def _build_configuration(
 def _build_data(
     workbook: Workbook,
     dataframe: pd.DataFrame,
+    theme: ReportTheme,
 ) -> None:
     worksheet = workbook.create_sheet("Data")
     worksheet.append(
@@ -377,7 +442,12 @@ def _build_data(
         worksheet,
         dataframe.itertuples(index=False, name=None),
     )
-    _style_header(worksheet, 1, len(dataframe.columns))
+    _style_header(
+        worksheet,
+        1,
+        len(dataframe.columns),
+        theme,
+    )
     worksheet.freeze_panes = "A2"
     worksheet.auto_filter.ref = worksheet.dimensions
     worksheet.sheet_view.showGridLines = False
@@ -395,15 +465,26 @@ def _build_data(
         f"A1:{get_column_letter(len(dataframe.columns))}"
         f"{len(dataframe) + 1}",
         "ExportedData",
+        theme,
     )
+    _finish_sheet(worksheet, theme)
+    worksheet.freeze_panes = "A2"
 
 
-def _build_methodology(workbook: Workbook) -> None:
+def _build_methodology(
+    workbook: Workbook,
+    theme: ReportTheme,
+) -> None:
     worksheet = workbook.create_sheet("Methodology")
-    _style_title(worksheet, "Methodology and Responsible Use", 3)
+    _style_title(
+        worksheet,
+        "Methodology and Responsible Use",
+        theme,
+        3,
+    )
     worksheet.append([])
     worksheet.append(["Area", "Method", "Important limitation"])
-    _style_header(worksheet, 3, 3)
+    _style_header(worksheet, 3, 3, theme)
     rows = (
         (
             "Data Quality",
@@ -441,6 +522,7 @@ def _build_methodology(workbook: Workbook) -> None:
         worksheet,
         f"A3:C{worksheet.max_row}",
         "ExportMethodology",
+        theme,
     )
     for row in worksheet.iter_rows(
         min_row=4,
@@ -454,6 +536,7 @@ def _build_methodology(workbook: Workbook) -> None:
         worksheet.row_dimensions[row[0].row].height = 48
     _finish_sheet(
         worksheet,
+        theme,
         {"A": 20, "B": 58, "C": 58},
     )
 
@@ -462,6 +545,7 @@ def build_excel_report(
     dataframe: pd.DataFrame,
     config: Mapping[str, object],
     source_name: str = "uploaded.csv",
+    theme_name: str = "Corporate",
 ) -> bytes:
     """Build a styled, traceable Excel analysis workbook."""
 
@@ -476,15 +560,22 @@ def build_excel_report(
             "A valid primary metric is required for Excel export."
         )
 
+    theme = get_report_theme(theme_name)
     workbook = Workbook()
     workbook.calculation.fullCalcOnLoad = True
     workbook.calculation.forceFullCalc = True
-    _build_overview(workbook, dataframe, config, source_name)
-    _build_quality(workbook, dataframe)
-    _build_insights(workbook, dataframe, config)
-    _build_configuration(workbook, config)
-    _build_data(workbook, dataframe)
-    _build_methodology(workbook)
+    _build_overview(
+        workbook,
+        dataframe,
+        config,
+        source_name,
+        theme,
+    )
+    _build_quality(workbook, dataframe, theme)
+    _build_insights(workbook, dataframe, config, theme)
+    _build_configuration(workbook, config, theme)
+    _build_data(workbook, dataframe, theme)
+    _build_methodology(workbook, theme)
 
     buffer = BytesIO()
     workbook.save(buffer)
