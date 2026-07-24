@@ -5,6 +5,10 @@ import json
 from typing import Mapping, Sequence
 
 from app_core.recommendations import CHART_OPTIONS, KPI_OPTIONS
+from app_core.report_themes import (
+    DEFAULT_REPORT_THEME,
+    REPORT_THEME_NAMES,
+)
 
 
 CONFIG_SCHEMA_VERSION = 1
@@ -166,6 +170,17 @@ def validate_configuration(
             "The saved aggregation is unsupported; Sum will be used."
         )
     runtime["aggregation"] = aggregation
+
+    report_theme = parsed.get(
+        "report_theme",
+        DEFAULT_REPORT_THEME,
+    )
+    if report_theme not in REPORT_THEME_NAMES:
+        report_theme = DEFAULT_REPORT_THEME
+        warnings.append(
+            "The saved report theme is unsupported; Corporate will be used."
+        )
+    runtime["report_theme"] = report_theme
 
     for key, allowed, label in (
         ("kpi_cards", KPI_OPTIONS, "KPI"),
