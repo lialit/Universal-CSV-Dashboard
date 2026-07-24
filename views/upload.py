@@ -8,6 +8,10 @@ from app_core.configuration import (
     validate_configuration,
 )
 from app_core.data import prepare_dataframe, read_csv_file
+from app_core.project_state import (
+    is_project_state,
+    validate_project_state,
+)
 from app_core.recommendations import (
     KPI_OPTIONS,
     recommend_analysis,
@@ -102,21 +106,30 @@ if uploaded_file is not None:
 
     columns = raw_dataframe.columns.tolist()
     saved_config_file = st.file_uploader(
-        "Reuse saved configuration (optional)",
+        "Reuse saved project or configuration (optional)",
         type=["json"],
         key="saved_configuration_upload",
         help=(
-            "Upload a dashboard_config.json previously exported by "
-            "this application."
+            "Upload a saved dashboard project or dashboard_config.json "
+            "previously exported by this application."
         ),
     )
     imported_config: dict[str, object] = {}
 
     if saved_config_file is not None:
-        validation = validate_configuration(
-            saved_config_file.getvalue(),
-            columns,
-        )
+        saved_payload = saved_config_file.getvalue()
+        saved_is_project = is_project_state(saved_payload)
+        if saved_is_project:
+            validation = validate_project_state(
+                saved_payload,
+                raw_dataframe,
+                uploaded_file.name,
+            )
+        else:
+            validation = validate_configuration(
+                saved_payload,
+                columns,
+            )
         for message in validation.errors:
             st.error(message)
         for message in validation.warnings:
@@ -124,13 +137,20 @@ if uploaded_file is not None:
         if validation.is_valid:
             imported_config = validation.config
             st.success(
-                "Saved configuration is compatible and has been applied "
-                "as the editable starting point."
+                (
+                    "Saved project is compatible and has been reopened "
+                    "as an editable starting point."
+                    if saved_is_project
+                    else (
+                        "Saved configuration is compatible and has been "
+                        "applied as the editable starting point."
+                    )
+                )
             )
         else:
             st.info(
-                "Smart suggestions remain active because the saved "
-                "configuration could not be applied safely."
+                "Smart suggestions remain active because the saved file "
+                "could not be applied safely."
             )
 
     suggested_date = imported_config.get(
