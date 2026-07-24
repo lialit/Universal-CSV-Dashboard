@@ -1,9 +1,10 @@
 # v0.3 — Understand
 
-> **Status: Next — not released**
+> **Status: Delivered to `main` — not separately tagged**
 
-This is a working release plan. The capabilities below are proposed for the
-next product stage and must not be described as currently available.
+This is the historical scope record for the Understand milestone. Checked
+items are included in `1.0.0-rc.1`; unchecked items were deferred. No
+standalone `v0.3` tag or GitHub Release was published.
 
 ## Release outcome
 
@@ -46,33 +47,33 @@ useful.
 
 ### Data Quality Score
 
-- [ ] Define a transparent scoring model
-- [ ] Show contributing checks
-- [ ] Avoid labeling a dataset simply “clean” or “bad”
-- [ ] Explain which issues affect interpretation
-- [ ] Test score stability across representative datasets
+- [x] Define a transparent scoring model
+- [x] Show contributing checks
+- [x] Avoid labeling a dataset simply “clean” or “bad”
+- [x] Explain which issues affect interpretation
+- [x] Test score calculations across representative datasets
 
 ### Automatic first view
 
-- [ ] Select candidate KPIs
-- [ ] Select suitable chart types
-- [ ] Keep every selection editable
-- [ ] Explain why each view was selected
-- [ ] Handle datasets without dates or categories gracefully
+- [x] Select candidate KPIs
+- [x] Select suitable chart types
+- [x] Keep every selection editable
+- [x] Explain why each view was selected
+- [x] Handle datasets without dates or categories gracefully
 
 ### Rule-based executive summary
 
-- [ ] Summarize dataset shape and coverage
-- [ ] State the selected metric and aggregation
-- [ ] Describe observed totals and ranges
-- [ ] Include relevant quality limitations
-- [ ] Separate facts from interpretation
+- [x] Summarize dataset shape and coverage
+- [x] State the selected metric and aggregation
+- [x] Describe observed totals and ranges
+- [x] Include relevant quality limitations
+- [x] Separate facts from interpretation
 
 ### Unsupported input guidance
 
-- [ ] Explain why a dataset cannot produce a useful view
-- [ ] Suggest specific corrections
-- [ ] Preserve readable errors for parsing failures
+- [x] Explain why a dataset cannot produce a useful view
+- [x] Suggest specific corrections
+- [x] Preserve readable errors for parsing failures
 
 ## Non-goals
 
@@ -119,10 +120,10 @@ This release does not include:
 
 ### Engineering and documentation
 
-- [ ] Automated tests pass
+- [x] Automated tests pass
 - [ ] Clean installation verified
-- [ ] README features updated only after shipping
-- [ ] `CHANGELOG.md` updated at release
+- [x] README features updated only after shipping
+- [x] `CHANGELOG.md` updated with the delivered milestone
 - [ ] Final screenshots added
 
 ## Known risks
@@ -148,4 +149,3 @@ that affects the result.
 | Git tag | — |
 | GitHub Release | — |
 | Migration required | To be determined |
-

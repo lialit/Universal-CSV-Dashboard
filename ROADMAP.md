@@ -41,12 +41,12 @@ opaque chart generator or autonomous decision-maker.
 | Version | Stage | Primary outcome | Status |
 |---|---|---|---|
 | `0.1` | Initial Product | A reusable multipage CSV dashboard | Completed |
-| `0.2` | Smart Foundation | Explainable field detection and configurable analysis | Current foundation |
-| `0.3` | Understand | Stronger automatic interpretation of structure and quality | Next |
-| `0.4` | Explain | Evidence-based observations and clearer context | Planned |
-| `0.5` | Share | Saved work and responsible report exports | Planned |
-| `0.6` | Assist | Optional guided analysis with privacy controls | Exploratory |
-| `1.0` | Launch | Stable, documented and dependable public product | Planned |
+| `0.2` | Smart Foundation | Explainable field detection and configurable analysis | Completed |
+| `0.3` | Understand | Transparent quality scoring and executive interpretation | Delivered in `1.0.0-rc.1` |
+| `0.4` | Explain | Evidence-based observations and clearer context | Delivered in `1.0.0-rc.1` |
+| `0.5` | Share | Saved work and responsible report exports | Delivered in `1.0.0-rc.1` |
+| `0.6` | Assist | Local deterministic guidance with privacy controls | Delivered in `1.0.0-rc.1` |
+| `1.0` | Launch | Stable, documented and dependable public product | Release candidate |
 | Post-`1.0` | Ecosystem | Specialized analytical modules on a shared core | Directional |
 
 Detailed scope, validation plans and release criteria are maintained in the
@@ -104,7 +104,7 @@ contexts, but manual configuration still creates avoidable setup work.
 
 ## `0.2` — Smart Foundation
 
-**Status: current foundation**
+**Status: completed**
 
 ### Goal
 
@@ -131,14 +131,14 @@ editable.
 - [x] Full product specification
 - [x] Mission, vision and manifesto
 
-### Foundation-completion work
+### Foundation-completion record
 
-- [ ] Complete Product Foundation Pack
-- [ ] Align remaining duplicate documentation
-- [ ] Replace placeholder release notes with factual notes
-- [ ] Confirm all documentation links
+- [x] Complete Product Foundation Pack
+- [x] Align the main public documentation
+- [x] Replace milestone history with factual changelog entries
+- [x] Confirm README documentation links
 - [ ] Review installation from a clean environment
-- [ ] Confirm the automated test suite on supported Python versions
+- [x] Confirm the automated test suite on Python 3.11
 
 ### Exit criteria
 
@@ -156,26 +156,31 @@ The foundation is complete when a new user can:
 
 ## `0.3` — Understand
 
-**Status: next**
+**Status: delivered in `1.0.0-rc.1`; not separately tagged**
 
 ### Goal
 
 Improve the product's ability to understand dataset structure and generate a
 more useful first view.
 
-### Planned capabilities
+### Delivered scope
 
-- [ ] Transparent Data Quality Score
-- [ ] Rule-based executive summary
-- [ ] Automatic KPI selection
-- [ ] Automatic chart selection
-- [ ] Better identifier detection
-- [ ] Currency and percentage recognition
-- [ ] Time-granularity recognition
-- [ ] Improved date parsing and validation
-- [ ] Aggregation recommendations
-- [ ] Column-role correction feedback
-- [ ] Clearer unsupported-dataset guidance
+- [x] Transparent Data Quality Score
+- [x] Visible completeness, duplicate and type-validity components
+- [x] Rule-based executive summary
+- [x] Automatic KPI selection
+- [x] Automatic chart selection
+- [x] Editable dashboard composition
+- [x] Explanations for recommended KPIs and charts
+- [x] Clear empty and unsupported-analysis guidance
+
+### Deferred beyond the current candidate
+
+- currency and percentage semantic recognition;
+- automatic time-granularity recognition;
+- broader mixed-format date recovery;
+- learned feedback from field-role corrections;
+- automatic aggregation recommendations.
 
 ### Product requirements
 
@@ -193,24 +198,31 @@ business-readable summary with minimal correction.
 
 ## `0.4` — Explain
 
-**Status: planned**
+**Status: delivered in `1.0.0-rc.1`; not separately tagged**
 
 ### Goal
 
 Move from showing metrics to explaining what the evidence suggests and what it
 cannot establish.
 
-### Planned capabilities
+### Delivered scope
 
-- [ ] Trend-change detection
-- [ ] Category contribution analysis
-- [ ] Outlier and anomaly context
-- [ ] Period-over-period comparisons
-- [ ] Quality-aware observations
-- [ ] Plain-language chart explanations
-- [ ] Evidence-linked insight cards
-- [ ] Suggested next analytical questions
-- [ ] Confidence and limitation labels
+- [x] Material period-change detection
+- [x] Category contribution analysis
+- [x] Outlier screening with `1.5×IQR`
+- [x] Pearson-correlation observations
+- [x] Quality-aware observations
+- [x] Evidence-linked insight cards
+- [x] Suggested next analytical questions
+- [x] Confidence and limitation labels
+- [x] Explicit non-causal language
+
+### Deferred beyond the current candidate
+
+- distribution-shift detection across arbitrary comparison periods;
+- configurable anomaly methods;
+- causal or predictive analysis;
+- domain-specific recommendation engines.
 
 ### Product requirements
 
@@ -228,24 +240,32 @@ it and what limitations affect it.
 
 ## `0.5` — Share
 
-**Status: planned**
+**Status: delivered in `1.0.0-rc.1`; not separately tagged**
 
 ### Goal
 
 Preserve and communicate analytical work without losing assumptions or quality
 context.
 
-### Planned capabilities
+### Delivered scope
 
-- [ ] Import saved dashboard configuration
-- [ ] Saved project state
-- [ ] Executive PDF report
-- [ ] Structured Excel export
-- [ ] Branded report options
-- [ ] Light, dark and corporate presentation themes
-- [ ] Exported methodology and assumptions
-- [ ] Exported data-quality summary
-- [ ] Reproducible report metadata
+- [x] Import saved dashboard configuration
+- [x] Versioned saved project state
+- [x] Schema validation when reopening a project
+- [x] Executive PDF report
+- [x] Structured Excel export
+- [x] Light, Dark and Corporate report themes
+- [x] Exported methodology and assumptions
+- [x] Exported data-quality summary
+- [x] Reproducible report metadata
+- [x] Visible row-level data warning for Excel
+
+### Deferred beyond the current candidate
+
+- customer-provided logos and arbitrary brand colors;
+- cloud project synchronization;
+- scheduled delivery;
+- real-time collaboration.
 
 ### Product requirements
 
@@ -263,25 +283,32 @@ results were produced.
 
 ## `0.6` — Assist
 
-**Status: exploratory**
+**Status: local deterministic scope delivered in `1.0.0-rc.1`**
 
 ### Goal
 
 Evaluate optional guided-analysis capabilities without weakening privacy,
 evidence or user control.
 
-### Potential capabilities
+### Delivered scope
 
-- [ ] Ask questions about the loaded dataset
-- [ ] Explain metrics and calculations
-- [ ] Draft evidence-based summaries
-- [ ] Suggest next analyses
-- [ ] Identify unsupported questions
-- [ ] Optional local or external model providers
-- [ ] Explicit privacy controls
-- [ ] Usage and cost controls
-- [ ] Source-linked responses
-- [ ] Visible uncertainty
+- [x] Ask supported questions about the loaded dataset
+- [x] Explain metrics and calculations
+- [x] Draft evidence-based summaries
+- [x] Suggest next analyses
+- [x] Identify unsupported questions
+- [x] Source-linked responses
+- [x] Visible confidence and limitations
+- [x] Pre-share unsupported-claim checks
+- [x] Explicit local-processing guidance
+
+### Not included in the current candidate
+
+- external model providers;
+- uploaded-data transfer;
+- provider usage or cost controls;
+- general-purpose chat;
+- autonomous recommendations or actions.
 
 ### Required guardrails
 
@@ -292,16 +319,18 @@ evidence or user control.
 - Unsupported conclusions must be refused clearly.
 - The user must be able to inspect the underlying calculation.
 
-### Decision gate
+### Decision record
 
-This stage proceeds only if it creates measurable analytical value beyond
-rule-based explanations and can be implemented responsibly.
+The local deterministic path passed the evidence, privacy and user-control
+gate and is included in the candidate. External or generative providers remain
+out of scope unless separately validated with explicit consent and predictable
+cost.
 
 ---
 
 ## `1.0` — Launch
 
-**Status: planned**
+**Status: release candidate (`1.0.0-rc.1`)**
 
 ### Goal
 
@@ -320,12 +349,12 @@ clear support expectations.
 
 #### Engineering
 
-- [ ] Supported Python versions documented and tested
-- [ ] Automated test suite green
-- [ ] CI checks stable
-- [ ] Dependency policy documented
+- [x] Supported Python version documented and tested in CI
+- [x] Automated test suite green
+- [x] CI checks stable
+- [x] Dependency policy documented
 - [ ] Performance reviewed for supported file sizes
-- [ ] Security and privacy review completed
+- [x] Security and privacy review completed
 
 #### Experience
 
@@ -337,12 +366,12 @@ clear support expectations.
 
 #### Open source
 
-- [ ] README, product documents and technical docs aligned
+- [x] README and changelog aligned with shipped behavior
 - [ ] Contribution workflow validated
 - [ ] Issue and pull-request templates reviewed
 - [ ] License and attribution confirmed
-- [ ] Release notes complete
-- [ ] Support boundaries documented
+- [x] Release-candidate scope and process documented
+- [x] Support and security-reporting boundaries documented
 
 ### Exit criteria
 
@@ -462,15 +491,16 @@ Roadmap updates should:
 
 ## Current priority
 
-The immediate priority is to finish and validate the `0.2` foundation before
-expanding into `0.3`.
+The immediate priority is to complete `1.0.0-rc.1` validation without adding
+new product scope.
 
 That means:
 
-- complete the Foundation Pack;
-- remove conflicting documentation;
-- verify clean installation and tests;
-- maintain release plans and replace placeholder media with verified assets;
-- confirm that the current product promise matches actual behavior.
+- verify installation from a clean Python 3.11 environment;
+- complete manual UX, accessibility and performance review;
+- replace the placeholder v1.0 demo with a verified final-product GIF;
+- run the strict readiness gate;
+- publish an immutable pre-release tag and GitHub Release only after every
+  blocker is resolved.
 
-> **Build trust in the foundation before adding intelligence to the surface.**
+> **Freeze the scope. Verify the evidence. Publish only what passed.**
