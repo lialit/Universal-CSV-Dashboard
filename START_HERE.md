@@ -156,6 +156,7 @@ Good starter datasets usually contain:
 - one or more categories;
 - clear column names;
 - at least several rows per category or date period.
+- a file size of no more than 25 MB for the validated v1.0 workflow.
 
 Examples include sales, marketing, inventory, finance and operational exports.
 Sample files are available in `sample_data/` and `examples/`.
