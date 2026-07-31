@@ -19,7 +19,7 @@
 The full automated test suite, including the readiness checker tests, passes:
 
 ```text
-161 passed
+164 passed
 ```
 
 This means the implemented product logic and repository evidence pass the
@@ -35,7 +35,7 @@ appearance remain manual launch gates.
 | APP-001 | Product | Core application structure | PASS | All launch-critical pages and analytical modules exist |
 | DATA-001 | Product | Safe representative sample | PASS | `sample_sales.csv` contains date, region and sales |
 | DATA-002 | Product | Varied examples | PASS | Five example CSV files are present |
-| TEST-001 | Engineering | Automated test structure | PASS | Twenty-one test modules are present after L-05C |
+| TEST-001 | Engineering | Automated test structure | PASS | Twenty-two test modules are present after L-05C |
 | CI-001 | Engineering | CI installs dependencies | PASS | GitHub Actions installs the bounded requirements |
 | CI-002 | Engineering | CI runs pytest | PASS | GitHub Actions executes the complete test suite |
 | CI-003 | Engineering | CI runs static checks | PASS | Ruff checks syntax-level and Pyflakes failures |
@@ -137,7 +137,9 @@ appearance remain manual launch gates.
    charts while preserving full-data KPI, insight and quality calculations.
 6. Added visible progress feedback and lightweight per-session result reuse
    without hashing or copying the full dataframe on repeated page visits.
-7. Final post-optimization Windows UI responsiveness evidence remains to be
+7. Removed the default full-data copy from Executive Overview and reused its
+   filter metadata and KPI payload within the active session.
+8. Final post-optimization Windows UI responsiveness evidence remains to be
    recorded.
 
 ### P1 — Launch assets and manual validation

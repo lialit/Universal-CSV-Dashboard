@@ -25,6 +25,11 @@ and small configuration keys; it does not hash or copy the complete dataframe
 on every page render. Uploading or preparing a new dataframe clears those
 derived results automatically.
 
+Executive Overview also reuses its date bounds, category options and KPI
+payload. When the date and category controls still represent the complete
+dataset, the page keeps the original dataframe reference instead of creating a
+full-size filtered copy.
+
 ## Reference smoke test
 
 Generate a synthetic 24 MB file from the project root:
