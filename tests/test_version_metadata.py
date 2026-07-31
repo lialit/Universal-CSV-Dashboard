@@ -30,9 +30,9 @@ def sample_config() -> dict[str, object]:
     }
 
 
-def test_version_is_single_release_candidate_value() -> None:
+def test_version_is_single_stable_release_value() -> None:
     assert PRODUCT_VERSION == __version__
-    assert PRODUCT_VERSION == "1.0.0-rc.1"
+    assert PRODUCT_VERSION == "1.0.0"
 
 
 def test_project_state_uses_canonical_product_version() -> None:

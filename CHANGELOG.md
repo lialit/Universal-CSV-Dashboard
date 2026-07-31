@@ -7,12 +7,18 @@ and the project intends to follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) as formal releases
 are established.
 
-Version sections below record product milestones. The repository does not yet
-have a stable `1.0` release.
+Version sections below record product milestones. Version `1.0.0` is the first
+stable public release.
 
 ---
 
 ## [Unreleased]
+
+No unreleased changes.
+
+---
+
+## [1.0.0] — 2026-07-31
 
 ### Added
 

@@ -1,6 +1,6 @@
 # Performance Boundary
 
-Universal CSV Dashboard `1.0.0-rc.1` supports CSV uploads up to **25 MB**.
+Universal CSV Dashboard `1.0.0` supports CSV uploads up to **25 MB**.
 The application enforces the same boundary in the Streamlit uploader and the
 CSV parser.
 
@@ -81,4 +81,4 @@ The reference check passes when:
 Files above 25 MB should be reduced, split or aggregated before upload. Future
 versions may support larger inputs through chunked parsing, sampling or a
 different execution architecture, but those capabilities are not part of the
-v1.0 release candidate.
+stable v1.0 release.

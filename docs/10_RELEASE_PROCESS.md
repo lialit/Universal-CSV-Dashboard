@@ -3,9 +3,9 @@
 This procedure is the executable release checklist for Universal CSV
 Dashboard. It covers release candidates, final releases and rollback.
 
-The current candidate is `1.0.0-rc.1`. A release is not complete because the
-version exists in source code: validation, a tag and a GitHub Release are
-separate, intentional steps.
+The first stable release is `1.0.0`, promoted from `1.0.0-rc.1`. A release is
+not complete because the version exists in source code: validation, a tag and
+a GitHub Release are separate, intentional steps.
 
 ## Release roles and sources of truth
 

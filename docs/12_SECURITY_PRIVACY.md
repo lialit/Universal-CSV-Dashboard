@@ -2,8 +2,8 @@
 
 Universal CSV Dashboard is designed around a local-first trust model.
 
-This document describes what the current release candidate does, what it does
-not do and which responsibilities remain with the user or deployment operator.
+This document describes what the stable `1.0.0` release does, what it does not
+do and which responsibilities remain with the user or deployment operator.
 
 ## Data-flow summary
 
@@ -83,8 +83,8 @@ formula injection risk.
 
 ## External processing
 
-The current release candidate does not call an external AI model or analytics
-API. The Analysis Assistant is deterministic and local.
+The stable `1.0.0` release does not call an external AI model or analytics API.
+The Analysis Assistant is deterministic and local.
 
 Any future external processing must be:
 

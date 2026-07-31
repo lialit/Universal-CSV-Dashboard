@@ -1,8 +1,8 @@
 # v1.0 — Launch
 
-> **Status: Release candidate — validation in progress, not released**
+> **Status: Released — 2026-07-31**
 
-The frozen candidate version is `1.0.0-rc.1`.
+The stable release version is `1.0.0`.
 
 `v1.0` is a stability and trust milestone. It includes the validated local
 workflow delivered through the `0.3–0.6` development milestones; it does not
@@ -30,10 +30,11 @@ Version `1.0` means:
 
 It does not mean that the product has every planned feature.
 
-## Frozen candidate scope
+## Frozen release scope
 
-Only launch-blocking fixes may enter `1.0.0-rc.1`. New product capabilities
-move to a later version.
+The final release contains the scope validated in `1.0.0-rc.1` plus the
+representative-example hardening completed before promotion. New product
+capabilities move to a later version.
 
 Required core capabilities:
 
@@ -115,12 +116,12 @@ Required core capabilities:
 - [x] Verified demo GIF
 - [x] Open Graph image
 - [x] GitHub Release description
-- [ ] Version tag
+- [x] Version tag
 - [x] Announcement copy
 
 ### Final screenshot set
 
-The release-candidate screenshots use the bundled synthetic
+The release screenshots use the bundled synthetic
 `sample_data/sample_sales.csv` file and do not contain private business data.
 
 | File | Product view |
@@ -154,7 +155,7 @@ The release-candidate screenshots use the bundled synthetic
 | Installation differs across systems | Test supported environments from clean setups |
 | Visual polish hides analytical limitations | Preserve quality and methodology context |
 
-## Release-candidate process
+## Release process
 
 The complete executable procedure, including clean-install validation, pytest,
 tagging, publication and rollback, is maintained in
@@ -170,8 +171,8 @@ support.
 
 | Field | Value |
 |---|---|
-| Release date | — |
-| Git tag | — |
-| GitHub Release | — |
+| Release date | 2026-07-31 |
+| Git tag | `v1.0.0` |
+| GitHub Release | `https://github.com/lialit/Universal-CSV-Dashboard/releases/tag/v1.0.0` |
 | Supported Python | Python 3.11 |
 | Migration required | No migration from a published version; saved project compatibility is validated when loaded |
