@@ -46,6 +46,10 @@ def complete_fixture(root: Path) -> None:
         ),
     )
     write(
+        root / "LICENSE",
+        "MIT License\n\nPermission is hereby granted, free of charge.",
+    )
+    write(
         root / "CHANGELOG.md",
         "## [0.3]\n## [0.4]\n## [0.5]\n## [0.6]\n",
     )
@@ -154,6 +158,19 @@ def test_incomplete_fixture_reports_blockers(tmp_path: Path) -> None:
     assert report.overall_status == "Not ready"
     assert report.fail_count > 0
     assert any(check.status == FAIL for check in report.checks)
+
+
+def test_license_placeholder_is_a_release_blocker(tmp_path: Path) -> None:
+    complete_fixture(tmp_path)
+    write(tmp_path / "LICENSE", "Choose a license later.")
+
+    report = audit_repository(tmp_path)
+    check = next(
+        item for item in report.checks if item.check_id == "DOC-001"
+    )
+
+    assert check.status == FAIL
+    assert "LICENSE" in check.detail
 
 
 def test_placeholder_ci_is_not_treated_as_execution(

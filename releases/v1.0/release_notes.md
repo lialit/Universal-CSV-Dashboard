@@ -104,19 +104,33 @@ Required core capabilities:
 - [x] README matches shipped behavior
 - [x] `START_HERE.md` installation verified
 - [x] Product documents remain aligned
-- [ ] Architecture and contribution docs are current
-- [ ] License and attribution confirmed
-- [ ] Issue and pull-request templates reviewed
+- [x] Architecture and contribution docs are current
+- [x] License and attribution confirmed
+- [x] Issue and pull-request templates reviewed
 - [x] Release notes and changelog completed
 
 ### Release assets
 
-- [ ] Final screenshots
+- [x] Final screenshots
 - [x] Verified demo GIF
 - [x] Open Graph image
-- [ ] GitHub Release description
+- [x] GitHub Release description
 - [ ] Version tag
-- [ ] Announcement copy
+- [x] Announcement copy
+
+### Final screenshot set
+
+The release-candidate screenshots use the bundled synthetic
+`sample_data/sample_sales.csv` file and do not contain private business data.
+
+| File | Product view |
+|---|---|
+| `screenshots/01-upload-configure.png` | Upload, privacy notice and automatic field suggestions |
+| `screenshots/02-executive-overview.png` | KPI cards, verified facts, interpretations and filters |
+| `screenshots/03-business-insights.png` | Evidence-linked insights and confidence context |
+| `screenshots/04-analysis-assistant.png` | Local deterministic guided analysis |
+| `screenshots/05-data-quality.png` | Quality score and transparent calculation breakdown |
+| `screenshots/06-export-share.png` | Saved project and responsible report export workflow |
 
 ## Non-goals
 
