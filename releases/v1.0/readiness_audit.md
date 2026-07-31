@@ -4,9 +4,10 @@
 
 **Baseline commit:** `f7b5081`
 
-**Latest checkpoint:** L-05C — Performance Boundary (in progress)
+**Latest checkpoint:** L-05C — Performance Boundary (complete)
 
-**Overall status:** **Automated checks pass; manual launch validation remains**
+**Overall status:** **Automated checks and L-05 manual validation pass; final
+launch assets remain**
 
 ## Result
 
@@ -23,9 +24,9 @@ The full automated test suite, including the readiness checker tests, passes:
 ```
 
 This means the implemented product logic and repository evidence pass the
-current automated checks. It does **not** by itself mean the repository is ready
-for a public `v1.0` release. Performance, final screenshots and export
-appearance remain manual launch gates.
+current automated checks. Clean-install, UX/accessibility, export appearance
+and the validated performance boundary have also been reviewed manually. Final
+screenshots, tagging and GitHub Release publication remain launch gates.
 
 ## Automated findings
 
@@ -125,7 +126,7 @@ appearance remain manual launch gates.
 4. Reviewed the current navigation pages and invalid-file behavior without a
    client traceback.
 
-### In progress in L-05C — Performance boundary
+### Completed in L-05C — Performance boundary
 
 1. Replaced the unvalidated 200 MB promise with a conservative 25 MB v1.0
    boundary.
@@ -139,14 +140,14 @@ appearance remain manual launch gates.
    without hashing or copying the full dataframe on repeated page visits.
 7. Removed the default full-data copy from Executive Overview and reused its
    filter metadata and KPI payload within the active session.
-8. Final post-optimization Windows UI responsiveness evidence remains to be
-   recorded.
+8. Repeated the main-page navigation check on the Windows Python 3.11 reference
+   environment. After the first calculation, Business Insights, Analysis
+   Assistant, Data Quality and Executive Overview reopened immediately in the
+   observed session.
 
 ### P1 — Launch assets and manual validation
 
 1. Capture final screenshots.
-2. Measure behavior at the validated 25 MB CSV boundary.
-3. Review export appearance.
 
 ## Recommended launch sequence
 
@@ -155,7 +156,7 @@ appearance remain manual launch gates.
 | L-02 | Complete — real CI, repository hygiene and version metadata |
 | L-03 | Complete — security, privacy and dependency review |
 | L-04 | Complete — public history, frozen scope and release process aligned |
-| L-05 | Manual UX, performance and clean-install validation |
+| L-05 | Complete — clean install, UX/accessibility, exports and 25 MB performance boundary validated |
 | L-06 | In progress — verified demo complete; final screenshots, tag and GitHub Release remain |
 
 ## Re-run the audit

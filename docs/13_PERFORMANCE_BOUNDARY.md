@@ -54,6 +54,11 @@ Review Upload & Configure, Executive Overview, Business Insights, Analysis
 Assistant and Data Quality. Record the observed timings and any visible UI
 delay in `releases/v1.0/readiness_audit.md`.
 
+The reference Windows check completed with 4.07 seconds of core analysis for
+738,965 rows. After the first page calculations populated the session result
+cache, all reviewed analytical pages reopened immediately in the observed
+session.
+
 The fixture is synthetic and ignored by Git. Remove it after validation:
 
 ```powershell
