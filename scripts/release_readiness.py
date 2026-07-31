@@ -203,18 +203,37 @@ def _required_documentation_check(root: Path) -> ReadinessCheck:
     missing = [
         path for path in required if not (root / path).is_file()
     ]
+    license_text = _read(root / "LICENSE").lower()
+    license_markers = (
+        "permission is hereby granted",
+        "apache license\nversion 2.0",
+        "gnu general public license",
+        "mozilla public license",
+        "all rights reserved",
+    )
+    license_is_placeholder = bool(license_text) and not any(
+        marker in license_text for marker in license_markers
+    )
+    failures = list(missing)
+    if license_is_placeholder:
+        failures.append("LICENSE (no recognizable license terms)")
     return _check(
         "DOC-001",
         "Documentation",
         "Required public documents",
-        FAIL if missing else PASS,
+        FAIL if failures else PASS,
         (
-            "Missing: " + ", ".join(missing)
-            if missing
-            else "README, onboarding, changelog, contribution, license and "
-            "security documents are present."
+            "Invalid or missing: " + ", ".join(failures)
+            if failures
+            else "README, onboarding, changelog, contribution, substantive "
+            "license and security documents are present."
         ),
-        "Add every missing public document." if missing else "",
+        (
+            "Add every missing document and replace license placeholders with "
+            "the chosen license terms."
+            if failures
+            else ""
+        ),
     )
 
 

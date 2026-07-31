@@ -89,7 +89,7 @@ The current application uses:
 ### 5. Run the application
 
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
 Streamlit will display a local address, usually:
@@ -102,7 +102,8 @@ Open it in your browser.
 
 ## Your first product tour
 
-The application contains four core dashboard pages and one product page.
+The application contains five analysis pages, one sharing page and one product
+page.
 
 ### 1. Upload & Configure
 
@@ -124,15 +125,28 @@ Use this page for the first business read.
 - Check the most important category view.
 - Apply available filters to narrow the analysis.
 
-### 3. Data Analysis
+### 3. Business Insights
 
-Use this page when you need more detail.
+Use this page to review patterns that crossed the current deterministic
+thresholds.
 
-- Explore trends over time.
-- Compare categorical values.
-- Inspect distributions and relationships supported by the dataset.
+- Inspect contributions, trends, anomalies and numeric relationships.
+- Read the evidence behind each observation.
+- Keep the confidence reason and limitation with the interpretation.
 
-### 4. Data Quality
+### 4. Analysis Assistant
+
+Use the local guided workflow when you need a business-readable explanation.
+
+- Choose a supported question.
+- Review the evidence, confidence and recommended next steps.
+- Open the Calculation Explainer to inspect fields, aggregation and steps.
+- Draft an evidence-based summary and run the Claim Guard before sharing.
+
+The assistant uses local deterministic rules. It does not send CSV values to
+an external AI service.
+
+### 5. Data Quality
 
 Open this page before trusting a conclusion.
 
@@ -140,8 +154,18 @@ Open this page before trusting a conclusion.
 - Check duplicate rows.
 - Inspect column-level quality.
 - Identify fields that may need cleaning or reinterpretation.
+- Download a de-duplicated CSV when appropriate.
 
-### 5. About This Template
+### 6. Export & Share
+
+Use this page after reviewing the analysis.
+
+- Save reusable project configuration without embedding CSV rows.
+- Create traceable Excel workbooks.
+- Create executive PDF reports with quality and limitation context.
+- Choose the Light, Corporate or Dark report theme.
+
+### 7. About This Template
 
 Use this page for product context and guidance about the dashboard.
 
@@ -159,7 +183,8 @@ Good starter datasets usually contain:
 - a file size of no more than 25 MB for the validated v1.0 workflow.
 
 Examples include sales, marketing, inventory, finance and operational exports.
-Sample files are available in `sample_data/` and `examples/`.
+For the first product tour, use `sample_data/sample_sales.csv`. Additional
+examples are available in `examples/`.
 
 Avoid uploading confidential production data until you have reviewed the code,
 your local environment and your organisation's data-handling requirements.
@@ -193,7 +218,7 @@ If you want to change a page, find the corresponding module in `views/`.
 From the repository root:
 
 ```bash
-pytest
+python -m pytest -q
 ```
 
 Run the tests before and after changing detection, analysis or shared

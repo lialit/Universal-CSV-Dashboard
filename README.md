@@ -72,6 +72,20 @@ review the detected fields and inspect the recommended dashboard composition.
 The interface is intentionally calm and consistent: a focused navigation rail,
 clear KPI cards, useful filters and business-readable chart titles.
 
+### Release candidate gallery
+
+| Upload & Configure | Executive Overview |
+|---|---|
+| ![Upload and automatic field suggestions](./releases/v1.0/screenshots/01-upload-configure.png) | ![Executive metrics, facts and interpretations](./releases/v1.0/screenshots/02-executive-overview.png) |
+
+| Business Insights | Analysis Assistant |
+|---|---|
+| ![Evidence-linked business insights](./releases/v1.0/screenshots/03-business-insights.png) | ![Local deterministic analysis assistant](./releases/v1.0/screenshots/04-analysis-assistant.png) |
+
+| Data Quality | Export & Share |
+|---|---|
+| ![Transparent Data Quality Score](./releases/v1.0/screenshots/05-data-quality.png) | ![Saved project, Excel and PDF export workflow](./releases/v1.0/screenshots/06-export-share.png) |
+
 ## Why not start in a spreadsheet?
 
 Spreadsheets remain excellent for direct editing and detailed ad-hoc work.

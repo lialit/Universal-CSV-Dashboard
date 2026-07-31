@@ -4,7 +4,7 @@
 
 **Baseline commit:** `f7b5081`
 
-**Latest checkpoint:** L-05C — Performance Boundary (complete)
+**Latest checkpoint:** L-06B — Final Screenshots (complete)
 
 **Overall status:** **Automated checks and L-05 manual validation pass; final
 launch assets remain**
@@ -20,13 +20,15 @@ launch assets remain**
 The full automated test suite, including the readiness checker tests, passes:
 
 ```text
-164 passed
+165 passed
 ```
 
 This means the implemented product logic and repository evidence pass the
 current automated checks. Clean-install, UX/accessibility, export appearance
-and the validated performance boundary have also been reviewed manually. Final
-screenshots, tagging and GitHub Release publication remain launch gates.
+and the validated performance boundary have also been reviewed manually. The
+verified demo and six final screenshots now match the candidate. MIT licensing
+and attribution are confirmed. Tagging and GitHub Release publication remain
+launch gates.
 
 ## Automated findings
 
@@ -147,7 +149,7 @@ screenshots, tagging and GitHub Release publication remain launch gates.
 
 ### P1 — Launch assets and manual validation
 
-1. Capture final screenshots.
+1. Create the immutable release-candidate tag and GitHub pre-release.
 
 ## Recommended launch sequence
 
@@ -157,7 +159,7 @@ screenshots, tagging and GitHub Release publication remain launch gates.
 | L-03 | Complete — security, privacy and dependency review |
 | L-04 | Complete — public history, frozen scope and release process aligned |
 | L-05 | Complete — clean install, UX/accessibility, exports and 25 MB performance boundary validated |
-| L-06 | In progress — verified demo complete; final screenshots, tag and GitHub Release remain |
+| L-06 | In progress — demo, screenshots, MIT license and release copy complete; tag and GitHub Release remain |
 
 ## Re-run the audit
 
