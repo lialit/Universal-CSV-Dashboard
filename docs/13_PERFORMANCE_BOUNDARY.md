@@ -19,6 +19,12 @@ distribution charts use a deterministic, explicitly labelled visual sample of
 at most 50,000 values when the dataset is larger. This limits browser payloads
 without presenting the sampled chart as an exact full-data calculation.
 
+Repeated page visits reuse derived results in the current Streamlit session.
+The session cache is tied to the identity of the uploaded in-memory dataframe
+and small configuration keys; it does not hash or copy the complete dataframe
+on every page render. Uploading or preparing a new dataframe clears those
+derived results automatically.
+
 ## Reference smoke test
 
 Generate a synthetic 24 MB file from the project root:

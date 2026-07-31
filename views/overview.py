@@ -13,6 +13,7 @@ from app_core.executive_summary import (
 from app_core.formatting import compact_number
 from app_core.metrics import recent_metric_series, summarize_metric
 from app_core.recommendations import recommend_analysis
+from app_core.session_cache import session_result, stable_mapping_key
 from app_core.state import require_dataset
 from app_core.theme import render_header
 
@@ -141,16 +142,6 @@ def build_charts(dataframe, config, metric: str):
     return charts
 
 
-@st.cache_data(show_spinner=False)
-def cached_executive_summary(dataframe, config):
-    return build_executive_summary(dataframe, config)
-
-
-@st.cache_data(show_spinner=False)
-def cached_charts(dataframe, config, metric: str):
-    return build_charts(dataframe, config, metric)
-
-
 dataframe, config = require_dataset()
 metric = str(config["metric_column"])
 date_column = config.get("date_column")
@@ -163,6 +154,7 @@ render_header(
 )
 
 filtered = dataframe.copy()
+filter_key = []
 filter_box = st.sidebar.container(border=True)
 filter_box.markdown("### Dashboard filters")
 
@@ -181,6 +173,9 @@ if date_column:
             isinstance(selected_dates, tuple)
             and len(selected_dates) == 2
         ):
+            filter_key.append(
+                ("dates", *(item.isoformat() for item in selected_dates))
+            )
             filtered = filtered[
                 filtered[date_column].dt.date.between(
                     *selected_dates
@@ -200,6 +195,7 @@ if category_column:
         category_values,
         default=category_values,
     )
+    filter_key.append(("categories", *selected_categories))
     filtered = filtered[
         filtered[category_column]
         .astype("string")
@@ -214,7 +210,15 @@ render_kpis(filtered, config, metric)
 
 st.subheader("Executive summary")
 with st.spinner("Calculating the executive summary..."):
-    summary = cached_executive_summary(filtered, config)
+    summary = session_result(
+        dataframe,
+        (
+            "executive-summary",
+            tuple(filter_key),
+            stable_mapping_key(config),
+        ),
+        lambda: build_executive_summary(filtered, config),
+    )
 st.info(summary.headline)
 facts_column, interpretation_column = st.columns(2)
 
@@ -257,7 +261,16 @@ st.caption(
 st.write("")
 
 with st.spinner("Preparing the charts..."):
-    charts = cached_charts(filtered, config, metric)
+    charts = session_result(
+        dataframe,
+        (
+            "overview-charts",
+            tuple(filter_key),
+            metric,
+            stable_mapping_key(config),
+        ),
+        lambda: build_charts(filtered, config, metric),
+    )
 for start in range(0, len(charts), 2):
     row = st.columns(2)
     for offset, figure in enumerate(charts[start : start + 2]):

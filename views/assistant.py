@@ -12,6 +12,7 @@ from app_core.calculation_explainer import (
     explain_calculation,
 )
 from app_core.claim_guard import review_summary_draft
+from app_core.session_cache import session_result, stable_mapping_key
 from app_core.state import require_dataset
 from app_core.summary_drafts import (
     AUDIENCES,
@@ -32,11 +33,6 @@ def render_confidence(answer) -> None:
         st.info(message)
     else:
         st.warning(message)
-
-
-@st.cache_data(show_spinner=False)
-def cached_guided_answer(dataframe, config, question_key):
-    return answer_guided_question(dataframe, config, question_key)
 
 
 dataframe, config = require_dataset()
@@ -116,10 +112,18 @@ with context_column:
     st.caption(selected_question.availability_reason)
 
 with st.spinner("Calculating a local evidence-linked answer..."):
-    answer = cached_guided_answer(
+    answer = session_result(
         dataframe,
-        assistant_config,
-        selected_key,
+        (
+            "guided-answer",
+            selected_key,
+            stable_mapping_key(assistant_config),
+        ),
+        lambda: answer_guided_question(
+            dataframe,
+            assistant_config,
+            selected_key,
+        ),
     )
 
 st.subheader("Assistant answer")
@@ -164,10 +168,18 @@ with st.expander("How was this calculated?", expanded=False):
             f"{selected_key}"
         ),
     )
-    calculation = explain_calculation(
+    calculation = session_result(
         dataframe,
-        assistant_config,
-        selected_calculation,
+        (
+            "calculation-explainer",
+            selected_calculation,
+            stable_mapping_key(assistant_config),
+        ),
+        lambda: explain_calculation(
+            dataframe,
+            assistant_config,
+            selected_calculation,
+        ),
     )
 
     result_column, rows_column, excluded_column = st.columns(3)
@@ -241,11 +253,20 @@ with st.expander("Draft an evidence-based summary", expanded=False):
             key=f"summary_length_{selected_metric}",
         )
 
-    draft = build_summary_draft(
+    draft = session_result(
         dataframe,
-        assistant_config,
-        audience=draft_audience,
-        length=draft_length,
+        (
+            "summary-draft",
+            draft_audience,
+            draft_length,
+            stable_mapping_key(assistant_config),
+        ),
+        lambda: build_summary_draft(
+            dataframe,
+            assistant_config,
+            audience=draft_audience,
+            length=draft_length,
+        ),
     )
     validation_issues = validate_summary_draft(draft)
     claim_review = review_summary_draft(draft)
