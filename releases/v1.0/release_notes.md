@@ -66,10 +66,10 @@ Required core capabilities:
 
 ### Product validation
 
-- [ ] Core workflow tested with varied business datasets
-- [ ] Field-detection corrections reviewed
-- [ ] Time to first useful understanding measured
-- [ ] Empty, warning and error states validated
+- [x] Core workflow tested with varied business datasets
+- [x] Field-detection corrections reviewed
+- [x] Time to first useful understanding measured
+- [x] Empty, warning and error states validated
 - [x] Known analytical limitations documented
 
 ### Engineering
@@ -79,7 +79,7 @@ Required core capabilities:
 - [x] CI checks are stable
 - [x] Clean installation succeeds
 - [x] Dependencies are pinned or bounded intentionally
-- [ ] Performance is reviewed for the validated 25 MB file size
+- [x] Performance is reviewed for the validated 25 MB file size
 - [x] Upgrade and compatibility policy is documented
 
 ### Privacy and security
@@ -97,7 +97,7 @@ Required core capabilities:
 - [x] Color is not the only information carrier
 - [x] Contrast and zoom reviewed
 - [x] Long labels and narrow screens tested
-- [ ] First-run guidance validated with a new user
+- [x] First-run guidance validated with a new user
 
 ### Documentation and open source
 

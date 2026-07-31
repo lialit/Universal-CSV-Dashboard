@@ -1,3 +1,9 @@
-id,value
-1,100
-2,200
+date,channel,campaign,marketing_spend,leads,conversions
+2026-01-01,Search,Winter Launch,1200,84,17
+2026-01-02,Social,Winter Launch,940,73,12
+2026-01-03,Email,Retention,420,61,18
+2026-01-04,Search,Brand Growth,1380,92,19
+2026-01-05,Social,Brand Growth,1020,79,14
+2026-01-06,Email,Retention,460,66,21
+2026-01-07,Search,Winter Launch,1490,101,23
+2026-01-08,Social,Brand Growth,1110,88,16

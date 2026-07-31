@@ -1,3 +1,9 @@
-id,value
-1,100
-2,200
+date,store,product,sales,units,stock_on_hand
+2026-01-01,Central,Notebook,860,43,220
+2026-01-02,Riverside,Desk Lamp,720,18,94
+2026-01-03,Central,Office Chair,1320,11,66
+2026-01-04,Riverside,Notebook,940,47,168
+2026-01-05,Central,Desk Lamp,840,21,71
+2026-01-06,Riverside,Office Chair,1440,12,48
+2026-01-07,Central,Notebook,1080,54,114
+2026-01-08,Riverside,Desk Lamp,920,23,59

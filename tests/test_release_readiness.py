@@ -112,7 +112,14 @@ def complete_fixture(root: Path) -> None:
     for index in range(3):
         write(
             root / f"examples/example_{index}.csv",
-            "date,region,sales\n2026-01-01,North,10\n",
+            (
+                "date,region,sales\n"
+                "2026-01-01,North,10\n"
+                "2026-01-02,South,12\n"
+                "2026-01-03,North,11\n"
+                "2026-01-04,South,14\n"
+                "2026-01-05,North,13\n"
+            ),
         )
     for index in range(10):
         write(
@@ -158,6 +165,22 @@ def test_incomplete_fixture_reports_blockers(tmp_path: Path) -> None:
     assert report.overall_status == "Not ready"
     assert report.fail_count > 0
     assert any(check.status == FAIL for check in report.checks)
+
+
+def test_placeholder_example_files_are_release_blockers(
+    tmp_path: Path,
+) -> None:
+    complete_fixture(tmp_path)
+    for path in (tmp_path / "examples").glob("*.csv"):
+        write(path, "id,value\n1,100\n2,150\n")
+
+    report = audit_repository(tmp_path)
+    check = next(
+        item for item in report.checks if item.check_id == "DATA-002"
+    )
+
+    assert check.status == FAIL
+    assert "Placeholder or unsupported" in check.detail
 
 
 def test_license_placeholder_is_a_release_blocker(tmp_path: Path) -> None:

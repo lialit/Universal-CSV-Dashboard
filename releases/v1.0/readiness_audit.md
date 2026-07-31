@@ -4,10 +4,10 @@
 
 **Baseline commit:** `f7b5081`
 
-**Latest checkpoint:** L-06B — Final Screenshots (complete)
+**Latest checkpoint:** L-07 — Published RC validation and example hardening
 
-**Overall status:** **Automated checks and L-05 manual validation pass; final
-launch assets remain**
+**Overall status:** **Published release candidate validated; final promotion
+pending**
 
 ## Result
 
@@ -20,15 +20,15 @@ launch assets remain**
 The full automated test suite, including the readiness checker tests, passes:
 
 ```text
-165 passed
+176 passed
 ```
 
 This means the implemented product logic and repository evidence pass the
 current automated checks. Clean-install, UX/accessibility, export appearance
 and the validated performance boundary have also been reviewed manually. The
-verified demo and six final screenshots now match the candidate. MIT licensing
-and attribution are confirmed. Tagging and GitHub Release publication remain
-launch gates.
+verified demo and six final screenshots match the candidate. MIT licensing and
+attribution are confirmed. The immutable `v1.0.0-rc.1` tag and GitHub
+pre-release are published. Final `v1.0.0` promotion remains the launch gate.
 
 ## Automated findings
 
@@ -37,8 +37,8 @@ launch gates.
 | DOC-001 | Documentation | Required public documents | PASS | README, onboarding, changelog, contribution, license and security files exist |
 | APP-001 | Product | Core application structure | PASS | All launch-critical pages and analytical modules exist |
 | DATA-001 | Product | Safe representative sample | PASS | `sample_sales.csv` contains date, region and sales |
-| DATA-002 | Product | Varied examples | PASS | Five example CSV files are present |
-| TEST-001 | Engineering | Automated test structure | PASS | Twenty-two test modules are present after L-05C |
+| DATA-002 | Product | Varied examples | PASS | Five root examples and five domain samples support date, metric and category detection |
+| TEST-001 | Engineering | Automated test structure | PASS | Twenty-three test modules are present after RC hardening |
 | CI-001 | Engineering | CI installs dependencies | PASS | GitHub Actions installs the bounded requirements |
 | CI-002 | Engineering | CI runs pytest | PASS | GitHub Actions executes the complete test suite |
 | CI-003 | Engineering | CI runs static checks | PASS | Ruff checks syntax-level and Pyflakes failures |
@@ -147,9 +147,25 @@ launch gates.
    Assistant, Data Quality and Executive Overview reopened immediately in the
    observed session.
 
-### P1 — Launch assets and manual validation
+### Completed in L-07 — Published RC validation and example hardening
 
-1. Create the immutable release-candidate tag and GitHub pre-release.
+1. Published the immutable `v1.0.0-rc.1` tag and GitHub pre-release from the
+   reviewed merge commit.
+2. Repeated a clean checkout, dependency installation, compatibility scan,
+   vulnerability audit, Ruff, security review, pytest and strict readiness
+   audit against the published tag.
+3. Identified that the public domain examples were still two-row `id,value`
+   placeholders despite satisfying the old file-count check.
+4. Replaced the placeholders with safe synthetic datasets for sales,
+   e-commerce, finance, inventory, marketing and retail workflows.
+5. Added automated detection coverage for every public example and made
+   placeholder examples a deterministic release blocker.
+
+### P1 — Final promotion
+
+1. Merge the example-hardening pull request after CI passes.
+2. Promote the validated code to version `1.0.0` in a focused release PR.
+3. Create the immutable `v1.0.0` tag and publish the final GitHub Release.
 
 ## Recommended launch sequence
 
@@ -159,7 +175,8 @@ launch gates.
 | L-03 | Complete — security, privacy and dependency review |
 | L-04 | Complete — public history, frozen scope and release process aligned |
 | L-05 | Complete — clean install, UX/accessibility, exports and 25 MB performance boundary validated |
-| L-06 | In progress — demo, screenshots, MIT license and release copy complete; tag and GitHub Release remain |
+| L-06 | Complete — demo, screenshots, MIT license, release copy, tag and GitHub pre-release published |
+| L-07 | Complete — published RC retested and representative examples hardened |
 
 ## Re-run the audit
 
