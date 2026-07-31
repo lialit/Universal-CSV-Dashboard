@@ -649,7 +649,7 @@ def _changelog_check(root: Path) -> ReadinessCheck:
 
 def _release_status_check(root: Path) -> ReadinessCheck:
     notes = _read(root / "releases/v1.0/release_notes.md")
-    candidate = bool(
+    publication_status = bool(
         re.search(
             r"Status:\s*(?:Release candidate|Released)",
             notes,
@@ -659,14 +659,18 @@ def _release_status_check(root: Path) -> ReadinessCheck:
     return _check(
         "REL-002",
         "Release",
-        "v1.0 has an explicit release-candidate status",
-        PASS if candidate else FAIL,
+        "v1.0 has an explicit publication status",
+        PASS if publication_status else FAIL,
         (
             "v1.0 is marked as a release candidate or released."
-            if candidate
+            if publication_status
             else "v1.0 is still marked as planned."
         ),
-        "Freeze scope, resolve blockers and mark the release candidate." if not candidate else "",
+        (
+            "Freeze scope, resolve blockers and record the publication status."
+            if not publication_status
+            else ""
+        ),
     )
 
 

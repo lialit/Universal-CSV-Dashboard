@@ -63,4 +63,4 @@ guide for the complete Windows, macOS and Linux setup flow.
 
 Please report defects through GitHub Issues and security concerns through the
 private process in
-[`SECURITY.md`](https://github.com/lialit/Universal-CSV-Dashboard/blob/v1.0.0-rc.1/SECURITY.md).
+[`SECURITY.md`](https://github.com/lialit/Universal-CSV-Dashboard/blob/v1.0.0-rc.1/.github/SECURITY.md).

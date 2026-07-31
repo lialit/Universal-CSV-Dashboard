@@ -72,7 +72,7 @@ review the detected fields and inspect the recommended dashboard composition.
 The interface is intentionally calm and consistent: a focused navigation rail,
 clear KPI cards, useful filters and business-readable chart titles.
 
-### Release candidate gallery
+### Product gallery
 
 | Upload & Configure | Executive Overview |
 |---|---|

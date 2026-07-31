@@ -4,10 +4,10 @@
 
 **Baseline commit:** `f7b5081`
 
-**Latest checkpoint:** L-07 — Published RC validation and example hardening
+**Latest checkpoint:** L-08 — Final `1.0.0` promotion prepared
 
-**Overall status:** **Published release candidate validated; final promotion
-pending**
+**Overall status:** **Approved for the immutable `v1.0.0` tag and final GitHub
+Release**
 
 ## Result
 
@@ -26,9 +26,10 @@ The full automated test suite, including the readiness checker tests, passes:
 This means the implemented product logic and repository evidence pass the
 current automated checks. Clean-install, UX/accessibility, export appearance
 and the validated performance boundary have also been reviewed manually. The
-verified demo and six final screenshots match the candidate. MIT licensing and
-attribution are confirmed. The immutable `v1.0.0-rc.1` tag and GitHub
-pre-release are published. Final `v1.0.0` promotion remains the launch gate.
+verified demo and six final screenshots match the release. MIT licensing and
+attribution are confirmed. The published `v1.0.0-rc.1` candidate was retested,
+the placeholder examples found during that review were replaced, and the
+canonical version is ready for final `v1.0.0` publication.
 
 ## Automated findings
 
@@ -51,9 +52,9 @@ pre-release are published. Final `v1.0.0` promotion remains the launch gate.
 | SEC-003 | Security | Local-first privacy controls | PASS | Upload flow, runtime clients, errors and privacy documentation pass review |
 | DOC-002 | Documentation | README matches shipped UI | PASS | README includes every current navigation page and the delivered 0.3–0.6 capabilities |
 | REL-001 | Release | Changelog covers 0.3–0.6 | PASS | Understand, Explain, Share and Assist are documented as delivered, untagged milestones |
-| REL-002 | Release | v1.0 release-candidate status | PASS | Scope is frozen and v1.0 is marked as release candidate |
+| REL-002 | Release | v1.0 stable-release status | PASS | Scope is frozen and v1.0 is marked as released |
 | REL-003 | Release | Valid v1.0 demo GIF | PASS | Verified 15.7-second product recording shows CSV upload, field detection and recommended dashboard composition |
-| REL-004 | Release | Canonical product version | PASS | `1.0.0-rc.1` is reused in project, Excel and PDF metadata |
+| REL-004 | Release | Canonical product version | PASS | `1.0.0` is reused in project, Excel and PDF metadata |
 | REL-005 | Release | Repeatable release process | PASS | Clean install, pytest, RC, tag, publication and rollback are executable |
 
 ## Blocker priority
@@ -161,11 +162,21 @@ pre-release are published. Final `v1.0.0` promotion remains the launch gate.
 5. Added automated detection coverage for every public example and made
    placeholder examples a deterministic release blocker.
 
-### P1 — Final promotion
+### Completed in L-08 — Final promotion preparation
 
-1. Merge the example-hardening pull request after CI passes.
-2. Promote the validated code to version `1.0.0` in a focused release PR.
-3. Create the immutable `v1.0.0` tag and publish the final GitHub Release.
+1. Merged the example-hardening pull request after GitHub Actions passed.
+2. Promoted the canonical application and export metadata to `1.0.0`.
+3. Converted the accumulated Unreleased history into the dated `1.0.0`
+   changelog section.
+4. Aligned roadmap, Release Hub, security documentation and final release
+   notes with the stable scope.
+5. Prepared final GitHub Release and announcement copy.
+
+### P1 — Final publication
+
+1. Merge the final release pull request after GitHub Actions passes.
+2. Create the immutable `v1.0.0` tag from its merge commit.
+3. Publish and verify the final GitHub Release.
 
 ## Recommended launch sequence
 
@@ -177,6 +188,7 @@ pre-release are published. Final `v1.0.0` promotion remains the launch gate.
 | L-05 | Complete — clean install, UX/accessibility, exports and 25 MB performance boundary validated |
 | L-06 | Complete — demo, screenshots, MIT license, release copy, tag and GitHub pre-release published |
 | L-07 | Complete — published RC retested and representative examples hardened |
+| L-08 | Complete — stable version metadata and public release records prepared |
 
 ## Re-run the audit
 

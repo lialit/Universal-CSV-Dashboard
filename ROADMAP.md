@@ -46,7 +46,7 @@ opaque chart generator or autonomous decision-maker.
 | `0.4` | Explain | Evidence-based observations and clearer context | Delivered in `1.0.0-rc.1` |
 | `0.5` | Share | Saved work and responsible report exports | Delivered in `1.0.0-rc.1` |
 | `0.6` | Assist | Local deterministic guidance with privacy controls | Delivered in `1.0.0-rc.1` |
-| `1.0` | Launch | Stable, documented and dependable public product | Release candidate |
+| `1.0` | Launch | Stable, documented and dependable public product | Released |
 | Post-`1.0` | Ecosystem | Specialized analytical modules on a shared core | Directional |
 
 Detailed scope, validation plans and release criteria are maintained in the
@@ -174,7 +174,7 @@ more useful first view.
 - [x] Explanations for recommended KPIs and charts
 - [x] Clear empty and unsupported-analysis guidance
 
-### Deferred beyond the current candidate
+### Deferred beyond the current release
 
 - currency and percentage semantic recognition;
 - automatic time-granularity recognition;
@@ -217,7 +217,7 @@ cannot establish.
 - [x] Confidence and limitation labels
 - [x] Explicit non-causal language
 
-### Deferred beyond the current candidate
+### Deferred beyond the current release
 
 - distribution-shift detection across arbitrary comparison periods;
 - configurable anomaly methods;
@@ -260,7 +260,7 @@ context.
 - [x] Reproducible report metadata
 - [x] Visible row-level data warning for Excel
 
-### Deferred beyond the current candidate
+### Deferred beyond the current release
 
 - customer-provided logos and arbitrary brand colors;
 - cloud project synchronization;
@@ -302,7 +302,7 @@ evidence or user control.
 - [x] Pre-share unsupported-claim checks
 - [x] Explicit local-processing guidance
 
-### Not included in the current candidate
+### Not included in the current release
 
 - external model providers;
 - uploaded-data transfer;
@@ -330,7 +330,7 @@ cost.
 
 ## `1.0` — Launch
 
-**Status: release candidate (`1.0.0-rc.1`)**
+**Status: released (`1.0.0`)**
 
 ### Goal
 
@@ -341,11 +341,11 @@ clear support expectations.
 
 #### Product
 
-- [ ] Core workflow validated with varied business datasets
-- [ ] Clear supported-input boundaries
-- [ ] Consistent empty, warning and error states
-- [ ] Stable configuration behavior
-- [ ] Responsible export workflow
+- [x] Core workflow validated with varied business datasets
+- [x] Clear supported-input boundaries
+- [x] Consistent empty, warning and error states
+- [x] Stable configuration behavior
+- [x] Responsible export workflow
 
 #### Engineering
 
@@ -353,23 +353,23 @@ clear support expectations.
 - [x] Automated test suite green
 - [x] CI checks stable
 - [x] Dependency policy documented
-- [ ] Performance reviewed for supported file sizes
+- [x] Performance reviewed for supported file sizes
 - [x] Security and privacy review completed
 
 #### Experience
 
-- [ ] Installation tested from a clean machine
-- [ ] Accessibility review completed
-- [ ] Responsive layout reviewed
-- [ ] Key workflows documented with screenshots
-- [ ] Example datasets cover primary use cases
+- [x] Installation tested from a clean machine
+- [x] Accessibility review completed
+- [x] Responsive layout reviewed
+- [x] Key workflows documented with screenshots
+- [x] Example datasets cover primary use cases
 
 #### Open source
 
 - [x] README and changelog aligned with shipped behavior
-- [ ] Contribution workflow validated
-- [ ] Issue and pull-request templates reviewed
-- [ ] License and attribution confirmed
+- [x] Contribution workflow validated
+- [x] Issue and pull-request templates reviewed
+- [x] License and attribution confirmed
 - [x] Release-candidate scope and process documented
 - [x] Support and security-reporting boundaries documented
 
@@ -491,16 +491,15 @@ Roadmap updates should:
 
 ## Current priority
 
-The immediate priority is to complete `1.0.0-rc.1` validation without adding
-new product scope.
+The immediate priority after `1.0.0` is to protect stability while collecting
+real usage feedback without expanding scope prematurely.
 
 That means:
 
-- verify installation from a clean Python 3.11 environment;
-- complete manual UX, accessibility and performance review;
-- replace the placeholder v1.0 demo with a verified final-product GIF;
-- run the strict readiness gate;
-- publish an immutable pre-release tag and GitHub Release only after every
-  blocker is resolved.
+- monitor reproducible installation and CSV compatibility reports;
+- triage defects against the documented 25 MB boundary;
+- preserve local-first privacy and evidence-linked explanations;
+- use patch releases for focused fixes;
+- evaluate post-`1.0` work only after enough product feedback exists.
 
 > **Freeze the scope. Verify the evidence. Publish only what passed.**
