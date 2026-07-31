@@ -1,20 +1,20 @@
 # v1.0 Release Readiness Audit
 
-**Audit date:** 2026-07-24
+**Audit date:** 2026-07-31
 
-**Baseline commit:** `38bc954`
+**Baseline commit:** `c573e3f`
 
-**Latest checkpoint:** L-04B — Release Process & RC Alignment
+**Latest checkpoint:** L-06A — Verified Product Demo
 
-**Overall status:** **Not ready**
+**Overall status:** **Automated checks pass; manual launch validation remains**
 
 ## Result
 
 | Status | Count |
 |---|---:|
-| PASS | 20 |
+| PASS | 21 |
 | WARN | 0 |
-| FAIL | 1 |
+| FAIL | 0 |
 
 The full automated test suite, including the readiness checker tests, passes:
 
@@ -22,9 +22,10 @@ The full automated test suite, including the readiness checker tests, passes:
 145 passed
 ```
 
-This means the implemented product logic is stable under the current automated
-tests. It does **not** mean the repository is ready for a public `v1.0` release.
-The remaining automated failure concerns the final demo asset.
+This means the implemented product logic and repository evidence pass the
+current automated checks. It does **not** by itself mean the repository is ready
+for a public `v1.0` release. Clean-install, UX, accessibility, performance and
+final export checks remain manual launch gates.
 
 ## Automated findings
 
@@ -48,7 +49,7 @@ The remaining automated failure concerns the final demo asset.
 | DOC-002 | Documentation | README matches shipped UI | PASS | README includes every current navigation page and the delivered 0.3–0.6 capabilities |
 | REL-001 | Release | Changelog covers 0.3–0.6 | PASS | Understand, Explain, Share and Assist are documented as delivered, untagged milestones |
 | REL-002 | Release | v1.0 release-candidate status | PASS | Scope is frozen and v1.0 is marked as release candidate |
-| REL-003 | Release | Valid v1.0 demo GIF | FAIL | The current file is placeholder text |
+| REL-003 | Release | Valid v1.0 demo GIF | PASS | Verified 15.7-second product recording shows CSV upload, field detection and recommended dashboard composition |
 | REL-004 | Release | Canonical product version | PASS | `1.0.0-rc.1` is reused in project, Excel and PDF metadata |
 | REL-005 | Release | Repeatable release process | PASS | Clean install, pytest, RC, tag, publication and rollback are executable |
 
@@ -94,14 +95,24 @@ The remaining automated failure concerns the final demo asset.
    replacement candidate or patch.
 5. Marked `v1.0` as a release candidate without claiming that it is released.
 
+### Completed in L-06A — Verified product demo
+
+1. Replaced the placeholder with a real final-product screen recording.
+2. Removed the operating-system file picker and any local path context from the
+   published sequence.
+3. Optimized the recording to a 1600-pixel-wide, 10 FPS animated GIF of about
+   4.0 MB for reliable GitHub rendering.
+4. Verified that the demo shows CSV upload, smart field detection, data preview
+   and the recommended dashboard composition.
+5. Added the verified demo to the README product preview.
+
 ### P1 — Launch assets and manual validation
 
-1. Replace the placeholder demo GIF with a verified final-product recording.
-2. Capture final screenshots.
-3. Test a clean installation on the supported environment.
-4. Review keyboard navigation, focus, contrast and zoom.
-5. Measure behavior at the intended maximum CSV size.
-6. Review export appearance.
+1. Capture final screenshots.
+2. Test a clean installation on the supported environment.
+3. Review keyboard navigation, focus, contrast and zoom.
+4. Measure behavior at the intended maximum CSV size.
+5. Review export appearance.
 
 ## Recommended launch sequence
 
@@ -111,7 +122,7 @@ The remaining automated failure concerns the final demo asset.
 | L-03 | Complete — security, privacy and dependency review |
 | L-04 | Complete — public history, frozen scope and release process aligned |
 | L-05 | Manual UX, performance and clean-install validation |
-| L-06 | Final assets, release candidate, tag and GitHub Release |
+| L-06 | In progress — verified demo complete; final screenshots, tag and GitHub Release remain |
 
 ## Re-run the audit
 

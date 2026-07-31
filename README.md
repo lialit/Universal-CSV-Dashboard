@@ -62,6 +62,11 @@ need a useful first view of a dataset without setting up a BI project.
 
 ## Product preview
 
+![CSV upload and automatic dashboard configuration](./releases/v1.0/demo.gif)
+
+The demo shows the local-first starting workflow: upload a representative CSV,
+review the detected fields and inspect the recommended dashboard composition.
+
 ![Executive Overview](./assets/screenshots/executive-overview.png)
 
 The interface is intentionally calm and consistent: a focused navigation rail,
