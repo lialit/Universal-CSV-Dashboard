@@ -11,8 +11,15 @@ from app_core.executive_summary import (
     build_executive_summary,
 )
 from app_core.formatting import compact_number
-from app_core.metrics import recent_metric_series, summarize_metric
+from app_core.overview_data import (
+    build_overview_kpis,
+    category_filter_is_full_range,
+    category_options,
+    date_bounds,
+    date_filter_is_full_range,
+)
 from app_core.recommendations import recommend_analysis
+from app_core.session_cache import session_result, stable_mapping_key
 from app_core.state import require_dataset
 from app_core.theme import render_header
 
@@ -34,41 +41,19 @@ def render_statements(
             st.caption(f"Evidence: {statement.evidence}")
 
 
-def render_kpis(dataframe, config, metric: str) -> None:
-    metric_summary = summarize_metric(dataframe, metric)
-    sparkline = recent_metric_series(
-        dataframe,
-        config.get("date_column"),
-        metric,
-    )
-    fallback = recommend_analysis(dataframe, config)
-    selected = (
-        config["kpi_cards"]
-        if "kpi_cards" in config
-        else list(fallback.kpis)
-    )
+def render_kpis(dataframe, kpis, metric: str) -> None:
+    columns = st.columns(len(kpis.selected) + 2)
 
-    values = {
-        "Total": metric_summary.total,
-        "Average": metric_summary.average,
-        "Median": metric_summary.median,
-        "Minimum": metric_summary.minimum,
-        "Maximum": metric_summary.maximum,
-        "Non-null count": metric_summary.non_null_count,
-    }
-    selected = [item for item in selected if item in values][:3]
-    columns = st.columns(len(selected) + 2)
-
-    for index, item in enumerate(selected):
+    for index, item in enumerate(kpis.selected):
         kwargs = {}
         if item == "Total":
             kwargs = {
-                "chart_data": sparkline,
+                "chart_data": kpis.sparkline,
                 "chart_type": "area",
             }
         columns[index].metric(
             f"{item} {metric}",
-            compact_number(values[item]),
+            compact_number(kpis.values[item]),
             border=True,
             width="stretch",
             height="stretch",
@@ -152,15 +137,19 @@ render_header(
     "interpretations.",
 )
 
-filtered = dataframe.copy()
+filtered = dataframe
+filter_key = []
 filter_box = st.sidebar.container(border=True)
 filter_box.markdown("### Dashboard filters")
 
 if date_column:
-    valid_dates = filtered[date_column].dropna()
-    if not valid_dates.empty:
-        minimum_date = valid_dates.min().date()
-        maximum_date = valid_dates.max().date()
+    bounds = session_result(
+        dataframe,
+        ("overview-date-bounds", date_column),
+        lambda: date_bounds(dataframe, date_column),
+    )
+    if bounds:
+        minimum_date, maximum_date = bounds
         selected_dates = filter_box.date_input(
             "Date range",
             value=(minimum_date, maximum_date),
@@ -171,39 +160,66 @@ if date_column:
             isinstance(selected_dates, tuple)
             and len(selected_dates) == 2
         ):
-            filtered = filtered[
-                filtered[date_column].dt.date.between(
-                    *selected_dates
-                )
-            ]
+            filter_key.append(
+                ("dates", *(item.isoformat() for item in selected_dates))
+            )
+            if not date_filter_is_full_range(selected_dates, bounds):
+                filtered = filtered[
+                    filtered[date_column].dt.date.between(
+                        *selected_dates
+                    )
+                ]
 
 if category_column:
-    category_values = sorted(
-        filtered[category_column]
-        .astype("string")
-        .dropna()
-        .unique()
-        .tolist()
+    category_values = session_result(
+        dataframe,
+        ("overview-category-options", tuple(filter_key), category_column),
+        lambda: category_options(filtered, category_column),
     )
     selected_categories = filter_box.multiselect(
         category_column,
         category_values,
         default=category_values,
     )
-    filtered = filtered[
-        filtered[category_column]
-        .astype("string")
-        .isin(selected_categories)
-    ]
+    filter_key.append(("categories", *selected_categories))
+    if not category_filter_is_full_range(
+        selected_categories,
+        category_values,
+    ):
+        filtered = filtered[
+            filtered[category_column]
+            .astype("string")
+            .isin(selected_categories)
+        ]
 
 if filtered.empty:
     st.warning("No rows match the selected filters.")
     st.stop()
 
-render_kpis(filtered, config, metric)
+with st.spinner("Preparing headline metrics..."):
+    kpis = session_result(
+        dataframe,
+        (
+            "overview-kpis",
+            tuple(filter_key),
+            metric,
+            stable_mapping_key(config),
+        ),
+        lambda: build_overview_kpis(filtered, config, metric),
+    )
+render_kpis(filtered, kpis, metric)
 
 st.subheader("Executive summary")
-summary = build_executive_summary(filtered, config)
+with st.spinner("Calculating the executive summary..."):
+    summary = session_result(
+        dataframe,
+        (
+            "executive-summary",
+            tuple(filter_key),
+            stable_mapping_key(config),
+        ),
+        lambda: build_executive_summary(filtered, config),
+    )
 st.info(summary.headline)
 facts_column, interpretation_column = st.columns(2)
 
@@ -245,7 +261,17 @@ st.caption(
 )
 st.write("")
 
-charts = build_charts(filtered, config, metric)
+with st.spinner("Preparing the charts..."):
+    charts = session_result(
+        dataframe,
+        (
+            "overview-charts",
+            tuple(filter_key),
+            metric,
+            stable_mapping_key(config),
+        ),
+        lambda: build_charts(filtered, config, metric),
+    )
 for start in range(0, len(charts), 2):
     row = st.columns(2)
     for offset, figure in enumerate(charts[start : start + 2]):

@@ -48,6 +48,10 @@ have a stable `1.0` release.
   product documents in the repository root.
 - Reworked the roadmap around the stages Foundation, Understand, Explain, Share,
   Assist and Launch.
+- Added the validated 25 MB upload boundary, bounded distribution rendering and
+  lightweight per-session reuse of full-data analytical results.
+- Removed redundant full-data copies and repeated filter/KPI preparation from
+  default Executive Overview page visits.
 
 ### Documentation
 

@@ -109,6 +109,10 @@ results into a consistent interface.
 - Python 3.11+
 - `pip`
 
+The validated v1.0 upload boundary is **25 MB per CSV**. CSV processing and
+analysis run in memory, so wider datasets can require substantially more RAM
+than their file size.
+
 ### Install and run
 
 ```bash
@@ -219,6 +223,7 @@ reading the source code.
 | [`docs/branding/BRAND_BOOK.md`](docs/branding/BRAND_BOOK.md) | Visual identity and usage rules |
 | [`docs/12_SECURITY_PRIVACY.md`](docs/12_SECURITY_PRIVACY.md) | Local data flow, export privacy and security boundaries |
 | [`docs/11_ENGINEERING_QUALITY.md`](docs/11_ENGINEERING_QUALITY.md) | Test, CI, dependency and readiness gates |
+| [`docs/13_PERFORMANCE_BOUNDARY.md`](docs/13_PERFORMANCE_BOUNDARY.md) | Validated CSV size boundary and repeatable smoke-test procedure |
 
 ## Roadmap
 

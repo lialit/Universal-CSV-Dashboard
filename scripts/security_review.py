@@ -116,6 +116,8 @@ def audit_security(root: Path) -> SecurityReview:
     root = root.resolve()
     upload = _read(root / "views/upload.py")
     data = _read(root / "app_core/data.py")
+    csv_parser = _read(root / "app_core/csv_parser.py")
+    csv_sources = "\n".join((data, csv_parser))
     runtime = "\n".join(
         _read(path) for path in _runtime_python_files(root)
     )
@@ -128,7 +130,7 @@ def audit_security(root: Path) -> SecurityReview:
 
     in_memory = (
         "uploaded_file.getvalue()" in upload
-        and "BytesIO(file_bytes)" in data
+        and "BytesIO(file_bytes)" in csv_sources
         and "NamedTemporaryFile" not in runtime
         and "TemporaryDirectory" not in runtime
     )

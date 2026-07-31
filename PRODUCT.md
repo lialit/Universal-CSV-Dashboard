@@ -307,7 +307,7 @@ flowchart TD
 
 The user uploads a CSV through the browser. The application:
 
-- accepts files up to 200 MB;
+- accepts files up to 25 MB, the validated local-first v1.0 boundary;
 - detects common encodings;
 - supports comma, semicolon and tab separators;
 - loads the file into a Pandas dataframe;
@@ -402,7 +402,7 @@ This table separates shipped behavior from planned direction.
 
 | Capability | Status | Notes |
 |---|---|---|
-| CSV upload | Available | Browser upload, maximum 200 MB |
+| CSV upload | Available | Browser upload, validated maximum 25 MB |
 | Common delimiter support | Available | Comma, semicolon and tab |
 | Common encoding detection | Available | Handled during CSV reading |
 | Date, metric and category suggestions | Available | User can override suggestions |

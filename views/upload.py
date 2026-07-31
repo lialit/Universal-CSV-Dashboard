@@ -7,6 +7,7 @@ from app_core.configuration import (
     configuration_for_export,
     validate_configuration,
 )
+from app_core.csv_parser import MAX_UPLOAD_SIZE_MB
 from app_core.data import prepare_dataframe, read_csv_file
 from app_core.project_state import (
     is_project_state,
@@ -46,10 +47,11 @@ st.info(
 uploaded_file = st.file_uploader(
     "Upload CSV",
     type=["csv"],
-    max_upload_size=200,
+    max_upload_size=MAX_UPLOAD_SIZE_MB,
     help=(
         "Supported delimiters: comma, semicolon and tab. "
-        "Common encodings are detected automatically."
+        "Common encodings are detected automatically. "
+        f"Maximum supported size: {MAX_UPLOAD_SIZE_MB} MB."
     ),
 )
 

@@ -2,11 +2,12 @@
 
 **Audit date:** 2026-07-31
 
-**Baseline commit:** `c573e3f`
+**Baseline commit:** `f7b5081`
 
-**Latest checkpoint:** L-06A — Verified Product Demo
+**Latest checkpoint:** L-05C — Performance Boundary (complete)
 
-**Overall status:** **Automated checks pass; manual launch validation remains**
+**Overall status:** **Automated checks and L-05 manual validation pass; final
+launch assets remain**
 
 ## Result
 
@@ -19,13 +20,13 @@
 The full automated test suite, including the readiness checker tests, passes:
 
 ```text
-145 passed
+164 passed
 ```
 
 This means the implemented product logic and repository evidence pass the
-current automated checks. It does **not** by itself mean the repository is ready
-for a public `v1.0` release. Clean-install, UX, accessibility, performance and
-final export checks remain manual launch gates.
+current automated checks. Clean-install, UX/accessibility, export appearance
+and the validated performance boundary have also been reviewed manually. Final
+screenshots, tagging and GitHub Release publication remain launch gates.
 
 ## Automated findings
 
@@ -35,7 +36,7 @@ final export checks remain manual launch gates.
 | APP-001 | Product | Core application structure | PASS | All launch-critical pages and analytical modules exist |
 | DATA-001 | Product | Safe representative sample | PASS | `sample_sales.csv` contains date, region and sales |
 | DATA-002 | Product | Varied examples | PASS | Five example CSV files are present |
-| TEST-001 | Engineering | Automated test structure | PASS | Eighteen test modules are present after L-03 |
+| TEST-001 | Engineering | Automated test structure | PASS | Twenty-two test modules are present after L-05C |
 | CI-001 | Engineering | CI installs dependencies | PASS | GitHub Actions installs the bounded requirements |
 | CI-002 | Engineering | CI runs pytest | PASS | GitHub Actions executes the complete test suite |
 | CI-003 | Engineering | CI runs static checks | PASS | Ruff checks syntax-level and Pyflakes failures |
@@ -106,13 +107,47 @@ final export checks remain manual launch gates.
    and the recommended dashboard composition.
 5. Added the verified demo to the README product preview.
 
+### Completed in L-05A — Clean install
+
+1. Installed the bounded runtime and security requirements in a clean Python
+   3.11 virtual environment on the supported Windows environment.
+2. Confirmed dependency compatibility, Ruff, pytest, security/privacy review
+   and strict release readiness.
+3. Started the Streamlit application from the clean environment and completed
+   the representative sample upload.
+
+### Completed in L-05B — UX and accessibility review
+
+1. Reviewed keyboard traversal and activation, visible focus and page
+   navigation.
+2. Reviewed 200% browser zoom, narrow-window behavior and long content.
+3. Confirmed that quality and status meaning is not communicated by color
+   alone.
+4. Reviewed the current navigation pages and invalid-file behavior without a
+   client traceback.
+
+### Completed in L-05C — Performance boundary
+
+1. Replaced the unvalidated 200 MB promise with a conservative 25 MB v1.0
+   boundary.
+2. Enforced the boundary in both the Streamlit uploader and CSV parser.
+3. Added a synthetic fixture generator and repeatable core-analysis smoke test.
+4. Measured 4.07 seconds for parsing, field detection and quality analysis on
+   the 24 MB / 738,965-row fixture in the Windows Python 3.11 environment.
+5. Added a transparent 50,000-value visual limit for browser-side distribution
+   charts while preserving full-data KPI, insight and quality calculations.
+6. Added visible progress feedback and lightweight per-session result reuse
+   without hashing or copying the full dataframe on repeated page visits.
+7. Removed the default full-data copy from Executive Overview and reused its
+   filter metadata and KPI payload within the active session.
+8. Repeated the main-page navigation check on the Windows Python 3.11 reference
+   environment. After the first calculation, Business Insights, Analysis
+   Assistant, Data Quality and Executive Overview reopened immediately in the
+   observed session.
+
 ### P1 — Launch assets and manual validation
 
 1. Capture final screenshots.
-2. Test a clean installation on the supported environment.
-3. Review keyboard navigation, focus, contrast and zoom.
-4. Measure behavior at the intended maximum CSV size.
-5. Review export appearance.
 
 ## Recommended launch sequence
 
@@ -121,7 +156,7 @@ final export checks remain manual launch gates.
 | L-02 | Complete — real CI, repository hygiene and version metadata |
 | L-03 | Complete — security, privacy and dependency review |
 | L-04 | Complete — public history, frozen scope and release process aligned |
-| L-05 | Manual UX, performance and clean-install validation |
+| L-05 | Complete — clean install, UX/accessibility, exports and 25 MB performance boundary validated |
 | L-06 | In progress — verified demo complete; final screenshots, tag and GitHub Release remain |
 
 ## Re-run the audit

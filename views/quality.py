@@ -7,6 +7,7 @@ from app_core.quality import (
     quality_summary,
 )
 from app_core.state import require_dataset
+from app_core.session_cache import session_result
 from app_core.theme import render_header
 
 
@@ -20,7 +21,12 @@ render_header(
     ),
 )
 
-report = calculate_quality_score(dataframe)
+with st.spinner("Checking completeness, duplicates and type validity..."):
+    report = session_result(
+        dataframe,
+        "quality-report",
+        lambda: calculate_quality_score(dataframe),
+    )
 
 status_messages = {
     "Excellent": st.success,
@@ -115,7 +121,12 @@ else:
     )
 
 st.subheader("Column-level quality")
-column_summary = quality_summary(dataframe)
+with st.spinner("Preparing column-level quality details..."):
+    column_summary = session_result(
+        dataframe,
+        "quality-column-summary",
+        lambda: quality_summary(dataframe),
+    )
 st.dataframe(
     column_summary.style.format(
         {"Missing %": "{:.2f}%"}
@@ -132,11 +143,18 @@ st.caption(
     )
 )
 
+with st.spinner("Preparing the de-duplicated download..."):
+    cleaned_csv = session_result(
+        dataframe,
+        "quality-cleaned-csv",
+        lambda: dataframe.drop_duplicates()
+        .to_csv(index=False)
+        .encode("utf-8"),
+    )
+
 st.download_button(
     "Download de-duplicated CSV",
-    data=dataframe.drop_duplicates().to_csv(
-        index=False
-    ).encode("utf-8"),
+    data=cleaned_csv,
     file_name="cleaned_data.csv",
     mime="text/csv",
     width="stretch",

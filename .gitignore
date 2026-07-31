@@ -30,3 +30,4 @@ Thumbs.db
 # Local reports and temporary exports
 *.tmp
 *.log
+performance_sample_*.csv

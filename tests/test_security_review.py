@@ -77,6 +77,22 @@ def test_external_runtime_client_fails(tmp_path: Path) -> None:
     assert "requests" in check.detail
 
 
+def test_framework_independent_csv_parser_passes(tmp_path: Path) -> None:
+    complete_fixture(tmp_path)
+    write(
+        tmp_path / "app_core/data.py",
+        "from app_core.csv_parser import parse_csv_bytes\n",
+    )
+    write(
+        tmp_path / "app_core/csv_parser.py",
+        "from io import BytesIO\nbuffer = BytesIO(file_bytes)\n",
+    )
+
+    check = checks_by_id(tmp_path)["PRIV-001"]
+
+    assert check.status == PASS
+
+
 def test_public_error_details_fail(tmp_path: Path) -> None:
     complete_fixture(tmp_path)
     write(

@@ -77,9 +77,9 @@ Required core capabilities:
 - [x] Supported Python versions defined
 - [x] Automated test suite passes
 - [x] CI checks are stable
-- [ ] Clean installation succeeds
+- [x] Clean installation succeeds
 - [x] Dependencies are pinned or bounded intentionally
-- [ ] Performance is reviewed for the supported file size
+- [ ] Performance is reviewed for the validated 25 MB file size
 - [x] Upgrade and compatibility policy is documented
 
 ### Privacy and security
@@ -93,16 +93,16 @@ Required core capabilities:
 
 ### Accessibility and UX
 
-- [ ] Keyboard and focus behavior reviewed where supported
-- [ ] Color is not the only information carrier
-- [ ] Contrast and zoom reviewed
-- [ ] Long labels and narrow screens tested
+- [x] Keyboard and focus behavior reviewed where supported
+- [x] Color is not the only information carrier
+- [x] Contrast and zoom reviewed
+- [x] Long labels and narrow screens tested
 - [ ] First-run guidance validated with a new user
 
 ### Documentation and open source
 
 - [x] README matches shipped behavior
-- [ ] `START_HERE.md` installation verified
+- [x] `START_HERE.md` installation verified
 - [x] Product documents remain aligned
 - [ ] Architecture and contribution docs are current
 - [ ] License and attribution confirmed

@@ -3,6 +3,7 @@ import streamlit as st
 
 from app_core.charts import correlation_chart, distribution_chart
 from app_core.insights import build_business_insights
+from app_core.session_cache import session_result, stable_mapping_key
 from app_core.state import require_dataset
 from app_core.theme import render_header
 
@@ -56,7 +57,12 @@ insight_config = {
     **config,
     "metric_column": selected_metric,
 }
-report = build_business_insights(dataframe, insight_config)
+with st.spinner("Screening the dataset for evidence-linked patterns..."):
+    report = session_result(
+        dataframe,
+        ("business-insights", stable_mapping_key(insight_config)),
+        lambda: build_business_insights(dataframe, insight_config),
+    )
 
 summary_columns = st.columns(4)
 summary_columns[0].metric(
@@ -119,24 +125,41 @@ st.caption(
 st.subheader("Explore the evidence")
 left_chart, right_table = st.columns([1.4, 1])
 with left_chart:
-    st.plotly_chart(
-        distribution_chart(dataframe, selected_metric),
-        width="stretch",
-    )
+    with st.spinner("Preparing the distribution view..."):
+        distribution = session_result(
+            dataframe,
+            ("analysis-distribution", selected_metric),
+            lambda: distribution_chart(dataframe, selected_metric),
+        )
+        st.plotly_chart(
+            distribution,
+            width="stretch",
+        )
 with right_table:
-    st.dataframe(
-        dataframe[numeric_columns]
+    descriptive_statistics = session_result(
+        dataframe,
+        ("analysis-description", tuple(numeric_columns)),
+        lambda: dataframe[numeric_columns]
         .apply(pd.to_numeric, errors="coerce")
         .describe()
         .T,
+    )
+    st.dataframe(
+        descriptive_statistics,
         width="stretch",
     )
 
 if len(numeric_columns) >= 2:
-    st.plotly_chart(
-        correlation_chart(dataframe, numeric_columns),
-        width="stretch",
-    )
+    with st.spinner("Calculating the correlation matrix..."):
+        correlation = session_result(
+            dataframe,
+            ("analysis-correlation", tuple(numeric_columns)),
+            lambda: correlation_chart(dataframe, numeric_columns),
+        )
+        st.plotly_chart(
+            correlation,
+            width="stretch",
+        )
 else:
     st.info(
         "Map at least two numeric columns to display a correlation matrix."
