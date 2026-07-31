@@ -112,7 +112,7 @@ Required core capabilities:
 ### Release assets
 
 - [ ] Final screenshots
-- [ ] Verified demo GIF
+- [x] Verified demo GIF
 - [x] Open Graph image
 - [ ] GitHub Release description
 - [ ] Version tag
