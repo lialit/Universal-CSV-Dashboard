@@ -38,6 +38,11 @@ have a stable `1.0` release.
 
 ### Changed
 
+- Replaced the two-row `id,value` example placeholders with synthetic,
+  domain-specific sales, e-commerce, finance, inventory, marketing and retail
+  datasets that support the complete date/metric/category workflow.
+- Strengthened release readiness so placeholder or structurally unsupported
+  example datasets block a release instead of passing a file-count check.
 - Repositioned the product from a generic dashboard template to a transparent,
   local-first business-understanding assistant.
 - Updated the README to use the complete visual brand and product narrative.

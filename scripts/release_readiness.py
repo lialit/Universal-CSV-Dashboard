@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from dataclasses import dataclass
+from io import StringIO
 from pathlib import Path
 import re
 import subprocess
@@ -298,14 +300,49 @@ def _sample_data_check(root: Path) -> ReadinessCheck:
 
 def _example_coverage_check(root: Path) -> ReadinessCheck:
     examples = list((root / "examples").glob("*.csv"))
-    valid = len(examples) >= 3
+    invalid: list[str] = []
+    category_names = {
+        "category", "channel", "department", "product", "region", "store",
+        "warehouse",
+    }
+    metric_names = {
+        "amount", "expenses", "marketing_spend", "orders", "profit",
+        "revenue", "sales", "stock_on_hand", "units", "value",
+    }
+
+    for path in examples:
+        try:
+            rows = list(csv.DictReader(StringIO(_read(path))))
+        except csv.Error:
+            rows = []
+
+        columns = {
+            str(column).strip().lower()
+            for column in (rows[0].keys() if rows else ())
+            if column
+        }
+        has_date = any("date" in column for column in columns)
+        has_category = bool(columns & category_names)
+        has_metric = bool(columns & metric_names)
+        if len(rows) < 5 or not (has_date and has_category and has_metric):
+            invalid.append(path.name)
+
+    valid = len(examples) >= 3 and not invalid
+    detail = f"{len(examples):,} representative example CSV files are available."
+    if invalid:
+        detail = "Placeholder or unsupported examples: " + ", ".join(invalid)
     return _check(
         "DATA-002",
         "Product",
         "Varied example datasets",
-        PASS if valid else WARN,
-        f"{len(examples):,} example CSV files are available.",
-        "Add at least three varied business examples." if not valid else "",
+        PASS if valid else FAIL,
+        detail,
+        (
+            "Add at least three examples with five or more rows plus date, "
+            "category and metric fields."
+            if not valid
+            else ""
+        ),
     )
 
 
