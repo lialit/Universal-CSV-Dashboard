@@ -34,6 +34,11 @@ def render_confidence(answer) -> None:
         st.warning(message)
 
 
+@st.cache_data(show_spinner=False)
+def cached_guided_answer(dataframe, config, question_key):
+    return answer_guided_question(dataframe, config, question_key)
+
+
 dataframe, config = require_dataset()
 metric = str(config["metric_column"])
 numeric_columns = [
@@ -110,11 +115,12 @@ with context_column:
     )
     st.caption(selected_question.availability_reason)
 
-answer = answer_guided_question(
-    dataframe,
-    assistant_config,
-    selected_key,
-)
+with st.spinner("Calculating a local evidence-linked answer..."):
+    answer = cached_guided_answer(
+        dataframe,
+        assistant_config,
+        selected_key,
+    )
 
 st.subheader("Assistant answer")
 with st.container(border=True):

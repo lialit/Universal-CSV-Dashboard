@@ -27,6 +27,11 @@ def render_insight_card(insight) -> None:
         st.warning(f"Limitation: {insight.limitation}")
 
 
+@st.cache_data(show_spinner=False)
+def cached_business_insights(dataframe, config):
+    return build_business_insights(dataframe, config)
+
+
 dataframe, config = require_dataset()
 metric = str(config["metric_column"])
 numeric_columns = [
@@ -56,7 +61,8 @@ insight_config = {
     **config,
     "metric_column": selected_metric,
 }
-report = build_business_insights(dataframe, insight_config)
+with st.spinner("Screening the dataset for evidence-linked patterns..."):
+    report = cached_business_insights(dataframe, insight_config)
 
 summary_columns = st.columns(4)
 summary_columns[0].metric(
@@ -119,10 +125,11 @@ st.caption(
 st.subheader("Explore the evidence")
 left_chart, right_table = st.columns([1.4, 1])
 with left_chart:
-    st.plotly_chart(
-        distribution_chart(dataframe, selected_metric),
-        width="stretch",
-    )
+    with st.spinner("Preparing the distribution view..."):
+        st.plotly_chart(
+            distribution_chart(dataframe, selected_metric),
+            width="stretch",
+        )
 with right_table:
     st.dataframe(
         dataframe[numeric_columns]
@@ -133,10 +140,11 @@ with right_table:
     )
 
 if len(numeric_columns) >= 2:
-    st.plotly_chart(
-        correlation_chart(dataframe, numeric_columns),
-        width="stretch",
-    )
+    with st.spinner("Calculating the correlation matrix..."):
+        st.plotly_chart(
+            correlation_chart(dataframe, numeric_columns),
+            width="stretch",
+        )
 else:
     st.info(
         "Map at least two numeric columns to display a correlation matrix."

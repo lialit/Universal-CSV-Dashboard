@@ -141,6 +141,16 @@ def build_charts(dataframe, config, metric: str):
     return charts
 
 
+@st.cache_data(show_spinner=False)
+def cached_executive_summary(dataframe, config):
+    return build_executive_summary(dataframe, config)
+
+
+@st.cache_data(show_spinner=False)
+def cached_charts(dataframe, config, metric: str):
+    return build_charts(dataframe, config, metric)
+
+
 dataframe, config = require_dataset()
 metric = str(config["metric_column"])
 date_column = config.get("date_column")
@@ -203,7 +213,8 @@ if filtered.empty:
 render_kpis(filtered, config, metric)
 
 st.subheader("Executive summary")
-summary = build_executive_summary(filtered, config)
+with st.spinner("Calculating the executive summary..."):
+    summary = cached_executive_summary(filtered, config)
 st.info(summary.headline)
 facts_column, interpretation_column = st.columns(2)
 
@@ -245,7 +256,8 @@ st.caption(
 )
 st.write("")
 
-charts = build_charts(filtered, config, metric)
+with st.spinner("Preparing the charts..."):
+    charts = cached_charts(filtered, config, metric)
 for start in range(0, len(charts), 2):
     row = st.columns(2)
     for offset, figure in enumerate(charts[start : start + 2]):

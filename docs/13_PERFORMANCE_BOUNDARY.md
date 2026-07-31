@@ -14,6 +14,11 @@ The 25 MB boundary is therefore a reliability limit, not a claim that every
 machine has identical performance. Dataset width, text length, category
 cardinality and available RAM still affect responsiveness.
 
+KPI, quality and insight calculations use the complete dataset. Browser-side
+distribution charts use a deterministic, explicitly labelled visual sample of
+at most 50,000 values when the dataset is larger. This limits browser payloads
+without presenting the sampled chart as an exact full-data calculation.
+
 ## Reference smoke test
 
 Generate a synthetic 24 MB file from the project root:

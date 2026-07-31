@@ -19,7 +19,7 @@
 The full automated test suite, including the readiness checker tests, passes:
 
 ```text
-151 passed
+156 passed
 ```
 
 This means the implemented product logic and repository evidence pass the
@@ -35,7 +35,7 @@ appearance remain manual launch gates.
 | APP-001 | Product | Core application structure | PASS | All launch-critical pages and analytical modules exist |
 | DATA-001 | Product | Safe representative sample | PASS | `sample_sales.csv` contains date, region and sales |
 | DATA-002 | Product | Varied examples | PASS | Five example CSV files are present |
-| TEST-001 | Engineering | Automated test structure | PASS | Nineteen test modules are present after L-05C |
+| TEST-001 | Engineering | Automated test structure | PASS | Twenty test modules are present after L-05C |
 | CI-001 | Engineering | CI installs dependencies | PASS | GitHub Actions installs the bounded requirements |
 | CI-002 | Engineering | CI runs pytest | PASS | GitHub Actions executes the complete test suite |
 | CI-003 | Engineering | CI runs static checks | PASS | Ruff checks syntax-level and Pyflakes failures |
@@ -131,7 +131,13 @@ appearance remain manual launch gates.
    boundary.
 2. Enforced the boundary in both the Streamlit uploader and CSV parser.
 3. Added a synthetic fixture generator and repeatable core-analysis smoke test.
-4. Final Windows timing and UI responsiveness evidence remains to be recorded.
+4. Measured 4.07 seconds for parsing, field detection and quality analysis on
+   the 24 MB / 738,965-row fixture in the Windows Python 3.11 environment.
+5. Added a transparent 50,000-value visual limit for browser-side distribution
+   charts while preserving full-data KPI, insight and quality calculations.
+6. Added visible progress feedback and caching around expensive page work.
+7. Final post-optimization Windows UI responsiveness evidence remains to be
+   recorded.
 
 ### P1 — Launch assets and manual validation
 
