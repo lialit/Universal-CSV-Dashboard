@@ -1,0 +1,17 @@
+[
+  {
+    "title": "v1.1 — Polish & Adoption",
+    "description": "Stabilization and adoption release focused on the public live demo, onboarding, UX polish, performance, exports, and documentation.",
+    "state": "open"
+  },
+  {
+    "title": "v1.2 — Power User Features",
+    "description": "Productivity release focused on advanced analytics, richer exports, multi-file workflows, and deeper customization.",
+    "state": "open"
+  },
+  {
+    "title": "v2.0 — AI Analytics",
+    "description": "Long-term vision release focused on AI-assisted insights, explanations, anomaly detection, and smart reporting.",
+    "state": "open"
+  }
+]
