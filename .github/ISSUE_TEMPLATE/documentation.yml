@@ -1,0 +1,75 @@
+name: Documentation improvement
+description: Report missing, unclear, outdated, or incorrect documentation
+title: "[Docs]: "
+labels:
+  - documentation
+  - area: docs
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for README, setup instructions, guides, examples, screenshots, or developer documentation.
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Documentation issue
+      options:
+        - Missing information
+        - Incorrect information
+        - Outdated information
+        - Unclear explanation
+        - Broken link or image
+        - Missing example
+        - Translation or wording
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Provide the file path, section heading, or page URL.
+      placeholder: README.md — Quick Start
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is unclear or incorrect?
+      placeholder: Describe what a reader currently sees and why it causes confusion.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Explain what information, example, screenshot, or wording would resolve the problem.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Primary audience
+      options:
+        - First-time user
+        - Existing user
+        - Contributor
+        - Maintainer
+        - All readers
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checklist
+      options:
+        - label: I checked the latest version of the documentation.
+          required: true
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
