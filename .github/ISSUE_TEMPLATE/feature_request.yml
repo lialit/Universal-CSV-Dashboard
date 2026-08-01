@@ -1,0 +1,88 @@
+name: Feature request
+description: Propose a new capability or meaningful product improvement
+title: "[Feature]: "
+labels:
+  - feature
+  - status: needs discussion
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Strong requests explain the user problem before proposing a solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: What task is difficult or impossible today, and who experiences it?
+      placeholder: As a ..., I need ..., because ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the preferred behavior or workflow.
+      placeholder: Explain how the feature should work from the user's perspective.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe current workarounds or other solutions you considered.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Dashboard and navigation
+        - Data loading and validation
+        - Charts and visualizations
+        - Export and reporting
+        - User interface and onboarding
+        - Performance and scalability
+        - Documentation
+        - Repository and community
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Expected impact
+      options:
+        - Removes a blocker
+        - Saves significant time
+        - Improves usability
+        - Improves reliability
+        - Supports a new workflow
+        - Nice-to-have improvement
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples or references
+      description: Add mockups, screenshots, sample datasets, or links that clarify the request. Do not include sensitive data.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: This request describes a concrete user problem.
+          required: true
+        - label: I understand that roadmap placement and priority are decided during triage.
+          required: true
