@@ -51,7 +51,7 @@ foreach ($entry in $config) {
     } | Select-Object -First 1
 
     if ($null -eq $item) {
-        Write-Host "Adding missing issue #$issueNumber to the project"
+        Write-Host "Adding missing issue #${issueNumber} to the project"
         gh project item-add $projectNumber --owner $Owner --url $issueUrl | Out-Null
         $itemList = gh project item-list $projectNumber --owner $Owner --limit 200 --format json | ConvertFrom-Json
         $items = if ($null -ne $itemList.items) { $itemList.items } else { $itemList }
@@ -61,7 +61,7 @@ foreach ($entry in $config) {
     }
 
     if ($null -eq $item) {
-        throw "Could not find project item for issue #$issueNumber"
+        throw "Could not find project item for issue #${issueNumber}"
     }
 
     $fieldValues = @{
@@ -90,7 +90,7 @@ foreach ($entry in $config) {
             --single-select-option-id ([string]$option.id) | Out-Null
     }
 
-    Write-Host "Configured issue #$issueNumber: $($entry.priority), $($entry.area), $($entry.release), $($entry.effort)"
+    Write-Host "Configured issue #${issueNumber}: $($entry.priority), $($entry.area), $($entry.release), $($entry.effort)"
     $updated++
 }
 
