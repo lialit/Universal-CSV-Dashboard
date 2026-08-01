@@ -1,7 +1,7 @@
 param(
     [string]$Repository = "lialit/Universal-CSV-Dashboard",
     [int]$IssueNumber = 14,
-    [string]$MilestoneTitle = "v1.1 - Polish & Adoption"
+    [string]$MilestoneTitle = "v1.1 — Polish & Adoption"
 )
 
 $ErrorActionPreference = "Stop"
