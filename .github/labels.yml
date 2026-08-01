@@ -1,0 +1,115 @@
+# Universal CSV Dashboard — canonical GitHub label configuration
+# Colors use six-digit hexadecimal values without the leading #.
+
+# Type
+- name: "bug"
+  color: "D73A4A"
+  description: "Something is not working as expected"
+
+- name: "enhancement"
+  color: "A2EEEF"
+  description: "Improvement to existing functionality"
+
+- name: "feature"
+  color: "1D76DB"
+  description: "New product capability"
+
+- name: "documentation"
+  color: "F9D0C4"
+  description: "Documentation changes or improvements"
+
+- name: "performance"
+  color: "7057FF"
+  description: "Speed, memory, caching, or scalability improvement"
+
+- name: "refactor"
+  color: "C5DEF5"
+  description: "Internal code improvement without user-facing behavior changes"
+
+- name: "testing"
+  color: "FBCA04"
+  description: "Tests, quality assurance, or validation"
+
+- name: "dependencies"
+  color: "BFDADC"
+  description: "Dependency updates or compatibility work"
+
+# Area
+- name: "area: dashboard"
+  color: "0E8A8A"
+  description: "Dashboard pages, navigation, and overall experience"
+
+- name: "area: data"
+  color: "0E8A8A"
+  description: "CSV ingestion, validation, transformation, or data handling"
+
+- name: "area: charts"
+  color: "0E8A8A"
+  description: "Charts, visualizations, and rendering"
+
+- name: "area: export"
+  color: "0E8A8A"
+  description: "Exporting reports, charts, tables, or files"
+
+- name: "area: ui"
+  color: "0E8A8A"
+  description: "Visual interface and component styling"
+
+- name: "area: backend"
+  color: "0E8A8A"
+  description: "Application logic, services, and internal architecture"
+
+- name: "area: docs"
+  color: "0E8A8A"
+  description: "User and developer documentation"
+
+- name: "area: github"
+  color: "0E8A8A"
+  description: "Repository automation, templates, and community management"
+
+# Priority
+- name: "priority: P0"
+  color: "B60205"
+  description: "Critical — blocks release, adoption, or core usage"
+
+- name: "priority: P1"
+  color: "D93F0B"
+  description: "High — important for the target release"
+
+- name: "priority: P2"
+  color: "FBCA04"
+  description: "Normal — valuable but not release-blocking"
+
+- name: "priority: P3"
+  color: "C2E0C6"
+  description: "Low — optional or future improvement"
+
+# Status
+- name: "status: blocked"
+  color: "5319E7"
+  description: "Cannot proceed because of an external dependency or decision"
+
+- name: "good first issue"
+  color: "7057FF"
+  description: "Approachable task for a new contributor"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Community contribution is welcome"
+
+- name: "status: needs discussion"
+  color: "D4C5F9"
+  description: "Requires product or technical discussion before implementation"
+
+# Release
+- name: "release: v1.1"
+  color: "0052CC"
+  description: "Planned for v1.1 — Polish & Adoption"
+
+- name: "release: v1.2"
+  color: "1D4ED8"
+  description: "Planned for v1.2 — Power User Features"
+
+- name: "release: v2.0"
+  color: "172B4D"
+  description: "Planned for v2.0 — AI Analytics"
