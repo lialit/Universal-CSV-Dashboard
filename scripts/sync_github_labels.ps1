@@ -62,12 +62,31 @@ function Get-LabelsFromSimpleYaml {
 }
 
 gh auth status | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    throw "GitHub CLI authentication failed. Run: gh auth login"
+}
 
 $labels = Get-LabelsFromSimpleYaml -Path $ConfigPath
 
 if (-not $labels -or $labels.Count -eq 0) {
     throw "No labels were parsed from $ConfigPath."
 }
+
+# Fetch all current labels once. This avoids treating an expected 404 for a
+# missing label as a fatal PowerShell error.
+$existingJson = gh api "/repos/$Repository/labels?per_page=100"
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not read existing labels from $Repository."
+}
+
+$existingLabels = $existingJson | ConvertFrom-Json
+$existingByName = @{}
+foreach ($existingLabel in $existingLabels) {
+    $existingByName[[string]$existingLabel.name] = $true
+}
+
+$created = 0
+$updated = 0
 
 foreach ($label in $labels) {
     $name = [string]$label.name
@@ -78,22 +97,34 @@ foreach ($label in $labels) {
         throw "Invalid label entry in $ConfigPath. Each label requires name and color."
     }
 
-    Write-Host "Syncing label: $name"
-
-    gh api "/repos/$Repository/labels/$([uri]::EscapeDataString($name))" *> $null
-
-    if ($LASTEXITCODE -eq 0) {
-        gh api --method PATCH "/repos/$Repository/labels/$([uri]::EscapeDataString($name))" `
+    if ($existingByName.ContainsKey($name)) {
+        Write-Host "Updating label: $name"
+        $encodedName = [uri]::EscapeDataString($name)
+        gh api --method PATCH "/repos/$Repository/labels/$encodedName" `
             -f new_name="$name" `
             -f color="$color" `
             -f description="$description" | Out-Null
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to update label: $name"
+        }
+
+        $updated++
     }
     else {
+        Write-Host "Creating label: $name"
         gh api --method POST "/repos/$Repository/labels" `
             -f name="$name" `
             -f color="$color" `
             -f description="$description" | Out-Null
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to create label: $name"
+        }
+
+        $existingByName[$name] = $true
+        $created++
     }
 }
 
-Write-Host "Label synchronization completed for $Repository. Parsed $($labels.Count) labels."
+Write-Host "Label synchronization completed for $Repository. Created: $created. Updated: $updated. Total configured: $($labels.Count)."
