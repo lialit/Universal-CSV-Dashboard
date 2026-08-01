@@ -1,0 +1,31 @@
+{
+  "title": "Universal CSV Dashboard Roadmap",
+  "description": "Product roadmap and delivery board for Universal CSV Dashboard.",
+  "readme": "Use this board to plan releases, prioritize work, and track delivery from backlog to completion.",
+  "visibility": "PUBLIC",
+  "fields": [
+    {
+      "name": "Priority",
+      "type": "SINGLE_SELECT",
+      "options": ["P0", "P1", "P2", "P3"]
+    },
+    {
+      "name": "Area",
+      "type": "SINGLE_SELECT",
+      "options": ["Dashboard", "Data", "Charts", "Export", "UI", "Backend", "Docs", "GitHub"]
+    },
+    {
+      "name": "Release",
+      "type": "SINGLE_SELECT",
+      "options": ["v1.1", "v1.2", "v2.0"]
+    },
+    {
+      "name": "Effort",
+      "type": "SINGLE_SELECT",
+      "options": ["XS", "S", "M", "L", "XL"]
+    }
+  ],
+  "initial_items": [
+    "https://github.com/lialit/Universal-CSV-Dashboard/issues/14"
+  ]
+}
