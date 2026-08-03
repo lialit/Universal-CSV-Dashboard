@@ -2,9 +2,9 @@ name: Project automation
 
 on:
   issues:
-    types: [opened, reopened, closed, transferred]
+    types: [opened, reopened, closed, transferred, labeled, unlabeled]
   pull_request_target:
-    types: [opened, reopened, synchronize, ready_for_review, closed]
+    types: [opened, reopened, synchronize, ready_for_review, closed, labeled, unlabeled]
   workflow_dispatch:
     inputs:
       item_url:
@@ -35,6 +35,7 @@ env:
   PROJECT_OWNER: lialit
   PROJECT_NUMBER: "2"
   WORKFLOW_FIELD: Workflow
+  EXPECTED_REPOSITORY: lialit/Universal-CSV-Dashboard
 
 jobs:
   sync-project:
@@ -44,7 +45,10 @@ jobs:
       GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
       TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
     steps:
-      - name: Validate project token
+      - name: Check out repository configuration
+        uses: actions/checkout@v4
+
+      - name: Validate project token and configuration
         shell: bash
         run: |
           set -euo pipefail
@@ -53,6 +57,7 @@ jobs:
             exit 1
           fi
           gh auth status
+          python scripts/validate_project_automation.py
 
       - name: Resolve target workflow state
         id: state
@@ -65,20 +70,26 @@ jobs:
           elif [[ "${{ github.event_name }}" == "issues" ]]; then
             case "${{ github.event.action }}" in
               closed) value="Done" ;;
+              labeled|unlabeled) value="" ;;
               *) value="Backlog" ;;
             esac
           else
             case "${{ github.event.action }}" in
               ready_for_review) value="Review" ;;
               closed) value="Done" ;;
+              labeled|unlabeled) value="" ;;
               *) value="In progress" ;;
             esac
           fi
 
           echo "value=$value" >> "$GITHUB_OUTPUT"
-          echo "Target state: $value"
+          if [[ -n "$value" ]]; then
+            echo "Target workflow state: $value"
+          else
+            echo "Workflow state is unchanged for this event."
+          fi
 
-      - name: Add item and update Workflow field
+      - name: Add item and synchronize Project fields
         shell: bash
         run: |
           set -euo pipefail
@@ -91,25 +102,21 @@ jobs:
           repo_owner="${BASH_REMATCH[1]}"
           repo_name="${BASH_REMATCH[2]}"
           item_number="${BASH_REMATCH[4]}"
+          repository="$repo_owner/$repo_name"
+
+          if [[ "$repository" != "$EXPECTED_REPOSITORY" ]]; then
+            echo "URL must belong to $EXPECTED_REPOSITORY, received $repository." >&2
+            exit 1
+          fi
 
           project_query='query($login:String!,$number:Int!){user(login:$login){projectV2(number:$number){id fields(first:100){nodes{... on ProjectV2SingleSelectField{id name options{id name}}}} items(first:100){nodes{id content{... on Issue{url} ... on PullRequest{url}}}}}}}'
           project_json="$(gh api graphql -f query="$project_query" -F login="$PROJECT_OWNER" -F number="$PROJECT_NUMBER")"
 
           project_id="$(jq -r '.data.user.projectV2.id // empty' <<< "$project_json")"
-          field_id="$(jq -r --arg field "$WORKFLOW_FIELD" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .id' <<< "$project_json")"
-          option_id="$(jq -r --arg field "$WORKFLOW_FIELD" --arg option "${{ steps.state.outputs.value }}" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .options[] | select(.name == $option) | .id' <<< "$project_json")"
           item_id="$(jq -r --arg url "$TARGET_URL" '.data.user.projectV2.items.nodes[] | select(.content.url == $url) | .id' <<< "$project_json" | head -n 1)"
 
           if [[ -z "$project_id" ]]; then
             echo "Project #$PROJECT_NUMBER was not found for user $PROJECT_OWNER." >&2
-            exit 1
-          fi
-          if [[ -z "$field_id" ]]; then
-            echo "Field '$WORKFLOW_FIELD' was not found." >&2
-            exit 1
-          fi
-          if [[ -z "$option_id" ]]; then
-            echo "Workflow option '${{ steps.state.outputs.value }}' was not found." >&2
             exit 1
           fi
 
@@ -137,11 +144,50 @@ jobs:
           fi
 
           update_mutation='mutation($project:ID!,$item:ID!,$field:ID!,$option:String!){updateProjectV2ItemFieldValue(input:{projectId:$project,itemId:$item,fieldId:$field,value:{singleSelectOptionId:$option}}){projectV2Item{id}}}'
-          gh api graphql \
-            -f query="$update_mutation" \
-            -F project="$project_id" \
-            -F item="$item_id" \
-            -F field="$field_id" \
-            -F option="$option_id" >/dev/null
 
-          echo "Updated $TARGET_URL to '${{ steps.state.outputs.value }}'."
+          set_field() {
+            local field_name="$1"
+            local option_name="$2"
+            local field_id option_id
+
+            field_id="$(jq -r --arg field "$field_name" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .id' <<< "$project_json")"
+            option_id="$(jq -r --arg field "$field_name" --arg option "$option_name" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .options[] | select(.name == $option) | .id' <<< "$project_json")"
+
+            if [[ -z "$field_id" || -z "$option_id" ]]; then
+              echo "Could not resolve Project field '$field_name' option '$option_name'." >&2
+              exit 1
+            fi
+
+            gh api graphql \
+              -f query="$update_mutation" \
+              -F project="$project_id" \
+              -F item="$item_id" \
+              -F field="$field_id" \
+              -F option="$option_id" >/dev/null
+
+            echo "Set $field_name to $option_name."
+          }
+
+          workflow_value="${{ steps.state.outputs.value }}"
+          if [[ -n "$workflow_value" ]]; then
+            set_field "$WORKFLOW_FIELD" "$workflow_value"
+          fi
+
+          labels_json="$(gh api "repos/$repository/issues/$item_number" --jq '[.labels[].name]')"
+          mapping_file=".github/project-label-mapping.json"
+
+          for field_name in Priority Release Area; do
+            mapped_value="$(jq -r --arg field "$field_name" --argjson labels "$labels_json" '
+              .[$field] as $mapping
+              | [$labels[] | select($mapping[.] != null) | $mapping[.]]
+              | first // empty
+            ' "$mapping_file")"
+
+            if [[ -n "$mapped_value" ]]; then
+              set_field "$field_name" "$mapped_value"
+            else
+              echo "No mapped label found for $field_name; leaving the current value unchanged."
+            fi
+          done
+
+          echo "Project synchronization completed for $TARGET_URL."
