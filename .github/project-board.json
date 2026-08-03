@@ -5,6 +5,11 @@
   "visibility": "PUBLIC",
   "fields": [
     {
+      "name": "Workflow",
+      "type": "SINGLE_SELECT",
+      "options": ["Backlog", "Ready", "In progress", "Review", "Done"]
+    },
+    {
       "name": "Priority",
       "type": "SINGLE_SELECT",
       "options": ["P0", "P1", "P2", "P3"]
