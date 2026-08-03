@@ -34,7 +34,6 @@ concurrency:
 env:
   PROJECT_OWNER: lialit
   PROJECT_NUMBER: "2"
-  PROJECT_URL: https://github.com/users/lialit/projects/2
   WORKFLOW_FIELD: Workflow
 
 jobs:
@@ -45,21 +44,30 @@ jobs:
       GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
       TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
     steps:
-      - name: Add event issue or pull request
-        if: github.event_name != 'workflow_dispatch'
-        uses: actions/add-to-project@v1.0.2
-        with:
-          project-url: ${{ env.PROJECT_URL }}
-          github-token: ${{ secrets.PROJECT_TOKEN }}
-
-      - name: Add manually selected item
-        if: github.event_name == 'workflow_dispatch'
+      - name: Validate project token
         shell: bash
         run: |
           set -euo pipefail
-          gh project item-add "$PROJECT_NUMBER" \
-            --owner "$PROJECT_OWNER" \
-            --url "$TARGET_URL" >/dev/null
+          if [[ -z "${GH_TOKEN:-}" ]]; then
+            echo "Repository secret PROJECT_TOKEN is missing." >&2
+            exit 1
+          fi
+          gh auth status
+
+      - name: Add item if missing
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          items_json="$(gh project item-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 500 --format json)"
+          existing_id="$(jq -r --arg url "$TARGET_URL" '.items[] | select(.content.url == $url or .url == $url) | .id' <<< "$items_json" | head -n 1)"
+
+          if [[ -n "$existing_id" && "$existing_id" != "null" ]]; then
+            echo "Item already exists in the project: $TARGET_URL"
+          else
+            gh project item-add "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --url "$TARGET_URL"
+            echo "Added item to project: $TARGET_URL"
+          fi
 
   update-workflow:
     name: Update roadmap workflow state
@@ -103,7 +111,7 @@ jobs:
 
           fields_json="$(gh project field-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 100 --format json)"
           field_id="$(jq -r --arg name "$WORKFLOW_FIELD" '.fields[] | select(.name == $name) | .id' <<< "$fields_json")"
-          option_id="$(jq -r --arg field "$WORKFLOW_FIELD" --arg option "${{ steps.state.outputs.value }}" '.fields[] | select(.name == $field) | .options[] | select(.name == $option) | .id' <<< "$fields_json")"
+          option_id="$(jq -r --arg field "$WORKFLOW_FIELD" --arg name "${{ steps.state.outputs.value }}" '.fields[] | select(.name == $field) | .options[] | select(.name == $name) | .id' <<< "$fields_json")"
 
           if [[ -z "$project_id" || "$project_id" == "null" ]]; then
             echo "Project node ID was not found." >&2
