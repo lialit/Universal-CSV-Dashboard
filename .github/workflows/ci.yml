@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -13,7 +14,81 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
+  lint:
+    name: Lint and configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-security.txt
+
+      - name: Install quality dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run Ruff
+        run: python -m ruff check .
+
+      - name: Validate Project automation configuration
+        run: python scripts/validate_project_automation.py
+
+      - name: Compile Python sources
+        run: python -m compileall -q app.py app_core pages scripts tests
+
+  tests:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: "3.11"
+          - os: ubuntu-latest
+            python-version: "3.12"
+          - os: windows-latest
+            python-version: "3.11"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install application dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Verify dependency compatibility
+        run: python -m pip check
+
+      - name: Verify core imports
+        run: python -c "import pandas, plotly, streamlit; import app_core"
+
+      - name: Run automated tests
+        run: python -m pytest -q
+
+  security:
+    name: Security and dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -24,11 +99,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
           cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-security.txt
 
       - name: Install dependencies
-        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt -r requirements-security.txt
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-security.txt
 
       - name: Verify dependency compatibility
         run: python -m pip check
@@ -36,14 +116,41 @@ jobs:
       - name: Audit dependency vulnerabilities
         run: python -m pip_audit -r requirements.txt --strict
 
-      - name: Run static quality checks
-        run: python -m ruff check .
-
       - name: Verify local-first privacy controls
         run: python scripts/security_review.py --root .
 
-      - name: Run automated tests
-        run: python -m pytest -q
+  release-readiness:
+    name: Release readiness
+    needs: [lint, tests, security]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Require all CI gates
+        shell: bash
+        run: |
+          if [[ "${{ needs.lint.result }}" != "success" || \
+                "${{ needs.tests.result }}" != "success" || \
+                "${{ needs.security.result }}" != "success" ]]; then
+            echo "One or more required CI gates failed." >&2
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install application dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
 
       - name: Publish readiness evidence
         run: python scripts/release_readiness.py --root .
