@@ -1,10 +1,10 @@
 [
-  {"issue":14,"priority":"P0","area":"Dashboard","release":"v1.1","effort":"M"},
-  {"issue":15,"priority":"P0","area":"Dashboard","release":"v1.1","effort":"M"},
-  {"issue":16,"priority":"P0","area":"Backend","release":"v1.1","effort":"L"},
-  {"issue":17,"priority":"P1","area":"UI","release":"v1.1","effort":"M"},
-  {"issue":18,"priority":"P1","area":"Export","release":"v1.1","effort":"L"},
-  {"issue":19,"priority":"P1","area":"Docs","release":"v1.1","effort":"M"},
-  {"issue":20,"priority":"P1","area":"Dashboard","release":"v1.1","effort":"M"},
-  {"issue":21,"priority":"P0","area":"GitHub","release":"v1.1","effort":"M"}
+  {"issue":14,"workflow":"Ready","priority":"P0","area":"Dashboard","release":"v1.1","effort":"M"},
+  {"issue":15,"workflow":"Ready","priority":"P0","area":"Dashboard","release":"v1.1","effort":"M"},
+  {"issue":16,"workflow":"Ready","priority":"P0","area":"Backend","release":"v1.1","effort":"L"},
+  {"issue":17,"workflow":"Backlog","priority":"P1","area":"UI","release":"v1.1","effort":"M"},
+  {"issue":18,"workflow":"Backlog","priority":"P1","area":"Export","release":"v1.1","effort":"L"},
+  {"issue":19,"workflow":"Backlog","priority":"P1","area":"Docs","release":"v1.1","effort":"M"},
+  {"issue":20,"workflow":"Backlog","priority":"P1","area":"Dashboard","release":"v1.1","effort":"M"},
+  {"issue":21,"workflow":"Backlog","priority":"P0","area":"GitHub","release":"v1.1","effort":"M"}
 ]
