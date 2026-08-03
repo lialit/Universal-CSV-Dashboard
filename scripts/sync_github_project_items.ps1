@@ -65,6 +65,7 @@ foreach ($entry in $config) {
     }
 
     $fieldValues = @{
+        "Workflow" = [string]$entry.workflow
         "Priority" = [string]$entry.priority
         "Area" = [string]$entry.area
         "Release" = [string]$entry.release
@@ -90,9 +91,9 @@ foreach ($entry in $config) {
             --single-select-option-id ([string]$option.id) | Out-Null
     }
 
-    Write-Host "Configured issue #${issueNumber}: $($entry.priority), $($entry.area), $($entry.release), $($entry.effort)"
+    Write-Host "Configured issue #${issueNumber}: $($entry.workflow), $($entry.priority), $($entry.area), $($entry.release), $($entry.effort)"
     $updated++
 }
 
-Write-Host "Project item metadata synchronization completed. Updated: $updated."
+Write-Host "Project workflow synchronization completed. Updated: $updated."
 Write-Host "Open with: gh project view $projectNumber --owner $Owner --web"
