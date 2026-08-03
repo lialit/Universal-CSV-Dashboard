@@ -1,0 +1,23 @@
+{
+  "Priority": {
+    "priority: P0": "P0",
+    "priority: P1": "P1",
+    "priority: P2": "P2",
+    "priority: P3": "P3"
+  },
+  "Release": {
+    "release: v1.1": "v1.1",
+    "release: v1.2": "v1.2",
+    "release: v2.0": "v2.0"
+  },
+  "Area": {
+    "area: dashboard": "Dashboard",
+    "area: data": "Data",
+    "area: charts": "Charts",
+    "area: export": "Export",
+    "area: ui": "UI",
+    "area: backend": "Backend",
+    "area: docs": "Docs",
+    "area: github": "GitHub"
+  }
+}
