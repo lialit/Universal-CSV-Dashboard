@@ -41,12 +41,25 @@ jobs:
   add-to-project:
     name: Add item to roadmap
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+      TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
     steps:
-      - name: Add issue or pull request
+      - name: Add event issue or pull request
+        if: github.event_name != 'workflow_dispatch'
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.PROJECT_TOKEN }}
+
+      - name: Add manually selected item
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh project item-add "$PROJECT_NUMBER" \
+            --owner "$PROJECT_OWNER" \
+            --url "$TARGET_URL" >/dev/null
 
   update-workflow:
     name: Update roadmap workflow state
@@ -90,7 +103,7 @@ jobs:
 
           fields_json="$(gh project field-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 100 --format json)"
           field_id="$(jq -r --arg name "$WORKFLOW_FIELD" '.fields[] | select(.name == $name) | .id' <<< "$fields_json")"
-          option_id="$(jq -r --arg name "${{ steps.state.outputs.value }}" '.fields[] | select(.name == env.WORKFLOW_FIELD) | .options[] | select(.name == $name) | .id' <<< "$fields_json")"
+          option_id="$(jq -r --arg field "$WORKFLOW_FIELD" --arg option "${{ steps.state.outputs.value }}" '.fields[] | select(.name == $field) | .options[] | select(.name == $option) | .id' <<< "$fields_json")"
 
           if [[ -z "$project_id" || "$project_id" == "null" ]]; then
             echo "Project node ID was not found." >&2
