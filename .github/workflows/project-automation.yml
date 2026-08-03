@@ -37,8 +37,8 @@ env:
   WORKFLOW_FIELD: Workflow
 
 jobs:
-  add-to-project:
-    name: Add item to roadmap
+  sync-project:
+    name: Sync roadmap item
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
@@ -54,29 +54,6 @@ jobs:
           fi
           gh auth status
 
-      - name: Add item if missing
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          items_json="$(gh project item-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 500 --format json)"
-          existing_id="$(jq -r --arg url "$TARGET_URL" '.items[] | select(.content.url == $url or .url == $url) | .id' <<< "$items_json" | head -n 1)"
-
-          if [[ -n "$existing_id" && "$existing_id" != "null" ]]; then
-            echo "Item already exists in the project: $TARGET_URL"
-          else
-            gh project item-add "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --url "$TARGET_URL"
-            echo "Added item to project: $TARGET_URL"
-          fi
-
-  update-workflow:
-    name: Update roadmap workflow state
-    needs: add-to-project
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
-      TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
-    steps:
       - name: Resolve target workflow state
         id: state
         shell: bash
@@ -101,51 +78,70 @@ jobs:
           echo "value=$value" >> "$GITHUB_OUTPUT"
           echo "Target state: $value"
 
-      - name: Set Workflow field
+      - name: Add item and update Workflow field
         shell: bash
         run: |
           set -euo pipefail
 
-          project_json="$(gh project view "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --format json)"
-          project_id="$(jq -r '.id' <<< "$project_json")"
-
-          fields_json="$(gh project field-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 100 --format json)"
-          field_id="$(jq -r --arg name "$WORKFLOW_FIELD" '.fields[] | select(.name == $name) | .id' <<< "$fields_json")"
-          option_id="$(jq -r --arg field "$WORKFLOW_FIELD" --arg name "${{ steps.state.outputs.value }}" '.fields[] | select(.name == $field) | .options[] | select(.name == $name) | .id' <<< "$fields_json")"
-
-          if [[ -z "$project_id" || "$project_id" == "null" ]]; then
-            echo "Project node ID was not found." >&2
+          if [[ ! "$TARGET_URL" =~ ^https://github.com/([^/]+)/([^/]+)/(issues|pull)/([0-9]+)$ ]]; then
+            echo "Unsupported Issue or pull request URL: $TARGET_URL" >&2
             exit 1
           fi
-          if [[ -z "$field_id" || "$field_id" == "null" ]]; then
+
+          repo_owner="${BASH_REMATCH[1]}"
+          repo_name="${BASH_REMATCH[2]}"
+          item_number="${BASH_REMATCH[4]}"
+
+          project_query='query($login:String!,$number:Int!){user(login:$login){projectV2(number:$number){id fields(first:100){nodes{... on ProjectV2SingleSelectField{id name options{id name}}}} items(first:100){nodes{id content{... on Issue{url} ... on PullRequest{url}}}}}}}'
+          project_json="$(gh api graphql -f query="$project_query" -F login="$PROJECT_OWNER" -F number="$PROJECT_NUMBER")"
+
+          project_id="$(jq -r '.data.user.projectV2.id // empty' <<< "$project_json")"
+          field_id="$(jq -r --arg field "$WORKFLOW_FIELD" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .id' <<< "$project_json")"
+          option_id="$(jq -r --arg field "$WORKFLOW_FIELD" --arg option "${{ steps.state.outputs.value }}" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .options[] | select(.name == $option) | .id' <<< "$project_json")"
+          item_id="$(jq -r --arg url "$TARGET_URL" '.data.user.projectV2.items.nodes[] | select(.content.url == $url) | .id' <<< "$project_json" | head -n 1)"
+
+          if [[ -z "$project_id" ]]; then
+            echo "Project #$PROJECT_NUMBER was not found for user $PROJECT_OWNER." >&2
+            exit 1
+          fi
+          if [[ -z "$field_id" ]]; then
             echo "Field '$WORKFLOW_FIELD' was not found." >&2
             exit 1
           fi
-          if [[ -z "$option_id" || "$option_id" == "null" ]]; then
+          if [[ -z "$option_id" ]]; then
             echo "Workflow option '${{ steps.state.outputs.value }}' was not found." >&2
             exit 1
           fi
 
-          item_id=""
-          for attempt in 1 2 3 4 5; do
-            items_json="$(gh project item-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 500 --format json)"
-            item_id="$(jq -r --arg url "$TARGET_URL" '.items[] | select(.content.url == $url or .url == $url) | .id' <<< "$items_json" | head -n 1)"
-            if [[ -n "$item_id" && "$item_id" != "null" ]]; then
-              break
-            fi
-            echo "Project item is not visible yet; retrying ($attempt/5)..."
-            sleep 3
-          done
+          if [[ -z "$item_id" ]]; then
+            content_query='query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){issueOrPullRequest(number:$number){id url}}}'
+            content_json="$(gh api graphql -f query="$content_query" -F owner="$repo_owner" -F name="$repo_name" -F number="$item_number")"
+            content_id="$(jq -r '.data.repository.issueOrPullRequest.id // empty' <<< "$content_json")"
 
-          if [[ -z "$item_id" || "$item_id" == "null" ]]; then
-            echo "Could not find project item for $TARGET_URL" >&2
+            if [[ -z "$content_id" ]]; then
+              echo "Could not resolve content node for $TARGET_URL." >&2
+              exit 1
+            fi
+
+            add_mutation='mutation($project:ID!,$content:ID!){addProjectV2ItemById(input:{projectId:$project,contentId:$content}){item{id}}}'
+            add_json="$(gh api graphql -f query="$add_mutation" -F project="$project_id" -F content="$content_id")"
+            item_id="$(jq -r '.data.addProjectV2ItemById.item.id // empty' <<< "$add_json")"
+            echo "Added item to project: $TARGET_URL"
+          else
+            echo "Item already exists in project: $TARGET_URL"
+          fi
+
+          if [[ -z "$item_id" ]]; then
+            echo "Project item ID was not resolved." >&2
             exit 1
           fi
 
-          gh project item-edit \
-            --id "$item_id" \
-            --project-id "$project_id" \
-            --field-id "$field_id" \
-            --single-select-option-id "$option_id"
+          update_mutation='mutation($project:ID!,$item:ID!,$field:ID!,$option:String!){updateProjectV2ItemFieldValue(input:{projectId:$project,itemId:$item,fieldId:$field,value:{singleSelectOptionId:$option}}){projectV2Item{id}}}'
+          gh api graphql \
+            -f query="$update_mutation" \
+            -F project="$project_id" \
+            -F item="$item_id" \
+            -F field="$field_id" \
+            -F option="$option_id" >/dev/null
 
           echo "Updated $TARGET_URL to '${{ steps.state.outputs.value }}'."
