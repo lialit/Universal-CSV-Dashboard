@@ -1,0 +1,130 @@
+name: Project automation
+
+on:
+  issues:
+    types: [opened, reopened, closed, transferred]
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review, closed]
+  workflow_dispatch:
+    inputs:
+      item_url:
+        description: "Issue or pull request URL to add and update"
+        required: true
+        type: string
+      workflow_state:
+        description: "Workflow state"
+        required: true
+        type: choice
+        options:
+          - Backlog
+          - Ready
+          - In progress
+          - Review
+          - Done
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+concurrency:
+  group: project-automation-${{ github.event.issue.number || github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_OWNER: lialit
+  PROJECT_NUMBER: "2"
+  PROJECT_URL: https://github.com/users/lialit/projects/2
+  WORKFLOW_FIELD: Workflow
+
+jobs:
+  add-to-project:
+    name: Add item to roadmap
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add issue or pull request
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+
+  update-workflow:
+    name: Update roadmap workflow state
+    needs: add-to-project
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+      TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
+    steps:
+      - name: Resolve target workflow state
+        id: state
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            value="${{ inputs.workflow_state }}"
+          elif [[ "${{ github.event_name }}" == "issues" ]]; then
+            case "${{ github.event.action }}" in
+              closed) value="Done" ;;
+              *) value="Backlog" ;;
+            esac
+          else
+            case "${{ github.event.action }}" in
+              ready_for_review) value="Review" ;;
+              closed) value="Done" ;;
+              *) value="In progress" ;;
+            esac
+          fi
+
+          echo "value=$value" >> "$GITHUB_OUTPUT"
+          echo "Target state: $value"
+
+      - name: Set Workflow field
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          project_json="$(gh project view "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --format json)"
+          project_id="$(jq -r '.id' <<< "$project_json")"
+
+          fields_json="$(gh project field-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 100 --format json)"
+          field_id="$(jq -r --arg name "$WORKFLOW_FIELD" '.fields[] | select(.name == $name) | .id' <<< "$fields_json")"
+          option_id="$(jq -r --arg name "${{ steps.state.outputs.value }}" '.fields[] | select(.name == env.WORKFLOW_FIELD) | .options[] | select(.name == $name) | .id' <<< "$fields_json")"
+
+          if [[ -z "$project_id" || "$project_id" == "null" ]]; then
+            echo "Project node ID was not found." >&2
+            exit 1
+          fi
+          if [[ -z "$field_id" || "$field_id" == "null" ]]; then
+            echo "Field '$WORKFLOW_FIELD' was not found." >&2
+            exit 1
+          fi
+          if [[ -z "$option_id" || "$option_id" == "null" ]]; then
+            echo "Workflow option '${{ steps.state.outputs.value }}' was not found." >&2
+            exit 1
+          fi
+
+          item_id=""
+          for attempt in 1 2 3 4 5; do
+            items_json="$(gh project item-list "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --limit 500 --format json)"
+            item_id="$(jq -r --arg url "$TARGET_URL" '.items[] | select(.content.url == $url or .url == $url) | .id' <<< "$items_json" | head -n 1)"
+            if [[ -n "$item_id" && "$item_id" != "null" ]]; then
+              break
+            fi
+            echo "Project item is not visible yet; retrying ($attempt/5)..."
+            sleep 3
+          done
+
+          if [[ -z "$item_id" || "$item_id" == "null" ]]; then
+            echo "Could not find project item for $TARGET_URL" >&2
+            exit 1
+          fi
+
+          gh project item-edit \
+            --id "$item_id" \
+            --project-id "$project_id" \
+            --field-id "$field_id" \
+            --single-select-option-id "$option_id"
+
+          echo "Updated $TARGET_URL to '${{ steps.state.outputs.value }}'."
