@@ -163,7 +163,7 @@ jobs:
               -F project="$project_id" \
               -F item="$item_id" \
               -F field="$field_id" \
-              -F option="$option_id" >/dev/null
+              -f option="$option_id" >/dev/null
 
             echo "Set $field_name to $option_name."
           }
