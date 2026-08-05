@@ -150,11 +150,11 @@ jobs:
             local option_name="$2"
             local field_id option_id
 
-            field_id="$(jq -r --arg field "$field_name" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .id' <<< "$project_json")"
-            option_id="$(jq -r --arg field "$field_name" --arg option "$option_name" '.data.user.projectV2.fields.nodes[] | select(.name == $field) | .options[] | select(.name == $option) | .id' <<< "$project_json")"
+            field_id="$(jq -r --arg field "$field_name" '[.data.user.projectV2.fields.nodes[] | select(.name == $field) | .id] | first // empty' <<< "$project_json")"
+            option_id="$(jq -r --arg field "$field_name" --arg option "$option_name" '[.data.user.projectV2.fields.nodes[] | select(.name == $field) | .options[] | select(.name == $option) | .id] | first // empty' <<< "$project_json")"
 
-            if [[ -z "$field_id" || -z "$option_id" ]]; then
-              echo "Could not resolve Project field '$field_name' option '$option_name'." >&2
+            if [[ -z "$field_id" || -z "$option_id" || "$field_id" == *$'\n'* || "$option_id" == *$'\n'* ]]; then
+              echo "Could not resolve one Project field '$field_name' option '$option_name'." >&2
               exit 1
             fi
 
