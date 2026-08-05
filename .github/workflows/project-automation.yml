@@ -46,7 +46,7 @@ jobs:
       TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
     steps:
       - name: Check out repository configuration
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate project token and configuration
         shell: bash
@@ -121,7 +121,7 @@ jobs:
           fi
 
           if [[ -z "$item_id" ]]; then
-            content_query='query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){issueOrPullRequest(number:$number){id url}}}'
+            content_query='query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){issueOrPullRequest(number:$number){... on Issue{id url} ... on PullRequest{id url}}}}'
             content_json="$(gh api graphql -f query="$content_query" -F owner="$repo_owner" -F name="$repo_name" -F number="$item_number")"
             content_id="$(jq -r '.data.repository.issueOrPullRequest.id // empty' <<< "$content_json")"
 
