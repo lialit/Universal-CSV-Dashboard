@@ -16,13 +16,13 @@ changelog:
     - title: Performance
       labels:
         - performance
+    - title: Testing and quality
+      labels:
+        - testing
     - title: Documentation
       labels:
         - documentation
         - "area: docs"
-    - title: Testing and quality
-      labels:
-        - testing
     - title: Dependencies
       labels:
         - dependencies
