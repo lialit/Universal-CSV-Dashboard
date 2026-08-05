@@ -6,7 +6,7 @@ changelog:
     - title: Breaking changes
       labels:
         - breaking-change
-    - title: Features
+    - title: Features and improvements
       labels:
         - feature
         - enhancement
@@ -20,9 +20,19 @@ changelog:
       labels:
         - documentation
         - "area: docs"
+    - title: Testing and quality
+      labels:
+        - testing
     - title: Dependencies
       labels:
         - dependencies
+    - title: Repository and release infrastructure
+      labels:
+        - "area: github"
+        - github_actions
+    - title: Internal refactoring
+      labels:
+        - refactor
     - title: Other changes
       labels:
         - "*"
