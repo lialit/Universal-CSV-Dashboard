@@ -1,0 +1,70 @@
+"area: github":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "scripts/sync_*.ps1"
+          - "docs/BRANCH_PROTECTION.md"
+          - "docs/DEPENDENCY_UPDATES.md"
+          - "docs/RELEASE_AUTOMATION.md"
+
+"area: docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "docs/**"
+
+"area: dashboard":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "app.py"
+          - "pages/**"
+
+"area: data":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/data_*.py"
+          - "src/**/*data*.py"
+          - "examples/**"
+          - "data/**"
+
+"area: charts":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**/*chart*.py"
+          - "src/**/*visual*.py"
+
+"area: export":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**/*export*.py"
+          - "src/**/*report*.py"
+
+"area: ui":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**/*ui*.py"
+          - "src/**/*style*.py"
+          - "assets/**"
+          - "images/**"
+
+"area: backend":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**"
+
+"testing":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "tests/**"
+          - "pytest.ini"
+          - "scripts/*test*.py"
+          - "scripts/*smoke*.py"
+
+"dependencies":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "requirements*.txt"
+          - "pyproject.toml"
+          - "poetry.lock"
+          - "Pipfile*"
+          - ".github/dependabot.yml"
