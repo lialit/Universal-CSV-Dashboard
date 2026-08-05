@@ -4,11 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, for example v1.0.0"
+        description: "Release tag, for example v1.0.0 or v1.0.0-smoke.1"
         required: true
         type: string
       create_draft:
         description: "Create a draft GitHub Release"
+        required: true
+        default: false
+        type: boolean
+      smoke_test:
+        description: "Allow only a v<VERSION>-smoke.N draft tag"
         required: true
         default: false
         type: boolean
@@ -29,8 +34,27 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Validate workflow mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.smoke_test }}" == "true" && "${{ inputs.create_draft }}" != "true" ]]; then
+            echo "Smoke-test mode must create a draft release." >&2
+            exit 1
+          fi
+          if [[ "${{ inputs.smoke_test }}" != "true" && "${{ inputs.tag }}" == *-smoke.* ]]; then
+            echo "Smoke tags require smoke_test = true." >&2
+            exit 1
+          fi
+
       - name: Validate VERSION, tag and changelog
-        run: python scripts/validate_release.py --tag "${{ inputs.tag }}"
+        shell: bash
+        run: |
+          args=(--tag "${{ inputs.tag }}")
+          if [[ "${{ inputs.smoke_test }}" == "true" ]]; then
+            args+=(--allow-smoke-tag)
+          fi
+          python scripts/validate_release.py "${args[@]}"
 
       - name: Confirm tag does not already exist
         if: ${{ inputs.create_draft }}
@@ -48,9 +72,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag }}
+          SMOKE_TEST: ${{ inputs.smoke_test }}
         run: |
+          title="Universal CSV Dashboard $RELEASE_TAG"
+          if [[ "$SMOKE_TEST" == "true" ]]; then
+            title="[SMOKE TEST — DO NOT PUBLISH] $title"
+          fi
+
           gh release create "$RELEASE_TAG" \
             --target main \
-            --title "Universal CSV Dashboard $RELEASE_TAG" \
+            --title "$title" \
             --generate-notes \
             --draft
