@@ -14,9 +14,11 @@ A freshness review should check:
 - release and GitHub automation procedures;
 - links to files, directories, screenshots and release assets.
 
-## Current audit findings
+## Current audit status
 
-The GH-05B review identified one stale public statement in `README.md`: the roadmap still describes version 1.0 as being in release-candidate validation and refers to `1.0.0-rc.1` as the current bundled milestone. The stable `v1.0.0` release is now the canonical public version. This wording must be corrected before GH-05B is closed.
+The GH-05B review identified and resolved one stale public statement in `README.md`. The roadmap now records stable `v1.0.0` as released instead of describing version 1.0 as being in release-candidate validation.
+
+The repository-local link audit completed successfully with no missing local Markdown or HTML targets.
 
 ## Automated protection
 
