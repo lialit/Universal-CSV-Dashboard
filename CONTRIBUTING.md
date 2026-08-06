@@ -114,20 +114,39 @@ virtual environments, IDE metadata, secrets or real user datasets.
 6. Review privacy, export, performance and compatibility implications.
 7. Rebase or merge the latest `main` before requesting final review when needed.
 
-## Required checks
+## Validation
 
-Run the complete validation set before opening a pull request:
+Use the smallest useful check set while developing, then run the complete
+pull-request readiness set before requesting review.
+
+Fast feedback:
+
+```bash
+python -m ruff check .
+python -m pytest -q
+```
+
+Pull-request readiness:
 
 ```bash
 python -m pip check
 python -m ruff check .
+python scripts/validate_project_automation.py
+python -m compileall -q app.py app_core pages scripts tests
 python -m pytest -q
 python scripts/security_review.py --root .
 python scripts/release_readiness.py --root .
+python scripts/check_markdown_links.py
 ```
 
-For performance-related changes, also run the relevant smoke or benchmark
-script and include before/after measurements in the pull request.
+Dependency or security changes also require:
+
+```bash
+python -m pip_audit -r requirements.txt --strict
+```
+
+See [`docs/CONTRIBUTOR_VALIDATION.md`](docs/CONTRIBUTOR_VALIDATION.md) for the
+CI mapping, documentation-only checks and performance evidence expectations.
 
 If a check cannot run, explain why in the pull request. Do not weaken a gate to
 make an unrelated change pass.
@@ -137,6 +156,7 @@ make an unrelated change pass.
 - Link the relevant issue with `Closes #123` when the pull request fully resolves
   it.
 - Describe the user problem, implementation, validation and known limitations.
+- List exact validation commands and their outcomes.
 - Include screenshots for visible UI changes using synthetic data.
 - Include before/after measurements for performance changes.
 - Keep the pull request reasonably small and reviewable.
