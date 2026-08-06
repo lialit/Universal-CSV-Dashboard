@@ -27,11 +27,17 @@
 </p>
 
 <p align="center">
-  <a href="#quick-start">Quick start</a> ·
+  <strong><a href="./START_HERE.md">Run locally</a></strong> ·
+  <strong><a href="https://github.com/lialit/Universal-CSV-Dashboard/releases/latest">Stable release</a></strong> ·
+  <strong><a href="./SUPPORT.md">Get support</a></strong>
+</p>
+
+<p align="center">
   <a href="#what-you-get">Features</a> ·
-  <a href="#how-it-works">How it works</a> ·
+  <a href="#product-preview">Preview</a> ·
+  <a href="#quick-start">Quick start</a> ·
   <a href="#documentation">Documentation</a> ·
-  <a href="#roadmap">Roadmap</a>
+  <a href="#contributing">Contributing</a>
 </p>
 
 ![Universal CSV Dashboard hero](./assets/brand/github-hero-light.png)
@@ -165,6 +171,10 @@ streamlit run app.py
 Open the local address shown by Streamlit, upload a CSV, and review the detected
 configuration before exploring the dashboard.
 
+For a reproducible versioned installation, use the published
+[latest stable release](https://github.com/lialit/Universal-CSV-Dashboard/releases/latest).
+For setup problems or usage questions, follow [`SUPPORT.md`](SUPPORT.md).
+
 ## Try these pages first
 
 1. **Upload & Configure** — load a file, inspect detected fields and adjust the
@@ -237,7 +247,8 @@ reading the source code.
 
 | Document | Purpose |
 |---|---|
-| [`START_HERE.md`](START_HERE.md) | Guided onboarding for users and contributors |
+| [`START_HERE.md`](START_HERE.md) | Installation, first product tour and setup troubleshooting |
+| [`SUPPORT.md`](SUPPORT.md) | Bugs, usage help, feature requests and security routing |
 | [`PRODUCT.md`](PRODUCT.md) | Product scope, audience and value |
 | [`MANIFESTO.md`](MANIFESTO.md) | Principles that guide product decisions |
 | [`ROADMAP.md`](ROADMAP.md) | Planned product stages |
@@ -276,6 +287,10 @@ When reporting an issue, include:
 - your Python version and operating system;
 - the full error message.
 
+Use [`SUPPORT.md`](SUPPORT.md) to choose the correct route before opening an
+issue. Security vulnerabilities must use the private process in
+[`.github/SECURITY.md`](.github/SECURITY.md).
+
 ## License
 
 See [`LICENSE`](LICENSE) for the project licence.
@@ -291,6 +306,6 @@ Created by **Olena Havrylova**
 
 ### Save hours. Not spreadsheets.
 
-If the project helps you understand a dataset faster, consider giving it a star.
+Run the app locally, review the stable release, or choose the correct support route above.
 
 </div>
