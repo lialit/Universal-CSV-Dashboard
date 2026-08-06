@@ -46,7 +46,8 @@ Use the root documents first:
 - [`RELEASE_NOTES_PREVIEW_VALIDATION.md`](RELEASE_NOTES_PREVIEW_VALIDATION.md) — generated-note category validation;
 - [`PR_LABELING.md`](PR_LABELING.md) — automatic and semantic pull-request labels;
 - [`PROJECT_AUTOMATION.md`](PROJECT_AUTOMATION.md) — GitHub Project synchronization behavior;
-- [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist.
+- [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist;
+- [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules.
 
 ## Document ownership
 
