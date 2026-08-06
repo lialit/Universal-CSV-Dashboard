@@ -248,12 +248,12 @@ reading the source code.
 | `0.4` | **Explain** | Evidence-linked insights with confidence and limitations | Delivered in the current codebase |
 | `0.5` | **Share** | Saved project state and responsible report exports | Delivered in the current codebase |
 | `0.6` | **Assist** | Deterministic local guidance with inspectable calculations | Delivered in the current codebase |
-| `1.0` | **Launch** | Stable, documented and dependable public product | Release-candidate validation |
+| `1.0` | **Launch** | Stable, documented and dependable public product | Released as `v1.0.0` |
 
 See [`ROADMAP.md`](ROADMAP.md) for the working plan. Roadmap items describe
-direction, not guaranteed release dates. Delivered `0.3–0.6` work is currently
-included in `1.0.0-rc.1`; those milestones were not published as separate Git
-tags.
+direction, not guaranteed release dates. Delivered `0.3–0.6` work is included
+in the stable `v1.0.0` release; those milestones were not published as separate
+Git tags.
 
 ## Contributing
 
