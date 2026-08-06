@@ -3,7 +3,7 @@
 Welcome to **Universal CSV Dashboard**.
 
 This guide is the shortest path from cloning the repository to understanding
-what the product does, how to run it and where to go next.
+what the product does, how to run it, and where to go next.
 
 > **Product promise:** Understand your business in under 60 seconds.
 
@@ -12,51 +12,37 @@ what the product does, how to run it and where to go next.
 Universal CSV Dashboard is a local-first Streamlit application that turns a CSV
 file into a structured first-pass business analysis.
 
-Instead of manually deciding which spreadsheet columns matter, creating the
-same charts again and checking data quality separately, you can:
+You can:
 
 1. upload a CSV;
-2. review the detected field roles;
-3. open an executive overview;
-4. explore trends and distributions;
-5. inspect data quality.
+2. review detected field roles;
+3. inspect an executive overview;
+4. explore evidence-linked insights;
+5. review data quality;
+6. save project settings or export traceable reports.
 
-The application is designed to accelerate the beginning of analysis. It does
-not replace detailed domain investigation, spreadsheet editing or a complete
-enterprise BI implementation.
+It accelerates the beginning of analysis. It does not replace detailed domain
+investigation, spreadsheet editing, or a complete enterprise BI implementation.
 
 ## Who it is for
 
-Start here if you are:
-
-- a business owner who needs a clear first view of exported data;
-- a consultant analysing client CSV files;
-- a freelancer preparing a quick data review;
-- an analyst who wants a reusable exploration workflow;
-- a developer learning how the application is structured;
-- a contributor preparing an issue or pull request.
+Start here if you are a business owner, consultant, freelancer, analyst,
+developer, or contributor who needs a clear first view of business data.
 
 ## Five-minute quick start
 
-### 1. Check the requirements
+### Requirements
 
-You need:
+- Python 3.11 or newer
+- `pip`
+- a terminal
+- a modern web browser
 
-- Python 3.11 or newer;
-- `pip`;
-- a terminal;
-- a modern web browser.
-
-### 2. Clone the repository
+### Clone and create an environment
 
 ```bash
 git clone https://github.com/lialit/Universal-CSV-Dashboard.git
 cd Universal-CSV-Dashboard
-```
-
-### 3. Create a virtual environment
-
-```bash
 python -m venv .venv
 ```
 
@@ -72,129 +58,79 @@ Activate it on macOS or Linux:
 source .venv/bin/activate
 ```
 
-### 4. Install the dependencies
+### Install and run
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-The current application uses:
-
-- Streamlit for the interface;
-- Pandas for data processing;
-- Plotly for interactive charts;
-- Pytest for automated tests.
-
-### 5. Run the application
-
-```bash
 python -m streamlit run app.py
 ```
 
-Streamlit will display a local address, usually:
-
-```text
-http://localhost:8501
-```
-
-Open it in your browser.
+Open the local address shown by Streamlit, usually
+`http://localhost:8501`.
 
 ## Your first product tour
 
-The application contains five analysis pages, one sharing page and one product
-page.
-
 ### 1. Upload & Configure
 
-Start here.
-
-- Upload a CSV file.
-- Review the detected date, metric and category fields.
-- Confirm or adjust the proposed configuration.
-- Check whether the dataset was parsed as expected.
-
-Automatic detection should save time, but the user remains in control.
+Upload a CSV, review the detected date, metric, and category fields, then adjust
+the proposed configuration when necessary.
 
 ### 2. Executive Overview
 
-Use this page for the first business read.
-
-- Review headline metrics.
-- Scan the main trend.
-- Check the most important category view.
-- Apply available filters to narrow the analysis.
+Scan headline metrics, verified facts, rule-based interpretations, limitations,
+and the main trend.
 
 ### 3. Business Insights
 
-Use this page to review patterns that crossed the current deterministic
-thresholds.
-
-- Inspect contributions, trends, anomalies and numeric relationships.
-- Read the evidence behind each observation.
-- Keep the confidence reason and limitation with the interpretation.
+Review evidence-linked contributions, trends, anomalies, and numeric
+relationships together with their confidence reasons and limitations.
 
 ### 4. Analysis Assistant
 
-Use the local guided workflow when you need a business-readable explanation.
+Choose a supported local question, inspect the calculation, follow suggested
+next steps, and draft a reviewable evidence-based summary.
 
-- Choose a supported question.
-- Review the evidence, confidence and recommended next steps.
-- Open the Calculation Explainer to inspect fields, aggregation and steps.
-- Draft an evidence-based summary and run the Claim Guard before sharing.
-
-The assistant uses local deterministic rules. It does not send CSV values to
-an external AI service.
+The assistant uses deterministic local rules. It does not send CSV values to an
+external AI service.
 
 ### 5. Data Quality
 
-Open this page before trusting a conclusion.
-
-- Review missing cells.
-- Check duplicate rows.
-- Inspect column-level quality.
-- Identify fields that may need cleaning or reinterpretation.
-- Download a de-duplicated CSV when appropriate.
+Review missing cells, duplicate rows, column-level quality, and fields that may
+need cleaning or reinterpretation.
 
 ### 6. Export & Share
 
-Use this page after reviewing the analysis.
-
-- Save reusable project configuration without embedding CSV rows.
-- Create traceable Excel workbooks.
-- Create executive PDF reports with quality and limitation context.
-- Choose the Light, Corporate or Dark report theme.
+Save reusable project configuration or create traceable Excel and executive PDF
+reports with quality and methodology context.
 
 ### 7. About This Template
 
-Use this page for product context and guidance about the dashboard.
+Review the product context, intended use, and dashboard guidance.
 
 ## Which CSV should I use?
 
-For the first run, use a small, non-sensitive file.
+For the first run, use `sample_data/sample_sales.csv` or another small,
+non-sensitive file.
 
-Good starter datasets usually contain:
+A useful starter dataset usually contains:
 
 - one date or timestamp column;
-- one or more numeric business metrics;
+- one or more numeric metrics;
 - one or more categories;
 - clear column names;
-- at least several rows per category or date period.
-- a file size of no more than 25 MB for the validated v1.0 workflow.
+- several rows per category or time period;
+- no more than 25 MB for the validated v1.0 workflow.
 
-Examples include sales, marketing, inventory, finance and operational exports.
-For the first product tour, use `sample_data/sample_sales.csv`. Additional
-examples are available in `examples/`.
-
-Avoid uploading confidential production data until you have reviewed the code,
-your local environment and your organisation's data-handling requirements.
+Avoid confidential production data until you have reviewed the code, your local
+environment, and your organisation's data-handling requirements.
 
 ## Project map
 
 ```text
 Universal-CSV-Dashboard/
 ├── app.py                  # Streamlit entry point and navigation
-├── app_core/               # Detection, analysis and shared logic
+├── app_core/               # Detection, analysis, and shared logic
 ├── views/                  # Streamlit pages
 ├── sample_data/            # Quick-test data
 ├── examples/               # Example datasets and use cases
@@ -207,13 +143,10 @@ Universal-CSV-Dashboard/
 └── requirements.txt
 ```
 
-If you want to understand application navigation first, open `app.py`.
+Open `app.py` for navigation, `app_core/` for analytical behaviour, and `views/`
+for page composition.
 
-If you want to understand the analytical behaviour, start in `app_core/`.
-
-If you want to change a page, find the corresponding module in `views/`.
-
-## Run the tests
+## Basic test
 
 From the repository root:
 
@@ -221,87 +154,61 @@ From the repository root:
 python -m pytest -q
 ```
 
-Run the tests before and after changing detection, analysis or shared
-application logic.
+This is a useful first check. Contributors should follow the complete validation
+levels in [`CONTRIBUTING.md`](CONTRIBUTING.md) and
+[`docs/CONTRIBUTOR_VALIDATION.md`](docs/CONTRIBUTOR_VALIDATION.md).
 
 ## Common setup problems
 
 ### `streamlit` is not recognised
 
-Confirm that the virtual environment is active, then run:
+Confirm the virtual environment is active and reinstall dependencies:
 
 ```bash
 pip install -r requirements.txt
-```
-
-You can also launch Streamlit through Python:
-
-```bash
 python -m streamlit run app.py
 ```
 
 ### The wrong Python version is active
 
-Check:
-
 ```bash
 python --version
 ```
 
-If PyCharm uses a different interpreter, select the project's `.venv`
-interpreter in the Python interpreter settings.
+In PyCharm, select the project's `.venv` interpreter.
 
 ### The CSV does not parse correctly
 
-Check:
-
-- delimiter and encoding;
-- duplicate or empty column names;
-- inconsistent date formats;
-- numbers stored as text;
-- completely empty rows or columns.
-
-Try a small sample file first to determine whether the issue belongs to the
-dataset or the application.
+Check the delimiter, encoding, column names, date formats, numeric fields, and
+empty rows or columns. Try a small sample first.
 
 ### A chart or metric is missing
 
 Return to **Upload & Configure** and review the detected field roles. A useful
-chart depends on the presence of compatible date, numeric or categorical
-columns.
+view depends on compatible date, numeric, or categorical fields.
 
 ## Choose your next document
 
 | Goal | Read next |
 |---|---|
-| Understand the product and its audience | [`PRODUCT.md`](PRODUCT.md) |
-| See the current development plan | [`ROADMAP.md`](ROADMAP.md) |
-| Understand product principles | [`MANIFESTO.md`](MANIFESTO.md) |
-| Learn the visual system | [`docs/branding/BRAND_BOOK.md`](docs/branding/BRAND_BOOK.md) |
+| Understand the complete product | [`README.md`](README.md) |
+| Understand the product scope and audience | [`PRODUCT.md`](PRODUCT.md) |
+| See the development direction | [`ROADMAP.md`](ROADMAP.md) |
+| Browse detailed documentation | [`docs/README.md`](docs/README.md) |
 | Contribute code or documentation | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
-| Review the complete project introduction | [`README.md`](README.md) |
+| Choose an issue or PR route | [`docs/ISSUE_AND_PR_GUIDE.md`](docs/ISSUE_AND_PR_GUIDE.md) |
+| Run the correct validation level | [`docs/CONTRIBUTOR_VALIDATION.md`](docs/CONTRIBUTOR_VALIDATION.md) |
+| Learn the visual system | [`docs/branding/BRAND_BOOK.md`](docs/branding/BRAND_BOOK.md) |
 
-## Before opening an issue
+## Before opening an issue or pull request
 
-Prepare:
+Use the structured issue forms and never post confidential datasets,
+credentials, or private exports. Follow
+[`docs/ISSUE_AND_PR_GUIDE.md`](docs/ISSUE_AND_PR_GUIDE.md) for evidence and
+routing requirements.
 
-- a clear description of the problem;
-- the expected and actual behaviour;
-- reproduction steps;
-- your Python version and operating system;
-- a minimal, non-sensitive sample CSV when possible;
-- the complete error message.
-
-Use the repository's issue templates for bug reports and feature requests.
-
-## Before opening a pull request
-
-1. Create a focused branch.
-2. Keep the change limited to one clear purpose.
-3. Add or update tests when behaviour changes.
-4. Update relevant documentation.
-5. Run `pytest`.
-6. Review the final diff for unrelated files.
+For pull requests, use [`CONTRIBUTING.md`](CONTRIBUTING.md), record exact
+validation commands and outcomes, and explain any skipped check.
 
 ## The product principle to remember
 
