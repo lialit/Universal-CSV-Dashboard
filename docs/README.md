@@ -6,6 +6,7 @@ Use the root documents first:
 
 - [`../README.md`](../README.md) — product overview, screenshots and quick start;
 - [`../START_HERE.md`](../START_HERE.md) — installation, first product tour and common setup problems;
+- [`../SUPPORT.md`](../SUPPORT.md) — bugs, usage help, feature requests and security routing;
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — development workflow, validation and pull-request expectations;
 - [`../PRODUCT.md`](../PRODUCT.md) — product scope, audience and value;
 - [`../ROADMAP.md`](../ROADMAP.md) — current delivery direction.
@@ -47,7 +48,8 @@ Use the root documents first:
 - [`PR_LABELING.md`](PR_LABELING.md) — automatic and semantic pull-request labels;
 - [`PROJECT_AUTOMATION.md`](PROJECT_AUTOMATION.md) — GitHub Project synchronization behavior;
 - [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist;
-- [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules.
+- [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules;
+- [`RELEASE_COMMUNITY_TRUST_AUDIT.md`](RELEASE_COMMUNITY_TRUST_AUDIT.md) — stable release, support, security and community acceptance review.
 
 ## Document ownership
 
@@ -55,6 +57,7 @@ Each topic should have one canonical document. Other pages should link to it ins
 
 - Product introduction belongs in `README.md`.
 - Installation and first-use guidance belongs in `START_HERE.md`.
+- Public help and support boundaries belong in `SUPPORT.md`.
 - Contributor rules belong in `CONTRIBUTING.md`.
 - Detailed technical and operational guidance belongs under `docs/`.
 - Release-specific assets and records belong under `releases/`.
