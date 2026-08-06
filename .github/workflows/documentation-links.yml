@@ -1,0 +1,34 @@
+name: Documentation links
+
+on:
+  pull_request:
+    paths:
+      - "**/*.md"
+      - "scripts/check_markdown_links.py"
+      - ".github/workflows/documentation-links.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.md"
+      - "scripts/check_markdown_links.py"
+      - ".github/workflows/documentation-links.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check-local-links:
+    name: Check repository-local Markdown links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Validate local documentation links
+        run: python scripts/check_markdown_links.py
