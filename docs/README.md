@@ -45,7 +45,8 @@ Use the root documents first:
 - [`RELEASE_WORKFLOW_OPERATIONS.md`](RELEASE_WORKFLOW_OPERATIONS.md) — workflow modes and smoke cleanup;
 - [`RELEASE_NOTES_PREVIEW_VALIDATION.md`](RELEASE_NOTES_PREVIEW_VALIDATION.md) — generated-note category validation;
 - [`PR_LABELING.md`](PR_LABELING.md) — automatic and semantic pull-request labels;
-- [`PROJECT_AUTOMATION.md`](PROJECT_AUTOMATION.md) — GitHub Project synchronization behavior.
+- [`PROJECT_AUTOMATION.md`](PROJECT_AUTOMATION.md) — GitHub Project synchronization behavior;
+- [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist.
 
 ## Document ownership
 
