@@ -7,16 +7,15 @@ on:
         description: "Release tag, for example v1.0.0 or v1.0.0-smoke.1"
         required: true
         type: string
-      create_draft:
-        description: "Create a draft GitHub Release"
+      mode:
+        description: "Choose validation only, a normal draft, or a guarded smoke draft"
         required: true
-        default: false
-        type: boolean
-      smoke_test:
-        description: "Allow only a v<VERSION>-smoke.N draft tag"
-        required: true
-        default: false
-        type: boolean
+        default: validate-only
+        type: choice
+        options:
+          - validate-only
+          - create-draft
+          - smoke-draft
 
 permissions:
   contents: write
@@ -25,7 +24,23 @@ jobs:
   validate-release:
     name: Validate release metadata
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+      RELEASE_MODE: ${{ inputs.mode }}
     steps:
+      - name: Log requested release operation
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Release tag: $RELEASE_TAG"
+          echo "Release mode: $RELEASE_MODE"
+          {
+            echo "## Release preparation request"
+            echo ""
+            echo "- Tag: \`$RELEASE_TAG\`"
+            echo "- Mode: \`$RELEASE_MODE\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Check out repository
         uses: actions/checkout@v5
 
@@ -38,44 +53,57 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${{ inputs.smoke_test }}" == "true" && "${{ inputs.create_draft }}" != "true" ]]; then
-            echo "Smoke-test mode must create a draft release." >&2
-            exit 1
-          fi
-          if [[ "${{ inputs.smoke_test }}" != "true" && "${{ inputs.tag }}" == *-smoke.* ]]; then
-            echo "Smoke tags require smoke_test = true." >&2
-            exit 1
-          fi
+
+          case "$RELEASE_MODE" in
+            validate-only|create-draft)
+              if [[ "$RELEASE_TAG" == *-smoke.* ]]; then
+                echo "Smoke tags require mode = smoke-draft." >&2
+                exit 1
+              fi
+              ;;
+            smoke-draft)
+              if [[ "$RELEASE_TAG" != *-smoke.* ]]; then
+                echo "Mode smoke-draft requires a smoke tag." >&2
+                exit 1
+              fi
+              ;;
+            *)
+              echo "Unsupported release mode: $RELEASE_MODE" >&2
+              exit 1
+              ;;
+          esac
 
       - name: Validate VERSION, tag and changelog
         shell: bash
         run: |
-          args=(--tag "${{ inputs.tag }}")
-          if [[ "${{ inputs.smoke_test }}" == "true" ]]; then
+          set -euo pipefail
+          args=(--tag "$RELEASE_TAG")
+          if [[ "$RELEASE_MODE" == "smoke-draft" ]]; then
             args+=(--allow-smoke-tag)
           fi
           python scripts/validate_release.py "${args[@]}"
 
-      - name: Confirm tag does not already exist
-        if: ${{ inputs.create_draft }}
+      - name: Confirm release does not already exist
+        if: ${{ inputs.mode != 'validate-only' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ inputs.tag }}
+        shell: bash
         run: |
+          set -euo pipefail
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Release $RELEASE_TAG already exists." >&2
             exit 1
           fi
 
       - name: Create draft GitHub Release
-        if: ${{ inputs.create_draft }}
+        if: ${{ inputs.mode != 'validate-only' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ inputs.tag }}
-          SMOKE_TEST: ${{ inputs.smoke_test }}
+        shell: bash
         run: |
+          set -euo pipefail
           title="Universal CSV Dashboard $RELEASE_TAG"
-          if [[ "$SMOKE_TEST" == "true" ]]; then
+          if [[ "$RELEASE_MODE" == "smoke-draft" ]]; then
             title="[SMOKE TEST — DO NOT PUBLISH] $title"
           fi
 
@@ -84,3 +112,14 @@ jobs:
             --title "$title" \
             --generate-notes \
             --draft
+
+          release_url="$(gh release view "$RELEASE_TAG" --json url --jq '.url')"
+          {
+            echo ""
+            echo "### Draft created"
+            echo ""
+            echo "- URL: $release_url"
+            if [[ "$RELEASE_MODE" == "smoke-draft" ]]; then
+              echo "- Cleanup required: inspect and delete this unpublished smoke draft."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
