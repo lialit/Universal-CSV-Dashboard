@@ -18,6 +18,15 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/documentation-links.yml"><img alt="Documentation links" src="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/documentation-links.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/lialit/Universal-CSV-Dashboard/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/lialit/Universal-CSV-Dashboard?display_name=tag&sort=semver"></a>
+  <a href="./START_HERE.md"><img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white"></a>
+  <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2EA44F"></a>
+  <a href="./docs/12_SECURITY_PRIVACY.md"><img alt="Local-first" src="https://img.shields.io/badge/privacy-local--first-00A6A6"></a>
+</p>
+
+<p align="center">
   <a href="#quick-start">Quick start</a> ·
   <a href="#what-you-get">Features</a> ·
   <a href="#how-it-works">How it works</a> ·
