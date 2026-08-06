@@ -50,7 +50,8 @@ Use the root documents first:
 - [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist;
 - [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules;
 - [`RELEASE_COMMUNITY_TRUST_AUDIT.md`](RELEASE_COMMUNITY_TRUST_AUDIT.md) — stable release, support, security and community acceptance review;
-- [`PUBLIC_CONVERSION_AUDIT.md`](PUBLIC_CONVERSION_AUDIT.md) — first-screen calls to action and visitor-path regression checklist.
+- [`PUBLIC_CONVERSION_AUDIT.md`](PUBLIC_CONVERSION_AUDIT.md) — first-screen calls to action and visitor-path regression checklist;
+- [`PUBLIC_TRUST_FINAL_REVIEW.md`](PUBLIC_TRUST_FINAL_REVIEW.md) — complete GH-06 acceptance result and maintenance baseline.
 
 ## Document ownership
 
