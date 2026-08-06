@@ -25,6 +25,7 @@ Use the root documents first:
 
 - [`06_ARCHITECTURE.md`](06_ARCHITECTURE.md) — application architecture and module boundaries;
 - [`11_ENGINEERING_QUALITY.md`](11_ENGINEERING_QUALITY.md) — tests, CI, dependency and readiness gates;
+- [`CONTRIBUTOR_VALIDATION.md`](CONTRIBUTOR_VALIDATION.md) — local check levels and CI mapping;
 - [`13_PERFORMANCE_BOUNDARY.md`](13_PERFORMANCE_BOUNDARY.md) — validated CSV size boundary and performance procedure;
 - [`12_SECURITY_PRIVACY.md`](12_SECURITY_PRIVACY.md) — local data flow, privacy and security boundaries.
 
