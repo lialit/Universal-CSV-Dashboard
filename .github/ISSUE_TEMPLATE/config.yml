@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Setup and usage guide
+    url: https://github.com/lialit/Universal-CSV-Dashboard/blob/main/START_HERE.md
+    about: Check installation, first-run guidance, supported CSV boundaries, and common setup problems before opening an issue.
   - name: Security vulnerability
     url: https://github.com/lialit/Universal-CSV-Dashboard/security/advisories/new
     about: Report security vulnerabilities privately instead of opening a public issue.
