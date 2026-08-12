@@ -48,6 +48,7 @@ Use the root documents first:
 - [`PR_LABELING.md`](PR_LABELING.md) — automatic and semantic pull-request labels;
 - [`PROJECT_AUTOMATION.md`](PROJECT_AUTOMATION.md) — GitHub Project synchronization behavior;
 - [`DEPENDENCY_MAINTENANCE.md`](DEPENDENCY_MAINTENANCE.md) — routine dependency updates, major-migration rules and Dependabot review baseline;
+- [`DEPENDABOT_CLEANUP.md`](DEPENDABOT_CLEANUP.md) — GH-07B cleanup record and major-migration review order;
 - [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist;
 - [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules;
 - [`RELEASE_COMMUNITY_TRUST_AUDIT.md`](RELEASE_COMMUNITY_TRUST_AUDIT.md) — stable release, support, security and community acceptance review;
