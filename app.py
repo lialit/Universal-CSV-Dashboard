@@ -14,10 +14,15 @@ apply_theme()
 pages = {
     "Dashboard": [
         st.Page(
+            "views/start.py",
+            title="Start Here",
+            icon=":material/rocket_launch:",
+            default=True,
+        ),
+        st.Page(
             "views/upload.py",
             title="Upload & Configure",
             icon=":material/upload_file:",
-            default=True,
         ),
         st.Page(
             "views/overview.py",
