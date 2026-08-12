@@ -53,6 +53,7 @@ Use the root documents first:
 - [`SETUP_PYTHON_V7_MIGRATION.md`](SETUP_PYTHON_V7_MIGRATION.md) — GH-07D setup-python v7 compatibility review, acceptance evidence and rollback plan;
 - [`PANDAS_V3_MIGRATION.md`](PANDAS_V3_MIGRATION.md) — GH-07E pandas 3 compatibility boundary, validation evidence and rollback plan;
 - [`REPORTLAB_V5_MIGRATION.md`](REPORTLAB_V5_MIGRATION.md) — GH-07F ReportLab 5 PDF compatibility boundary, validation evidence and rollback plan;
+- [`MAINTENANCE_READINESS_FINAL_REVIEW.md`](MAINTENANCE_READINESS_FINAL_REVIEW.md) — GH-07G final maintenance acceptance result and regression baseline;
 - [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist;
 - [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules;
 - [`RELEASE_COMMUNITY_TRUST_AUDIT.md`](RELEASE_COMMUNITY_TRUST_AUDIT.md) — stable release, support, security and community acceptance review;
