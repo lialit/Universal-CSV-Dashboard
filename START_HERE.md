@@ -14,8 +14,8 @@ file into a structured first-pass business analysis.
 
 You can:
 
-1. upload a CSV;
-2. review detected field roles;
+1. start instantly with bundled synthetic demo data or upload your own CSV;
+2. review detected field roles when using your own file;
 3. inspect an executive overview;
 4. explore evidence-linked insights;
 5. review data quality;
@@ -71,22 +71,38 @@ Open the local address shown by Streamlit, usually
 
 ## Your first product tour
 
-### 1. Upload & Configure
+### 1. Start Here
 
-Upload a CSV, review the detected date, metric, and category fields, then adjust
-the proposed configuration when necessary.
+The application opens on a guided first-run page with two clear choices:
 
-### 2. Executive Overview
+- **Try demo data** loads the bundled `data/demo_business.csv` synthetic dataset,
+  applies a safe dashboard configuration automatically, and opens Executive
+  Overview;
+- **Use my CSV** opens the normal upload and configuration workflow.
+
+The demo contains synthetic revenue, orders, margin, region, and channel values.
+It contains no customer, account, or production data and is suitable for product
+tours, screenshots, tests, and the future public live demo.
+
+If a dataset is already loaded in the current session, Start Here does not block
+you: continue directly to Executive Overview or choose to load another CSV.
+
+### 2. Upload & Configure
+
+When using your own file, upload a CSV, review the detected date, metric, and
+category fields, then adjust the proposed configuration when necessary.
+
+### 3. Executive Overview
 
 Scan headline metrics, verified facts, rule-based interpretations, limitations,
 and the main trend.
 
-### 3. Business Insights
+### 4. Business Insights
 
 Review evidence-linked contributions, trends, anomalies, and numeric
 relationships together with their confidence reasons and limitations.
 
-### 4. Analysis Assistant
+### 5. Analysis Assistant
 
 Choose a supported local question, inspect the calculation, follow suggested
 next steps, and draft a reviewable evidence-based summary.
@@ -94,24 +110,27 @@ next steps, and draft a reviewable evidence-based summary.
 The assistant uses deterministic local rules. It does not send CSV values to an
 external AI service.
 
-### 5. Data Quality
+### 6. Data Quality
 
 Review missing cells, duplicate rows, column-level quality, and fields that may
 need cleaning or reinterpretation.
 
-### 6. Export & Share
+### 7. Export & Share
 
 Save reusable project configuration or create traceable Excel and executive PDF
 reports with quality and methodology context.
 
-### 7. About This Template
+### 8. About This Template
 
 Review the product context, intended use, and dashboard guidance.
 
 ## Which CSV should I use?
 
-For the first run, use `sample_data/sample_sales.csv` or another small,
-non-sensitive file.
+For the fastest first run, choose **Try demo data** on Start Here. No external
+file is required.
+
+For your own-data path, use `sample_data/sample_sales.csv` or another small,
+non-sensitive file first.
 
 A useful starter dataset usually contains:
 
@@ -130,8 +149,9 @@ environment, and your organisation's data-handling requirements.
 ```text
 Universal-CSV-Dashboard/
 ├── app.py                  # Streamlit entry point and navigation
-├── app_core/               # Detection, analysis, and shared logic
-├── views/                  # Streamlit pages
+├── app_core/               # Detection, analysis, demo loading, shared logic
+├── views/                  # Streamlit pages, including guided Start Here
+├── data/                   # Bundled synthetic demo data
 ├── sample_data/            # Quick-test data
 ├── examples/               # Example datasets and use cases
 ├── tests/                  # Automated tests
