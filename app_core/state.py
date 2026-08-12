@@ -48,14 +48,14 @@ def require_dataset():
                 "views/start.py",
                 label="Go to Start Here",
                 icon=":material/rocket_launch:",
-                use_container_width=True,
+                width="stretch",
             )
         with right:
             st.page_link(
                 "views/upload.py",
                 label="Upload a CSV",
                 icon=":material/upload_file:",
-                use_container_width=True,
+                width="stretch",
             )
         st.stop()
     return dataframe, config
