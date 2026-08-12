@@ -30,6 +30,7 @@ Use the root documents first:
 - [`ISSUE_AND_PR_GUIDE.md`](ISSUE_AND_PR_GUIDE.md) — issue routes, required evidence and pull-request expectations;
 - [`CONTRIBUTOR_EXPERIENCE_REVIEW.md`](CONTRIBUTOR_EXPERIENCE_REVIEW.md) — end-to-end onboarding acceptance and regression checklist;
 - [`13_PERFORMANCE_BOUNDARY.md`](13_PERFORMANCE_BOUNDARY.md) — validated CSV size boundary and performance procedure;
+- [`PERFORMANCE_CONFIDENCE_V1_1.md`](PERFORMANCE_CONFIDENCE_V1_1.md) — GH-08C small/medium/large performance suite, revisit checks and v1.1 regression baseline;
 - [`12_SECURITY_PRIVACY.md`](12_SECURITY_PRIVACY.md) — local data flow, privacy and security boundaries.
 
 ### Work on design and communication
