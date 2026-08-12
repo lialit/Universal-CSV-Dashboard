@@ -46,7 +46,7 @@ jobs:
       TARGET_URL: ${{ inputs.item_url || github.event.issue.html_url || github.event.pull_request.html_url }}
     steps:
       - name: Check out repository configuration
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Validate project token and configuration
         shell: bash
