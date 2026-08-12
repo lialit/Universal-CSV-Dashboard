@@ -36,6 +36,7 @@ Use the root documents first:
 ### Work on design and communication
 
 - [`07_UX_PRINCIPLES.md`](07_UX_PRINCIPLES.md) — UX principles;
+- [`UX_POLISH_V1_1.md`](UX_POLISH_V1_1.md) — GH-08D navigation, actionable empty states and responsive-layout baseline;
 - [`08_BRANDING.md`](08_BRANDING.md) — brand overview;
 - [`branding/BRAND_BOOK.md`](branding/BRAND_BOOK.md) — complete visual identity rules;
 - [`09_PRICING.md`](09_PRICING.md) — pricing direction;
