@@ -18,6 +18,7 @@
 </p>
 
 <p align="center">
+  <a href="https://universal-csv-dashboard-ujqkgrohd7vy4zexcxkuqg.streamlit.app/"><img alt="Open Live Demo" src="https://img.shields.io/badge/Open-Live%20Demo-FF4B4B?logo=streamlit&logoColor=white"></a>
   <a href="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/documentation-links.yml"><img alt="Documentation links" src="https://github.com/lialit/Universal-CSV-Dashboard/actions/workflows/documentation-links.yml/badge.svg?branch=main"></a>
   <a href="https://github.com/lialit/Universal-CSV-Dashboard/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/lialit/Universal-CSV-Dashboard?display_name=tag&sort=semver"></a>
@@ -27,6 +28,7 @@
 </p>
 
 <p align="center">
+  <strong><a href="https://universal-csv-dashboard-ujqkgrohd7vy4zexcxkuqg.streamlit.app/">Open Live Demo</a></strong> ·
   <strong><a href="./START_HERE.md">Run locally</a></strong> ·
   <strong><a href="https://github.com/lialit/Universal-CSV-Dashboard/releases/latest">Stable release</a></strong> ·
   <strong><a href="./SUPPORT.md">Get support</a></strong>
@@ -306,6 +308,6 @@ Created by **Olena Havrylova**
 
 ### Save hours. Not spreadsheets.
 
-Run the app locally, review the stable release, or choose the correct support route above.
+Open the live demo, run the app locally, or review the stable release above.
 
 </div>

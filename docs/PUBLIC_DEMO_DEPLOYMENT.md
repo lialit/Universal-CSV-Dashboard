@@ -1,19 +1,25 @@
 # Public Demo Deployment
 
-This document records GH-08F deployment readiness for Issue #14 — a public live demo of Universal CSV Dashboard.
+This document records GH-08F deployment readiness and activation for Issue #14 — a public live demo of Universal CSV Dashboard.
+
+## Public URL
+
+The public Streamlit Community Cloud deployment is available at:
+
+https://universal-csv-dashboard-ujqkgrohd7vy4zexcxkuqg.streamlit.app/
 
 ## Hosting target
 
-The preferred host for v1.1 is Streamlit Community Cloud because the product already uses Streamlit, the repository is public, the application entrypoint is `app.py`, and all Python dependencies are declared in the root `requirements.txt`.
+The v1.1 demo is hosted on Streamlit Community Cloud because the product already uses Streamlit, the repository is public, the application entrypoint is `app.py`, and all Python dependencies are declared in the root `requirements.txt`.
 
 ## Deployment inputs
 
-Use the following values when creating the Community Cloud app:
+The deployed application uses:
 
 - Repository: `lialit/Universal-CSV-Dashboard`
 - Branch: `main`
 - Entry point: `app.py`
-- Python: 3.11 or 3.12; 3.11 is preferred for parity with the primary supported local environment and CI.
+- Python: 3.11 preferred for parity with the primary supported local environment and CI.
 - Secrets: none required.
 
 The application is intentionally deployable without API keys, database credentials, external model credentials, or private datasets.
@@ -28,7 +34,7 @@ The canonical application guard remains `app_core.csv_parser.MAX_UPLOAD_SIZE_MB`
 
 The bundled demo dataset introduced in GH-08B is synthetic and is the default public exploration path.
 
-A clean visitor should be able to:
+A clean visitor can:
 
 1. open the app;
 2. land on Start Here;
@@ -39,20 +45,9 @@ A clean visitor should be able to:
 
 No confidential or customer-derived data may be bundled into the public demo.
 
-## First deployment procedure
-
-1. Sign in to Streamlit Community Cloud with the GitHub account that has admin access to this repository.
-2. Create a new app from an existing repository.
-3. Select the repository, `main` branch, and `app.py` entrypoint shown above.
-4. Open Advanced settings and select Python 3.11 when available.
-5. Do not add secrets.
-6. Choose a stable public `streamlit.app` subdomain.
-7. Deploy and wait for the first build to complete.
-8. Open the resulting public URL in a clean/incognito browser session.
-
 ## Hosted acceptance check
 
-Before adding the public URL to README, verify all of the following in a clean browser session:
+The public activation checklist is:
 
 - Start Here renders without an exception;
 - bundled demo data loads successfully;
@@ -67,17 +62,20 @@ Before adding the public URL to README, verify all of the following in a clean b
 - no secrets, credentials, private data, or session internals are exposed;
 - a fresh browser session starts without inheriting another user's dataset or configuration.
 
+The public URL has been created successfully. The repository activation PR adds the URL to the README and closes Issue #14 once repository CI is green and the PR is merged.
+
 ## Public activation
 
-Do not add a README `Open Live Demo` CTA until the hosted acceptance check passes.
+The activation package:
 
-Once the URL is verified:
+1. adds the live demo as the first public CTA in `README.md`;
+2. adds an `Open Live Demo` badge near the existing trust badges;
+3. records the final URL in this deployment document;
+4. closes Issue #14 when the activation PR is merged.
 
-1. add it as the first public CTA in `README.md`;
-2. add an `Open Live Demo` badge or button near the existing trust badges;
-3. set the GitHub repository Homepage field to the verified live-demo URL;
-4. verify the README link from a logged-out browser;
-5. record the final URL in Issue #14 and close it through the activation PR.
+The GitHub repository Homepage field should also point to the same verified URL:
+
+https://universal-csv-dashboard-ujqkgrohd7vy4zexcxkuqg.streamlit.app/
 
 ## Operational notes
 
@@ -87,4 +85,4 @@ A public demo is a convenience layer, not a replacement for the local-first prod
 
 ## Decision
 
-The repository is deployment-ready when this package passes CI. Issue #14 remains open until a real public URL has been deployed, verified in a clean browser session, and added to the README and repository profile.
+GH-08F is activation-ready: a real public URL exists, no deployment secrets are required, the bundled demo path is available, and repository documentation can now expose the live demo as the primary adoption CTA. Issue #14 closes through the activation PR after green CI.
