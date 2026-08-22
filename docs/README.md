@@ -58,6 +58,7 @@ Use the root documents first:
 - [`REPORTLAB_V5_MIGRATION.md`](REPORTLAB_V5_MIGRATION.md) — GH-07F ReportLab 5 PDF compatibility boundary, validation evidence and rollback plan;
 - [`MAINTENANCE_READINESS_FINAL_REVIEW.md`](MAINTENANCE_READINESS_FINAL_REVIEW.md) — GH-07G final maintenance acceptance result and regression baseline;
 - [`V1_1_EXECUTION_READINESS.md`](V1_1_EXECUTION_READINESS.md) — GH-08A v1.1 backlog sequencing, dependency order and delivery rules;
+- [`PUBLIC_DEMO_DEPLOYMENT.md`](PUBLIC_DEMO_DEPLOYMENT.md) — GH-08F Streamlit Community Cloud deployment inputs, hosted acceptance checks and activation steps;
 - [`PUBLIC_REPOSITORY_PROFILE.md`](PUBLIC_REPOSITORY_PROFILE.md) — About metadata, topics, public features and trust-signal checklist;
 - [`TRUST_BADGES.md`](TRUST_BADGES.md) — approved README badges, evidence links and maintenance rules;
 - [`RELEASE_COMMUNITY_TRUST_AUDIT.md`](RELEASE_COMMUNITY_TRUST_AUDIT.md) — stable release, support, security and community acceptance review;
