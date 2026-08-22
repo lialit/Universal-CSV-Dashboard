@@ -8,9 +8,15 @@ _INVALID_FILENAME_CHARS = re.compile(r"[<>:\"/\\|?*\x00-\x1f]+")
 _WHITESPACE = re.compile(r"\s+")
 
 
+def safe_source_label(source_name: str) -> str:
+    """Return only the source basename so local paths are never exported."""
+    base = PurePath(str(source_name).replace("\\", "/")).name.strip()
+    return base or "uploaded.csv"
+
+
 def safe_export_stem(source_name: str) -> str:
     """Return a deterministic, filesystem-safe stem for generated exports."""
-    base = PurePath(str(source_name).replace("\\", "/")).name
+    base = safe_source_label(source_name)
     stem = base.rsplit(".", 1)[0] if "." in base else base
     stem = _INVALID_FILENAME_CHARS.sub("_", stem)
     stem = _WHITESPACE.sub("_", stem).strip(" ._")
