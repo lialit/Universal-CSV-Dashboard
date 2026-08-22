@@ -1,6 +1,6 @@
 import streamlit as st
 
-from app_core.export_naming import export_filename
+from app_core.export_naming import export_filename, safe_source_label
 from app_core.exports import build_excel_report
 from app_core.pdf_exports import build_pdf_report
 from app_core.project_state import project_state_to_json
@@ -18,7 +18,9 @@ from app_core.theme import render_header
 
 
 dataframe, config = require_dataset()
-source_name = st.session_state.get(FILE_NAME_KEY) or "uploaded.csv"
+source_name = safe_source_label(
+    st.session_state.get(FILE_NAME_KEY) or "uploaded.csv"
+)
 
 render_header(
     "Export & Share",
