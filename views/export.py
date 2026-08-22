@@ -1,5 +1,6 @@
 import streamlit as st
 
+from app_core.export_naming import export_filename, safe_source_label
 from app_core.exports import build_excel_report
 from app_core.pdf_exports import build_pdf_report
 from app_core.project_state import project_state_to_json
@@ -17,7 +18,9 @@ from app_core.theme import render_header
 
 
 dataframe, config = require_dataset()
-source_name = st.session_state.get(FILE_NAME_KEY) or "uploaded.csv"
+source_name = safe_source_label(
+    st.session_state.get(FILE_NAME_KEY) or "uploaded.csv"
+)
 
 render_header(
     "Export & Share",
@@ -99,9 +102,10 @@ with project_tab:
         config,
         source_name,
     )
-    project_name = (
-        source_name.rsplit(".", 1)[0]
-        + "_dashboard_project.json"
+    project_name = export_filename(
+        source_name,
+        "dashboard_project",
+        "json",
     )
     st.download_button(
         "Download saved project",
@@ -143,10 +147,7 @@ with excel_tab:
     except ValueError as error:
         st.error(str(error))
     else:
-        export_name = (
-            source_name.rsplit(".", 1)[0]
-            + "_analysis.xlsx"
-        )
+        export_name = export_filename(source_name, "analysis", "xlsx")
         st.download_button(
             "Download Excel analysis",
             data=workbook_bytes,
@@ -189,9 +190,10 @@ with pdf_tab:
     except ValueError as error:
         st.error(str(error))
     else:
-        pdf_name = (
-            source_name.rsplit(".", 1)[0]
-            + "_executive_report.pdf"
+        pdf_name = export_filename(
+            source_name,
+            "executive_report",
+            "pdf",
         )
         st.download_button(
             "Download executive PDF",
