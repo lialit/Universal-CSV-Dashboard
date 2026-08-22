@@ -15,11 +15,16 @@ Universal CSV Dashboard versions.
 | [`v0.5`](v0.5/release_notes.md) | **Share** | Saved work and responsible report exports | Delivered to `main`; untagged |
 | [`v0.6`](v0.6/release_notes.md) | **Assist** | Local deterministic guidance with privacy controls | Delivered to `main`; untagged |
 | [`v1.0`](v1.0/release_notes.md) | **Launch** | Stable, documented and dependable public product | Released |
+| [`v1.1`](v1.1/release_notes.md) | **Polish & Adoption** | Guided onboarding, live demo, performance/UX/export confidence and public documentation | In progress |
 
 The stable `1.0.0` release includes the delivered `0.1–0.6`
 capabilities recorded in [`CHANGELOG.md`](../CHANGELOG.md). Versions
 `0.3–0.6` were development milestones and were not published as standalone
 Git tags.
+
+v1.1 is the current product stage. Its working release notes and canonical
+screenshot set live under [`v1.1/`](v1.1/). The release remains unpublished
+until beta validation and the final release-readiness gate are complete.
 
 ## Source-of-truth rules
 
