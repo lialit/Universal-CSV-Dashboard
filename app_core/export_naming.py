@@ -4,8 +4,7 @@ from pathlib import PurePath
 import re
 
 
-_INVALID_FILENAME_CHARS = re.compile(r"[<>:\"/\\|?*\x00-\x1f]+")
-_WHITESPACE = re.compile(r"\s+")
+_FILENAME_SEPARATORS = re.compile(r"(?:[<>:\"/\\|?*\x00-\x1f]|\s)+")
 
 
 def safe_source_label(source_name: str) -> str:
@@ -18,8 +17,7 @@ def safe_export_stem(source_name: str) -> str:
     """Return a deterministic, filesystem-safe stem for generated exports."""
     base = safe_source_label(source_name)
     stem = base.rsplit(".", 1)[0] if "." in base else base
-    stem = _INVALID_FILENAME_CHARS.sub("_", stem)
-    stem = _WHITESPACE.sub("_", stem).strip(" ._")
+    stem = _FILENAME_SEPARATORS.sub("_", stem).strip(" ._")
     return stem[:80] or "dashboard"
 
 
