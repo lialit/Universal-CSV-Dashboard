@@ -2,8 +2,8 @@
 
 Welcome to **Universal CSV Dashboard**.
 
-This guide is the shortest path from cloning the repository to understanding
-what the product does, how to run it, and where to go next.
+This guide is the shortest path from opening the live demo or cloning the repository
+to understanding what the product does, how to run it, and where to go next.
 
 > **Product promise:** Understand your business in under 60 seconds.
 
@@ -29,7 +29,19 @@ investigation, spreadsheet editing, or a complete enterprise BI implementation.
 Start here if you are a business owner, consultant, freelancer, analyst,
 developer, or contributor who needs a clear first view of business data.
 
-## Five-minute quick start
+## Fastest option: open the live demo
+
+The public Streamlit demo is available at:
+
+https://universal-csv-dashboard-ujqkgrohd7vy4zexcxkuqg.streamlit.app/
+
+Choose **Try demo data** to explore the bundled synthetic dataset without installing
+anything or uploading a file.
+
+The public demo is a convenience layer. For sensitive data or maximum control,
+run the application locally and review the privacy guidance before use.
+
+## Five-minute local quick start
 
 ### Requirements
 
@@ -82,7 +94,7 @@ The application opens on a guided first-run page with two clear choices:
 
 The demo contains synthetic revenue, orders, margin, region, and channel values.
 It contains no customer, account, or production data and is suitable for product
-tours, screenshots, tests, and the future public live demo.
+tours, screenshots, tests, and the public live demo.
 
 If a dataset is already loaded in the current session, Start Here does not block
 you: continue directly to Executive Overview or choose to load another CSV.
@@ -139,7 +151,10 @@ A useful starter dataset usually contains:
 - one or more categories;
 - clear column names;
 - several rows per category or time period;
-- no more than 25 MB for the validated v1.0 workflow.
+- no more than 25 MB for the supported v1.1 workflow.
+
+The 25 MB boundary is enforced both by the application parser and by the public
+Streamlit server configuration.
 
 Avoid confidential production data until you have reviewed the code, your local
 environment, and your organisation's data-handling requirements.
@@ -215,6 +230,8 @@ view depends on compatible date, numeric, or categorical fields.
 | Understand the product scope and audience | [`PRODUCT.md`](PRODUCT.md) |
 | See the development direction | [`ROADMAP.md`](ROADMAP.md) |
 | Browse detailed documentation | [`docs/README.md`](docs/README.md) |
+| Review v1.1 release scope | [`releases/v1.1/release_notes.md`](releases/v1.1/release_notes.md) |
+| Review public-demo deployment | [`docs/PUBLIC_DEMO_DEPLOYMENT.md`](docs/PUBLIC_DEMO_DEPLOYMENT.md) |
 | Contribute code or documentation | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 | Choose an issue or PR route | [`docs/ISSUE_AND_PR_GUIDE.md`](docs/ISSUE_AND_PR_GUIDE.md) |
 | Run the correct validation level | [`docs/CONTRIBUTOR_VALIDATION.md`](docs/CONTRIBUTOR_VALIDATION.md) |

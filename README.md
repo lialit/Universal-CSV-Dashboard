@@ -12,8 +12,9 @@
 
 <p align="center">
   <strong>
-    Upload a CSV and turn it into clear metrics, trends, data-quality checks
-    and interactive business views — without building a dashboard from scratch.
+    Start with synthetic demo data or upload a CSV and turn it into clear metrics,
+    trends, data-quality checks and interactive business views — without building
+    a dashboard from scratch.
   </strong>
 </p>
 
@@ -52,13 +53,13 @@ actually mean.
 
 Universal CSV Dashboard shortens that path:
 
-- upload a CSV;
-- confirm the detected fields;
-- review verified executive facts and rule-based interpretations;
+- start instantly with bundled synthetic demo data or upload your own CSV;
+- confirm detected fields when using your own data;
+- review verified executive facts and transparent rule-based interpretations;
 - inspect evidence-linked business insights and data quality;
 - ask supported questions in the local Analysis Assistant;
-- save the project or export a traceable Excel or PDF report;
 - filter the results;
+- save the project or export traceable Excel and PDF reports;
 - decide what to investigate next.
 
 It is designed for analysts, consultants, small teams and business owners who
@@ -68,6 +69,7 @@ need a useful first view of a dataset without setting up a BI project.
 
 | | Capability | Outcome |
 |---|---|---|
+| 🚀 | **Start Here** | Instant demo-data tour or a direct path to your own CSV |
 | 📊 | **Executive Overview** | Recommended KPIs, verified facts and transparent rule-based interpretations |
 | ✨ | **Automatic field detection** | Editable date, metric and category suggestions with visible reasoning |
 | 📈 | **Business Insights** | Traceable trend, contribution, anomaly and relationship observations |
@@ -75,33 +77,32 @@ need a useful first view of a dataset without setting up a BI project.
 | ✅ | **Data Quality** | A transparent score with missing, duplicate and type-validity components |
 | 📤 | **Export & Share** | Reusable project JSON plus branded, traceable Excel and executive PDF reports |
 | 🎛️ | **Useful filters** | Focus by date and detected categorical fields |
-| 🔒 | **Local-first workflow** | Run the app on your own machine and keep control of the file |
+| 🔒 | **Local-first workflow** | Run locally for maximum control; the hosted demo is a convenience layer |
 
 ## Product preview
 
-![CSV upload and automatic dashboard configuration](./releases/v1.0/demo.gif)
+The public v1.1 workflow starts on **Start Here**. Use the bundled synthetic demo
+for an instant tour, or choose **Use my CSV** to enter the normal upload and
+configuration path.
 
-The demo shows the local-first starting workflow: upload a representative CSV,
-review the detected fields and inspect the recommended dashboard composition.
-
-![Executive Overview](./assets/screenshots/executive-overview.png)
-
-The interface is intentionally calm and consistent: a focused navigation rail,
-clear KPI cards, useful filters and business-readable chart titles.
+![Start Here with demo-data and own-CSV paths](./releases/v1.1/screenshots/01-start-here.png)
 
 ### Product gallery
 
-| Upload & Configure | Executive Overview |
+| Executive Overview | Business Insights |
 |---|---|
-| ![Upload and automatic field suggestions](./releases/v1.0/screenshots/01-upload-configure.png) | ![Executive metrics, facts and interpretations](./releases/v1.0/screenshots/02-executive-overview.png) |
+| ![Executive metrics, verified facts and interpretations](./releases/v1.1/screenshots/02-executive-overview.png) | ![Evidence-linked business insights](./releases/v1.1/screenshots/03-business-insights.png) |
 
-| Business Insights | Analysis Assistant |
+| Analysis Assistant | Data Quality |
 |---|---|
-| ![Evidence-linked business insights](./releases/v1.0/screenshots/03-business-insights.png) | ![Local deterministic analysis assistant](./releases/v1.0/screenshots/04-analysis-assistant.png) |
+| ![Local deterministic analysis assistant](./releases/v1.1/screenshots/04-analysis-assistant.png) | ![Transparent Data Quality Score](./releases/v1.1/screenshots/05-data-quality.png) |
 
-| Data Quality | Export & Share |
-|---|---|
-| ![Transparent Data Quality Score](./releases/v1.0/screenshots/05-data-quality.png) | ![Saved project, Excel and PDF export workflow](./releases/v1.0/screenshots/06-export-share.png) |
+| Export & Share |
+|---|
+| ![Saved project, Excel and PDF export workflow](./releases/v1.1/screenshots/06-export-share.png) |
+
+All v1.1 release screenshots use the bundled synthetic demo dataset and contain
+no customer or production data.
 
 ## Why not start in a spreadsheet?
 
@@ -122,34 +123,44 @@ and what deserves attention?”**
 
 ```mermaid
 flowchart TD
-    A["Upload CSV"] --> B["Detect and confirm fields"]
-    B --> C["Review overview and quality"]
-    C --> D["Explore insights and guided questions"]
-    D --> E["Save project or export report"]
+    A["Start Here"] --> B{"Choose a path"}
+    B -->|Demo| C["Load bundled synthetic data"]
+    B -->|Own CSV| D["Upload and confirm fields"]
+    C --> E["Review overview and quality"]
+    D --> E
+    E --> F["Explore insights and guided questions"]
+    F --> G["Save project or export report"]
 ```
 
-The application separates data understanding from presentation. Detection and
-analysis live in reusable modules; deterministic calculations produce the
-quality score, insights and assistant answers; Streamlit views render the
-results into a consistent interface.
+Detection and analysis live in reusable modules; deterministic calculations
+produce the quality score, insights and assistant answers; Streamlit views render
+the results into a consistent interface.
 
 ## Quick start
 
-### Requirements
+### Fastest path: live demo
+
+Open the public Streamlit deployment and choose **Try demo data**:
+
+https://universal-csv-dashboard-ujqkgrohd7vy4zexcxkuqg.streamlit.app/
+
+The bundled demo is synthetic and requires no upload or account.
+
+### Run locally
+
+Requirements:
 
 - Python 3.11+
 - `pip`
+- a modern browser
 
-The validated v1.0 upload boundary is **25 MB per CSV**. CSV processing and
-analysis run in memory, so wider datasets can require substantially more RAM
-than their file size.
-
-### Install and run
+The supported upload boundary is **25 MB per CSV**. CSV processing and analysis
+run in memory, so wider datasets can require substantially more RAM than their
+file size.
 
 ```bash
 git clone https://github.com/lialit/Universal-CSV-Dashboard.git
 cd Universal-CSV-Dashboard
-
 python -m venv .venv
 ```
 
@@ -163,15 +174,16 @@ Activate the environment:
 source .venv/bin/activate
 ```
 
-Install the dependencies and launch the app:
+Install dependencies and launch:
 
 ```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
-Open the local address shown by Streamlit, upload a CSV, and review the detected
-configuration before exploring the dashboard.
+For the first tour, choose **Try demo data**. For your own data, choose
+**Use my CSV**, upload the file and review detected roles before analysis.
 
 For a reproducible versioned installation, use the published
 [latest stable release](https://github.com/lialit/Universal-CSV-Dashboard/releases/latest).
@@ -179,20 +191,30 @@ For setup problems or usage questions, follow [`SUPPORT.md`](SUPPORT.md).
 
 ## Try these pages first
 
-1. **Upload & Configure** — load a file, inspect detected fields and adjust the
-   recommended dashboard composition.
-2. **Executive Overview** — scan KPIs, verified facts, rule-based
-   interpretations and visible limitations.
-3. **Business Insights** — investigate evidence-linked trends, category
-   contributions, unusual values and numeric relationships.
-4. **Analysis Assistant** — ask a supported local question, inspect its
-   calculation, follow suggested questions and draft a reviewable summary.
-5. **Data Quality** — understand the score components, missing cells,
-   duplicate rows and column health.
-6. **Export & Share** — save project state or create a themed Excel workbook
-   and executive PDF with methodology and quality context.
+1. **Start Here** — load the bundled demo instantly or choose your own CSV.
+2. **Executive Overview** — scan KPIs, verified facts, interpretations and limitations.
+3. **Business Insights** — investigate evidence-linked contributions, unusual values and relationships.
+4. **Analysis Assistant** — ask a supported local question and inspect the calculation.
+5. **Data Quality** — understand completeness, duplicates, type validity and column health.
+6. **Export & Share** — save project state or create themed Excel and PDF reports.
 
-Sample files are available in `sample_data/`.
+Sample files are also available in `sample_data/`.
+
+## Supported CSV expectations
+
+A useful starter dataset usually contains:
+
+- one date or timestamp column;
+- one or more numeric metrics;
+- optional categorical dimensions;
+- clear column names;
+- enough rows to reveal a pattern;
+- no more than 25 MB per CSV for the validated workflow.
+
+The dashboard adapts to the columns it finds rather than assuming one fixed
+industry schema. Review [`START_HERE.md`](START_HERE.md) and
+[`docs/12_SECURITY_PRIVACY.md`](docs/12_SECURITY_PRIVACY.md) before using
+sensitive production data.
 
 ## Built for many business contexts
 
@@ -201,23 +223,21 @@ Sample files are available in `sample_data/`.
 | Sales and product mix | Campaign and channel results | Revenue and cost trends | Volume and service metrics |
 | Inventory signals | Lead and conversion patterns | Budget monitoring | Workload patterns |
 
-The dashboard adapts to the columns it finds rather than assuming one fixed
-industry schema.
-
 ## Project structure
 
 ```text
-UniversalCSVDashboard/
-├── app.py                  # Streamlit entry point
-├── app_core/               # Detection and analysis logic
-├── views/                  # Application pages and UI composition
+Universal-CSV-Dashboard/
+├── app.py                  # Streamlit entry point and navigation
+├── app_core/               # Detection, analysis and shared logic
+├── views/                  # Streamlit pages
+├── data/                   # Bundled synthetic demo data
 ├── sample_data/            # Safe example datasets
 ├── tests/                  # Automated checks
-├── assets/                 # Brand, screenshots and visual resources
+├── assets/                 # Brand and visual resources
 ├── docs/                   # Product and engineering documentation
 ├── examples/               # Usage examples
 ├── releases/               # Release notes and release assets
-├── marketing/              # Reusable launch materials
+├── marketing/              # Launch and communication assets
 ├── .streamlit/             # Streamlit configuration
 └── requirements.txt
 ```
@@ -233,7 +253,7 @@ reading the source code.
 
 **Beautiful by default.** A useful report should not require manual formatting.
 
-**Privacy first.** Local use should remain a first-class way to analyse a file.
+**Privacy first.** Local use remains the first-class option for sensitive data.
 
 ## Technology
 
@@ -241,57 +261,46 @@ reading the source code.
 - [Pandas](https://pandas.pydata.org/) for data processing
 - [Plotly](https://plotly.com/python/) for interactive visualisation
 - [OpenPyXL](https://openpyxl.readthedocs.io/) for structured Excel reports
-- [ReportLab](https://www.reportlab.com/) and
-  [pypdf](https://pypdf.readthedocs.io/) for verified PDF reporting
+- [ReportLab](https://www.reportlab.com/) and [pypdf](https://pypdf.readthedocs.io/) for verified PDF reporting
 - Python 3.11+ for the core application
 
 ## Documentation
 
 | Document | Purpose |
 |---|---|
-| [`START_HERE.md`](START_HERE.md) | Installation, first product tour and setup troubleshooting |
+| [`START_HERE.md`](START_HERE.md) | Installation, live demo, first product tour and setup troubleshooting |
 | [`SUPPORT.md`](SUPPORT.md) | Bugs, usage help, feature requests and security routing |
 | [`PRODUCT.md`](PRODUCT.md) | Product scope, audience and value |
-| [`MANIFESTO.md`](MANIFESTO.md) | Principles that guide product decisions |
-| [`ROADMAP.md`](ROADMAP.md) | Planned product stages |
+| [`ROADMAP.md`](ROADMAP.md) | Current and planned product stages |
 | [`releases/README.md`](releases/README.md) | Release plans, readiness criteria and version status |
+| [`releases/v1.1/release_notes.md`](releases/v1.1/release_notes.md) | Current v1.1 Polish & Adoption release record |
 | [`docs/`](docs/) | Architecture, UX, brand and product documentation |
-| [`docs/branding/BRAND_BOOK.md`](docs/branding/BRAND_BOOK.md) | Visual identity and usage rules |
-| [`docs/12_SECURITY_PRIVACY.md`](docs/12_SECURITY_PRIVACY.md) | Local data flow, export privacy and security boundaries |
-| [`docs/11_ENGINEERING_QUALITY.md`](docs/11_ENGINEERING_QUALITY.md) | Test, CI, dependency and readiness gates |
-| [`docs/13_PERFORMANCE_BOUNDARY.md`](docs/13_PERFORMANCE_BOUNDARY.md) | Validated CSV size boundary and repeatable smoke-test procedure |
+| [`docs/12_SECURITY_PRIVACY.md`](docs/12_SECURITY_PRIVACY.md) | Local data flow, hosted-demo boundary, export privacy and security |
+| [`docs/13_PERFORMANCE_BOUNDARY.md`](docs/13_PERFORMANCE_BOUNDARY.md) | Validated CSV size boundary and performance procedure |
 
 ## Roadmap
 
 | Version | Stage | Goal | Status |
 |---|---|---|---|
 | `0.1–0.2` | **Foundation** | Reliable upload, detection and core views | Delivered |
-| `0.3` | **Understand** | Transparent quality scoring and executive interpretation | Delivered in the current codebase |
-| `0.4` | **Explain** | Evidence-linked insights with confidence and limitations | Delivered in the current codebase |
-| `0.5` | **Share** | Saved project state and responsible report exports | Delivered in the current codebase |
-| `0.6` | **Assist** | Deterministic local guidance with inspectable calculations | Delivered in the current codebase |
+| `0.3–0.6` | **Understand → Assist** | Quality, evidence, sharing and deterministic guidance | Delivered in `v1.0.0` |
 | `1.0` | **Launch** | Stable, documented and dependable public product | Released as `v1.0.0` |
+| `1.1` | **Polish & Adoption** | Guided onboarding, performance confidence, UX polish, hardened exports, live demo and release-quality docs | In progress |
 
 See [`ROADMAP.md`](ROADMAP.md) for the working plan. Roadmap items describe
-direction, not guaranteed release dates. Delivered `0.3–0.6` work is included
-in the stable `v1.0.0` release; those milestones were not published as separate
-Git tags.
+direction, not guaranteed release dates.
 
 ## Contributing
 
 Contributions and thoughtful feedback are welcome. Please read
 [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
 
-When reporting an issue, include:
+When reporting an issue, include the expected and actual behaviour, a minimal
+non-sensitive sample CSV when possible, your Python version and operating system,
+and the full error message.
 
-- the expected and actual behaviour;
-- a minimal, non-sensitive sample CSV when possible;
-- your Python version and operating system;
-- the full error message.
-
-Use [`SUPPORT.md`](SUPPORT.md) to choose the correct route before opening an
-issue. Security vulnerabilities must use the private process in
-[`.github/SECURITY.md`](.github/SECURITY.md).
+Use [`SUPPORT.md`](SUPPORT.md) to choose the correct route. Security
+vulnerabilities must use the private process in [`.github/SECURITY.md`](.github/SECURITY.md).
 
 ## License
 
