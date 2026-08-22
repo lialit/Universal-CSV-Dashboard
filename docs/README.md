@@ -43,6 +43,11 @@ Use the root documents first:
 - [`09_PRICING.md`](09_PRICING.md) — pricing direction;
 - [`12_DEVLOG.md`](12_DEVLOG.md) — development notes.
 
+### Validate v1.1 with beta users
+
+- [`BETA_FEEDBACK_GUIDE.md`](BETA_FEEDBACK_GUIDE.md) — GH-08H structured beta script, anonymized response format and severity/triage rules;
+- [`BETA_FEEDBACK_SUMMARY_TEMPLATE.md`](BETA_FEEDBACK_SUMMARY_TEMPLATE.md) — minimum three-session evidence table and final release decision template.
+
 ### Operate releases and repository automation
 
 - [`10_RELEASE_PROCESS.md`](10_RELEASE_PROCESS.md) — release policy and readiness flow;
